@@ -59,6 +59,12 @@
 - **위키링크는 등록된 용어만**: `[[용어]]`는 `site/src/data/glossary.mjs`에
   등록된 키만 쓸 수 있다. 미등록 용어는 빌드가 실패하는데, 이는 의도된
   동작이다. 새 용어는 먼저 glossary.mjs에 추가한 뒤 본문에서 참조한다.
+- **사이트 내부 페이지 링크는 절대 경로로**: `[사전 준비](/article/prep-guide/)`
+  처럼 base 없이 `/`로 시작하는 경로를 쓴다. GitHub Pages의 base
+  접두(`/2026-ai-agents`)는 `site/astro.config.mjs`의 remarkBaseLinks가
+  빌드 때 자동으로 붙인다. `../..` 상대 경로나 base를 직접 쓴 링크는
+  만들지 않는다. 위키링크는 용어집 전용이므로 페이지 링크에
+  쓰지 않는다.
 - **MDX에서는 꺾쇠 자동 링크 금지**: `.mdx` 파일에서 `<https://…>` 형태는
   JSX 태그로 해석되어 빌드가 실패한다. `[텍스트](URL)` 링크나
   `` `http://localhost:8501` `` 코드 스팬을 쓴다. 일반 `.md` 문서(docs/,
