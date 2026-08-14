@@ -12,7 +12,7 @@ tags: ["하네스", "프롬프트 인젝션", "budget guard", "v1.0"]
 
 > 원안 5.6절. 교재는 `examples/06_harness/` 10종이고, 세션 끝에서 **v1.0**,
 > 완성된 에이전트입니다.  
-> ★ 표시는 수업 중 함께 실행하는 예제이고, 이 문서에는 **10종 전부의 실제
+> 예제 10종 전부를 수업에서 실행합니다. 이 문서에는 **10종 전부의 실제
 > 실행 결과**를 실었습니다. 절반은 키 없이도 돕니다.
 
 - **교재**: [examples/06_harness](https://github.com/2026-ai-agents/day-01/tree/main/examples/06_harness)
@@ -33,7 +33,9 @@ flowchart LR
 
 방어는 겹입니다. 프롬프트는 부탁이고, 이 그림의 상자들은 코드입니다.
 
-## 1. `01_harness_onoff.py` ★ · 요소를 끄면 무너진다
+## 1. 절제 실험: 하네스 요소를 끄면 무너진다
+
+코드: [`01_harness_onoff.py`](https://github.com/2026-ai-agents/day-01/blob/main/examples/06_harness/01_harness_onoff.py)
 
 축제 질문 하나에 시스템 프롬프트와 도구 이름·설명을 하나씩 꺼 봅니다.
 
@@ -49,7 +51,9 @@ flowchart LR
 요소가 결정적인지는 과제마다 다르지만, 결론은 같습니다. 잘 도는 에이전트와
 헤매는 에이전트의 차이는 모델이 아니라 하네스에 있습니다.
 
-## 2. `02_injection_direct.py` · 직접 인젝션: 정면 공격
+## 2. 직접 인젝션: 정면 공격과 확률적 방어
+
+코드: [`02_injection_direct.py`](https://github.com/2026-ai-agents/day-01/blob/main/examples/06_harness/02_injection_direct.py)
 
 사용자 입력에 실린 "지금까지 지시 무시해" 계열 공격 3종입니다.
 
@@ -67,7 +71,9 @@ flowchart LR
 아니고, 문구를 바꾼 공격은 언제든 뚫릴 수 있습니다. 그래서 진짜 방어선은
 프롬프트가 아니라 4·5번의 코드 경계에 세웁니다.
 
-## 3. `03_injection_indirect.py` ★ · 간접 인젝션: 공격자는 데이터 안에 있다
+## 3. 간접 인젝션: 공격자는 데이터 안에 있다
+
+코드: [`03_injection_indirect.py`](https://github.com/2026-ai-agents/day-01/blob/main/examples/06_harness/03_injection_indirect.py)
 
 검색 도구가 물어온 웹 문서 본문에 지시가 심겨 있습니다.
 
@@ -89,7 +95,9 @@ flowchart LR
 무시했지만, 판정 문구 그대로 보장이 없습니다. [[prompt-injection|인젝션]]의
 핵심 위협 모델이 이 간접 경로입니다.
 
-## 4. `04_boundary_wrap.py` ★ · 데이터 경계: 구조로 막는다
+## 4. 데이터 경계: 구조로 막는다
+
+코드: [`04_boundary_wrap.py`](https://github.com/2026-ai-agents/day-01/blob/main/examples/06_harness/04_boundary_wrap.py)
 
 같은 오염 문서를 경계 마커로 감싸고, 경계 규칙을 시스템 프롬프트에 세웁니다.
 
@@ -117,7 +125,9 @@ def wrap(name: str, content: str) -> str:
 활용한 것도 보입니다. 지시는 무시하되 사실은 쓰는 것, 그것이 경계가 목표하는
 분리입니다. v1.0 에이전트는 모든 도구 결과에 이 wrap을 자동 적용합니다.
 
-## 5. `05_tool_permission.py` · 위험한 도구엔 게이트
+## 5. 도구 권한: 위험한 도구엔 게이트
+
+코드: [`05_tool_permission.py`](https://github.com/2026-ai-agents/day-01/blob/main/examples/06_harness/05_tool_permission.py)
 
 키 없이 돕니다. 도구 레지스트리에 위험 등급을 박고, 실행 관문이 검사합니다.
 
@@ -141,7 +151,9 @@ def execute(name, args, approved=False):
 "결제 전에 꼭 물어봐"라는 프롬프트는 부탁이고 게이트는 물리 법칙입니다.
 Day 2 booking-agent의 [[interrupt]]가 이 게이트의 제품판입니다.
 
-## 6. `06_output_filter.py` · 마지막 관문의 정규식
+## 6. 출력 필터: 마지막 관문의 정규식
+
+코드: [`06_output_filter.py`](https://github.com/2026-ai-agents/day-01/blob/main/examples/06_harness/06_output_filter.py)
 
 키 없이 돕니다. 응답이 나가기 직전, 비밀 패턴을 검사해 가립니다.
 
@@ -160,7 +172,9 @@ Day 2 booking-agent의 [[interrupt]]가 이 게이트의 제품판입니다.
 넘어뜨렸어도 유출은 여기서 멈춥니다. 마지막 관문은 확률이 아니라 정규식,
 결정적이어야 합니다.
 
-## 7. `07_path_jail.py` · 파일 도구의 감금
+## 7. 경로 감금: 파일 도구를 가둔다
+
+코드: [`07_path_jail.py`](https://github.com/2026-ai-agents/day-01/blob/main/examples/06_harness/07_path_jail.py)
 
 키 없이 돕니다. 모든 경로를 작업 폴더 기준으로 정규화하고, 밖이면 거부합니다.
 
@@ -186,7 +200,9 @@ def safe_path(requested: str) -> Path:
 `resolve()` 후 `is_relative_to()`, 두 줄의 결정적 코드가 프롬프트 백 줄보다
 셉니다. 세 번째 시도처럼 정상 경로에 탈출을 섞는 변형도 resolve가 잡습니다.
 
-## 8. `08_budget_estimate.py` ★ · 실행 전에 상한을 계산한다
+## 8. 사전 추정: 실행 전에 상한을 계산한다
+
+코드: [`08_budget_estimate.py`](https://github.com/2026-ai-agents/day-01/blob/main/examples/06_harness/08_budget_estimate.py)
 
 키 없이 돕니다. 입력은 토크나이저로 세고, 출력은 스텝 수 × 스텝당 예상으로
 최악 시나리오를 만듭니다.
@@ -204,7 +220,9 @@ def safe_path(requested: str) -> Path:
 있고, Day 3 coding-agent의 "실행 전 비용 리포트 → 승인" 게이트가 정확히 이
 계산입니다.
 
-## 9. `09_budget_guard.py` ★ · 실행 중의 2단 임계
+## 9. budget guard: 실행 중의 2단 임계
+
+코드: [`09_budget_guard.py`](https://github.com/2026-ai-agents/day-01/blob/main/examples/06_harness/09_budget_guard.py)
 
 키 없이 도는 예제라 비용은 시뮬레이션입니다. 스텝 비용이 점점 커지는 루프를
 장부에 흘려 넣습니다.
@@ -224,7 +242,9 @@ def safe_path(requested: str) -> Path:
 스텝 비용이 계단으로 커지는 모양(5세션의 팽창 곡선)도 시뮬레이션에 그대로
 들어 있습니다.
 
-## 10. `10_trace_log.py` · 한 줄이 한 이벤트
+## 10. 트레이스: 한 줄이 한 이벤트
+
+코드: [`10_trace_log.py`](https://github.com/2026-ai-agents/day-01/blob/main/examples/06_harness/10_trace_log.py)
 
 키 없이 돕니다. 모든 호출·도구 실행·가드 판정을 JSONL로 남깁니다.
 

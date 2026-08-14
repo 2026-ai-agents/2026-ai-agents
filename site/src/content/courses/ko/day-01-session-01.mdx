@@ -82,7 +82,8 @@ docker compose exec lab python check_env.py
 docker compose exec lab python examples/01_api/01_hello_completion.py
 ```
 
-- 예제 51종 중 ★ 표시 20종만 수업 중 함께 실행하고, 나머지는 자율 학습용
+- 예제 51종을 전부 수업에서 실행합니다. 세션 문서에 실행 결과가 함께 실려
+  있어, 재현할 때 자기 출력과 대조할 수 있습니다
 - 키 없이도 도는 예제가 있습니다: 토큰 세기, 단가표, 스키마 생성, 경로 감금,
   출력 필터, 비용 추정, budget guard, 트레이스 로그
 - 유닛 테스트는 키·네트워크 없이 돕니다: `docker compose exec lab pytest`
@@ -100,7 +101,7 @@ docker compose exec lab python examples/01_api/01_hello_completion.py
 | 여행 플래너 풀런 1회 (루프 + 도구 3종) | $0.003 \~ $0.010 |
 | 루프가 8스텝을 다 쓰는 최악 시나리오 | $0.007 \~ $0.033 |
 
-- ★ 예제 20종을 전부 따라 돌리고 에이전트를 여러 번 실행해도 하루 $1
+- 예제 51종을 전부 따라 돌리고 에이전트를 여러 번 실행해도 하루 $1
   안쪽입니다. $5 충전이면 3일 과정 전체에 충분합니다
 - 유닛 테스트(`pytest`)는 LLM을 부르지 않으므로 0원입니다
 - 키 없이 도는 예제(토큰 세기·단가표·경로 감금·budget guard 등)도 0원입니다

@@ -51,7 +51,9 @@ response = completion(model=model, messages=messages)
 - 매 스텝이 StepRecord(도구·인자·결과·토큰)로 남아, 아래 예제들이 이 데이터를
   읽습니다
 
-## 1. `01_react_trace.py` ★ · 완성본 에이전트의 트레이스 읽기
+## 1. 트레이스 읽기: 에이전트의 사고 과정
+
+코드: [`01_react_trace.py`](https://github.com/2026-ai-agents/day-01/blob/main/examples/04_react/01_react_trace.py)
 
 "3박 4일 오사카, 예산 80만원"을 verbose로 돌립니다.
 
@@ -79,7 +81,9 @@ response = completion(model=model, messages=messages)
 자연스럽게 나온 것입니다. 이 실행은 8스텝을 꽉 채워 한도 종료됐다는 것도
 트레이스가 말해 줍니다.
 
-## 2. `02_max_steps.py` · 한도 1, 3, 10의 행동 변화
+## 2. 스텝 한도: 1, 3, 10의 행동 변화
+
+코드: [`02_max_steps.py`](https://github.com/2026-ai-agents/day-01/blob/main/examples/04_react/02_max_steps.py)
 
 ```text
 === max_steps = 1 ===
@@ -101,7 +105,9 @@ response = completion(model=model, messages=messages)
 10에서는 7스텝 만에 final로 스스로 멈췄습니다. 스텝 한도는 품질 설정이
 아니라 폭주에 대한 보험이고, 보험이 여유로우면 쓰이지 않습니다.
 
-## 3. `03_prompt_ablation.py` · 시스템 프롬프트를 한 부분씩 빼면
+## 3. 프롬프트 절제: 문단을 빼면 무엇이 달라지나
+
+코드: [`03_prompt_ablation.py`](https://github.com/2026-ai-agents/day-01/blob/main/examples/04_react/03_prompt_ablation.py)
 
 같은 질문을 ① 온전한 프롬프트 ② 도구 지침 문단 제거 ③ 빈 프롬프트로
 돌립니다.
@@ -128,7 +134,9 @@ response = completion(model=model, messages=messages)
 초과 문제를 항공권 제외로 슬쩍 우회했습니다. 프롬프트의 각 문단은 루프의
 생사가 아니라 일하는 기준을 바꿉니다.
 
-## 4. `04_context_growth.py` · 팽창 곡선을 눈으로
+## 4. 컨텍스트 팽창: 우상향 계단의 실측
+
+코드: [`04_context_growth.py`](https://github.com/2026-ai-agents/day-01/blob/main/examples/04_react/04_context_growth.py)
 
 스텝별 입력 토큰을 막대로 그립니다.
 

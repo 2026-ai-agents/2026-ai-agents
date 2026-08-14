@@ -12,7 +12,7 @@ tags: ["Plan-and-Execute", "Reflexion", "ReWOO", "v0.4"]
 
 > 원안 5.5절. 교재는 `examples/05_loops/` 6종이고, 세션 끝에서 **v0.4**로
 > 오릅니다.  
-> ★ 표시는 수업 중 함께 실행하는 예제이고, 이 문서에는 **6종 전부의 실제
+> 예제 6종 전부를 수업에서 실행합니다. 이 문서에는 **6종 전부의 실제
 > 실행 결과**를 실었습니다. 도구 층은 결정적 목데이터라 루프 구조만
 > 관찰됩니다.
 
@@ -32,7 +32,9 @@ flowchart TD
     end
 ```
 
-## 1. `01_plan_execute.py` ★ · 계획 먼저, 실행은 LLM 없이
+## 1. Plan-and-Execute: 계획 먼저, 실행은 LLM 없이
+
+코드: [`01_plan_execute.py`](https://github.com/2026-ai-agents/day-01/blob/main/examples/05_loops/01_plan_execute.py)
 
 ```python
 # ① 계획: 도구 호출 목록을 JSON으로 한 번에 뽑는다
@@ -65,7 +67,9 @@ final = completion(…, content=f"요청: {question}\n도구 결과: {observatio
 않습니다. 대신 계획이 틀리면 그대로 틀립니다. 그 약점을 다음 예제가
 메웁니다.
 
-## 2. `02_replan.py` ★ · 막히면 실패를 들고 계획으로 돌아간다
+## 2. 재계획: 막히면 실패를 들고 계획으로
+
+코드: [`02_replan.py`](https://github.com/2026-ai-agents/day-01/blob/main/examples/05_loops/02_replan.py)
 
 목DB에 없는 도시(나라)를 물어 실패 경로를 확실히 밟습니다.
 
@@ -91,7 +95,9 @@ if attempt > 1:
 Day 3 coding-agent 복구 루프의 원형입니다. 재계획에도 한도(3회)가 있다는 것,
 소진되면 사람에게 넘긴다는 것까지가 설계입니다.
 
-## 3. `03_reflexion.py` ★ · 생성과 평가의 분리
+## 3. Reflexion: 생성과 평가의 분리
+
+코드: [`03_reflexion.py`](https://github.com/2026-ai-agents/day-01/blob/main/examples/05_loops/03_reflexion.py)
 
 가족 단톡방 후기 3문장을 쓰고, 평가자가 루브릭으로 채점합니다.
 
@@ -122,7 +128,9 @@ feedback = score["feedback"]        # 미달이면 피드백을 들고 재시도
 프롬프트에 박힙니다. "한 번에 잘 쓰기"보다 "고칠 점을 알고 다시 쓰기"가 쉽다는
 사실을 구조로 만든 것이 [[reflexion|Reflexion]]입니다.
 
-## 4. `04_eval_rubric.py` · 루브릭을 바꾸면 승자가 뒤집힌다
+## 4. 루브릭 실험: 기준을 바꾸면 승자가 뒤집힌다
+
+코드: [`04_eval_rubric.py`](https://github.com/2026-ai-agents/day-01/blob/main/examples/05_loops/04_eval_rubric.py)
 
 같은 초안 2개(정보형 A, 감성형 B)를 두 루브릭으로 채점합니다.
 
@@ -140,7 +148,9 @@ feedback = score["feedback"]        # 미달이면 피드백을 들고 재시도
 기준입니다. 평가자를 두는 순간 "무엇이 좋은 결과인가"의 정의가 코드에
 박제되므로, Reflexion의 품질은 생성자가 아니라 루브릭 설계에서 나옵니다.
 
-## 5. `05_rewoo.py` · 관찰 없이 플랜 한 번, 도구는 병렬
+## 5. ReWOO: 관찰 없이 플랜 한 번, 도구는 병렬
+
+코드: [`05_rewoo.py`](https://github.com/2026-ai-agents/day-01/blob/main/examples/05_loops/05_rewoo.py)
 
 결과 자리를 #E1, #E2 변수로 비워 둔 채 계획을 세웁니다.
 
@@ -164,7 +174,9 @@ feedback = score["feedback"]        # 미달이면 피드백을 들고 재시도
 있습니다. 대가는 적응력입니다. 중간 결과를 보고 방향을 트는 능력이 없어서,
 2번 예제 같은 상황이 오면 그대로 무너집니다. 토큰 절약 특화 루프입니다.
 
-## 6. `06_loop_cost_compare.py` · 같은 과제, 두 루프의 계산서
+## 6. 루프 비용 비교: 같은 과제의 두 계산서
+
+코드: [`06_loop_cost_compare.py`](https://github.com/2026-ai-agents/day-01/blob/main/examples/05_loops/06_loop_cost_compare.py)
 
 ```text
 === 계산서 ===

@@ -11,14 +11,16 @@ tags: ["LiteLLM", "폴백", "라우터", "임베딩"]
 ---
 
 > 원안 5.2절. 교재는 `examples/02_litellm/` 10종입니다.  
-> ★ 표시는 수업 중 함께 실행하는 예제이고, 이 문서에는 **10종 전부의 실제
+> 예제 10종 전부를 수업에서 실행합니다. 이 문서에는 **10종 전부의 실제
 > 실행 결과**를 실었습니다.  
 > 실측 환경: 2026-08-14, litellm 1.96.2, 3사 키 전부 채운 상태
 
 - **교재**: [examples/02_litellm](https://github.com/2026-ai-agents/day-01/tree/main/examples/02_litellm)
 - **핵심 문장**: [[litellm|LiteLLM]]에서 프로바이더 교체는 model= 문자열 한 줄이다
 
-## 1. `01_provider_swap.py` ★ · 모델 문자열만 바꿔 3사 교체
+## 1. 프로바이더 교체는 문자열 한 줄
+
+코드: [`01_provider_swap.py`](https://github.com/2026-ai-agents/day-01/blob/main/examples/02_litellm/01_provider_swap.py)
 
 호출 코드는 한 글자도 바뀌지 않습니다. 바뀌는 것은 `model=` 문자열뿐입니다.
 
@@ -44,7 +46,9 @@ for model in available_models():          # 키가 채워진 프로바이더들
 모델 문자열은 전부 `agent/config.py` 한 곳에 있고, 예제 어디에도 하드코딩이
 없습니다. 이 통일이 이후 모든 것(폴백·라우팅·모델 배정)의 토대입니다.
 
-## 2. `02_three_way_compare.py` ★ · 응답·지연·비용을 나란히
+## 2. 3사 비교: 응답·지연·비용을 나란히
+
+코드: [`02_three_way_compare.py`](https://github.com/2026-ai-agents/day-01/blob/main/examples/02_litellm/02_three_way_compare.py)
 
 "어느 모델을 쓸까"는 감이 아니라 측정의 문제입니다.
 
@@ -60,7 +64,9 @@ for model in available_models():          # 키가 채워진 프로바이더들
 프로바이더마다 토크나이저와 내부 포장이 다르기 때문입니다. 품질은 눈으로
 (전체 로그에 세 답이 나란히 있습니다), 지연과 비용은 숫자로 비교합니다.
 
-## 3. `03_fallback.py` ★ · 주 모델이 죽으면 폴백이 이어받는다
+## 3. 폴백: 주 모델이 죽으면 이어받는다
+
+코드: [`03_fallback.py`](https://github.com/2026-ai-agents/day-01/blob/main/examples/02_litellm/03_fallback.py)
 
 일부러 존재하지 않는 모델을 1순위로 두고 실제 모델을 폴백으로 답니다.
 
@@ -85,7 +91,9 @@ LiteLLM:ERROR: … Fallback attempt failed for model openai/gpt-없는-모델:
 응답을 완성했습니다. 이 세션 끝의 "모델 교체 사례"처럼 모델은 예고 없이
 은퇴합니다. 폴백은 옵션이 아니라 기본 장비입니다.
 
-## 4. `04_retry_timeout.py` · 끊는 시간과 다시 시도할 횟수
+## 4. 재시도와 타임아웃: 순간 장애의 방어
+
+코드: [`04_retry_timeout.py`](https://github.com/2026-ai-agents/day-01/blob/main/examples/02_litellm/04_retry_timeout.py)
 
 ```text
 === 타임아웃 재현 (timeout=0.001초) ===
@@ -100,7 +108,9 @@ LiteLLM:ERROR: … Fallback attempt failed for model openai/gpt-없는-모델:
 다시"입니다. 폴백(모델 장애)과 재시도(순간 장애)와 백오프(rate limit)는 각각
 다른 종류의 장애를 맡는 세 겹의 방어입니다.
 
-## 5. `05_cache.py` · 같은 질문 두 번째는 공짜·즉시
+## 5. 캐싱: 같은 질문 두 번째는 공짜·즉시
+
+코드: [`05_cache.py`](https://github.com/2026-ai-agents/day-01/blob/main/examples/02_litellm/05_cache.py)
 
 ```python
 litellm.cache = Cache(type="local")       # 프로세스 안 인메모리 캐시
@@ -118,7 +128,9 @@ r2 = completion(model=model, messages=messages, caching=True)   # 캐시에서
 손잡이입니다. 단, 같은 요청이어야 하고(messages가 1바이트라도 다르면 미스),
 신선도가 중요한 질문에는 쓰지 않습니다.
 
-## 6. `06_cost_callback.py` · 호출마다 비용이 장부에 쌓인다
+## 6. 비용 콜백: 호출마다 장부에 쌓인다
+
+코드: [`06_cost_callback.py`](https://github.com/2026-ai-agents/day-01/blob/main/examples/02_litellm/06_cost_callback.py)
 
 ```python
 def track_cost(kwargs, completion_response, start_time, end_time):
@@ -139,7 +151,9 @@ litellm.success_callback = [track_cost]
 completion의 비용이 장부로 흘러듭니다. 7세션의 [[budget-guard|budget guard]]가
 정확히 이 자리에서 누적 비용을 지켜봅니다.
 
-## 7. `07_rate_limit.py` · 한도를 맞고 백오프로 살아나기
+## 7. rate limit: 백오프로 살아남기
+
+코드: [`07_rate_limit.py`](https://github.com/2026-ai-agents/day-01/blob/main/examples/02_litellm/07_rate_limit.py)
 
 429를 만나면 1초 → 2초 → 4초 기다렸다 재시도하는 백오프를 달고, 빠른 연속
 호출 15번으로 한도를 만나러 갑니다.
@@ -157,7 +171,9 @@ completion의 비용이 장부로 흘러듭니다. 7세션의 [[budget-guard|bud
 `429! 1초 백오프 후 재시도` 줄이 등장합니다. 걸리든 안 걸리든 코드는 같아야
 한다는 것이 요점입니다.
 
-## 8. `08_router.py` · 별명 하나 뒤에 배포 여러 개
+## 8. 라우터: 별명 하나 뒤에 배포 여러 개
+
+코드: [`08_router.py`](https://github.com/2026-ai-agents/day-01/blob/main/examples/02_litellm/08_router.py)
 
 ```python
 deployments = [
@@ -182,7 +198,9 @@ resp = router.completion(model="travel-llm", messages=[…])
 라우터의 일이고, 6건이 3사에 흩어졌습니다. Day 3 coding-agent의 난이도별 모델
 배정이 이 구조 위에 섭니다.
 
-## 9. `09_model_info.py` · 한도·단가를 코드로 조회한다
+## 9. 모델 메타데이터: 한도와 단가를 코드로 읽는다
+
+코드: [`09_model_info.py`](https://github.com/2026-ai-agents/day-01/blob/main/examples/02_litellm/09_model_info.py)
 
 키 없이 도는 예제입니다. litellm이 내장한 모델 메타데이터를 읽습니다.
 
@@ -199,7 +217,9 @@ resp = router.completion(model="travel-llm", messages=[…])
 수 있다는 뜻입니다. 2세션의 한도 초과 예제가 저 입력한도 열을 읽었고,
 7세션의 사전 비용 추정이 저 단가 열을 읽습니다.
 
-## 10. `10_embedding.py` · 같은 인터페이스의 다른 출구
+## 10. 임베딩: 같은 인터페이스의 다른 출구
+
+코드: [`10_embedding.py`](https://github.com/2026-ai-agents/day-01/blob/main/examples/02_litellm/10_embedding.py)
 
 completion이 문장을 돌려준다면 embedding은 숫자 벡터를 돌려줍니다.
 Google 키가 필요한 예제입니다.
