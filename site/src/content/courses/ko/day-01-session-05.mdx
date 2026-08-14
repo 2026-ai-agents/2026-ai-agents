@@ -1,0 +1,67 @@
+---
+title: "Day 1 · 5. ReAct 루프"
+description: "examples/04_react 4종과 v0.3: 트레이스 읽기, 스텝 한도, 프롬프트 절제 실험, 컨텍스트 팽창"
+summary: "완성본 여행 플래너를 돌리며 reasoning, action, observation 트레이스를 읽습니다. 무한 루프 사고를 재현하고 스텝 한도가 막아내는 것까지, 세션 끝에서 v0.3입니다."
+date: 2026-08-14
+category: day-1
+order: "3895"
+level: 1
+slides: []
+tags: ["ReAct", "트레이스", "스텝 한도", "v0.3"]
+---
+
+> 원안 5.4절. 교재는 `examples/04_react/` 4종이고, 세션 끝에서 **v0.3**으로
+> 오릅니다.  
+> 이 4종은 에이전트 본체를 사용하므로 v0.3 이상에서 동작합니다. 이전 태그에서
+> 실행하면 checkout 안내가 나옵니다.
+
+- **교재**: [examples/04_react](https://github.com/2026-ai-agents/day-01/tree/main/examples/04_react)
+- **핵심 문장**: 에이전트를 이해한다는 것은 트레이스를 읽을 줄 안다는 뜻이다
+
+## 예제 4종
+
+| | 파일 | 무엇을 보는가 |
+| --- | --- | --- |
+| ★ | `01_react_trace.py` | 완성본 에이전트를 돌리며 reasoning→action→observation 트레이스 읽기 |
+| | `02_max_steps.py` | 스텝 한도를 1, 3, 10으로 바꿔가며 행동 변화 관찰 |
+| | `03_prompt_ablation.py` | 시스템 프롬프트를 한 부분씩 빼면 루프가 어떻게 무너지는가 |
+| | `04_context_growth.py` | 스텝마다 컨텍스트가 부풀어 비용이 커지는 것을 그래프로 |
+
+## v0.3 코드 포인트
+
+루프 본체는
+[agent/react.py](https://github.com/2026-ai-agents/day-01/blob/main/agent/react.py)입니다.
+코드에서 보는 곳은 세 군데입니다.
+
+- **도구 호출/최종 답변 분기**: 응답에 tool_calls가 있으면 실행하고 계속,
+  없으면 그 content가 최종 답입니다. 분기 조건이 이것뿐이라는 단순함이 핵심입니다
+- **observation 되먹임**: 도구 결과를 role이 tool인 메시지로 붙여 다음 호출에
+  싣습니다. [[react|ReAct]]의 "관찰"은 이 append 한 줄입니다
+- **종료 조건(스텝 한도)**: 한도에 도달하면 도구 없이 마무리 답변만 받습니다.
+  마무리 호출에 tools를 싣지 않는 것이 포인트입니다. 보험은 우회할 수 없어야
+  보험입니다
+
+트레이스는 print가 아니라 데이터(StepRecord)로도 남습니다. 각 스텝의 도구,
+인자, 결과, 토큰 사용량이 담겨서 `04_context_growth.py`가 이것으로 그래프를
+그립니다.
+
+## 실패 재현: 무한 루프와 스텝 한도
+
+종료 조건을 뺀 버전으로 루프가 멈추지 않는 사고를 먼저 일으키고, 트레이스로
+원인(도구 요청이 반복되는 지점)을 짚은 뒤, 스텝 한도가 막아내는 것을
+확인합니다. 유닛 테스트에도 같은 시나리오가 박제되어 있습니다. 모델이 영원히
+도구만 요청하는 각본에서 한도가 강제 종료시키는지를 검증합니다
+(`tests/test_react.py`의 max_steps 테스트).
+
+## 완성 장면
+
+"3박 4일 오사카, 예산 80만원" 요청이 검색 → 이동시간 → 예산 도구를 오가며
+풀리는 것을 확인합니다.
+
+```bash
+git checkout v0.3
+docker compose exec lab python -m agent.main --verbose "3박 4일 오사카, 예산 80만원"
+docker compose exec lab python examples/04_react/01_react_trace.py
+```
+
+다음 세션: [ReAct 너머의 루프들](/course/day-01-session-06/)

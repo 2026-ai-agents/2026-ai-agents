@@ -1,0 +1,64 @@
+---
+title: "Day 1 · 3. LiteLLM 통합 레이어"
+description: "examples/02_litellm 10종: 프로바이더 교체, 3사 비교, 폴백, 캐싱, 비용 콜백, rate limit, 라우터, 임베딩"
+summary: "모델 문자열만 바꿔 3사를 오가는 통일 인터페이스 위에서 폴백·재시도·캐싱·비용 집계·라우팅을 예제 10종으로 다집니다."
+date: 2026-08-14
+category: day-1
+order: "3897"
+level: 1
+slides: []
+tags: ["LiteLLM", "폴백", "라우터", "임베딩"]
+---
+
+> 원안 5.2절. 교재는 `examples/02_litellm/` 10종입니다.  
+> 이 과정의 모든 코드는 이 통일 인터페이스 위에 섭니다.
+
+- **교재**: [examples/02_litellm](https://github.com/2026-ai-agents/day-01/tree/main/examples/02_litellm)
+- **핵심 문장**: [[litellm|LiteLLM]]에서 프로바이더 교체는 model= 문자열 한 줄이다
+
+## 예제 10종
+
+| | 파일 | 무엇을 보는가 |
+| --- | --- | --- |
+| ★ | `01_provider_swap.py` | 모델 문자열만 바꿔 3사 교체 |
+| ★ | `02_three_way_compare.py` | 같은 프롬프트를 3사에 던져 응답·지연·비용 나란히 출력 |
+| ★ | `03_fallback.py` | 주 모델 실패 시 폴백 체인 동작 관찰 |
+| | `04_retry_timeout.py` | 재시도 횟수·타임아웃 설정과 동작 |
+| | `05_cache.py` | 응답 캐싱: 같은 질문 두 번째는 공짜·즉시 |
+| | `06_cost_callback.py` | 콜백으로 호출별 토큰·비용 자동 집계 |
+| | `07_rate_limit.py` | 일부러 rate limit을 맞고 백오프로 살아나는 과정 |
+| | `08_router.py` | 여러 모델에 요청을 분산하는 라우터 구성 |
+| | `09_model_info.py` | 모델별 컨텍스트 한도·단가 메타데이터 조회 |
+| | `10_embedding.py` | 임베딩도 같은 인터페이스로 (Day 2 RAG 예고) |
+
+## 세션 포인트
+
+- **모델 이름은 한 곳에만 둔다**: 이 랩의 모델 문자열은 전부
+  `agent/config.py`에 있습니다. 예제 어디에도 하드코딩이 없어서, 모델을
+  바꾸는 일이 파일 한 곳의 일이 됩니다
+- **장애 대응은 세 겹**: 재시도(순간 장애) → 폴백(모델 장애) →
+  백오프(rate limit). `03_fallback.py`는 일부러 존재하지 않는 모델을 1순위로
+  두고 폴백이 이어받는 것을 한 번의 호출 안에서 보여줍니다
+- **비용은 콜백으로 샌다 없이 집계한다**: `06_cost_callback.py`의 훅 자리가
+  Day 1 마지막의 [[budget-guard|budget guard]]가 앉을 자리입니다
+- **[[embedding|임베딩]]도 같은 인터페이스**: `10_embedding.py`가 Day 2
+  food-rag-agent의 의미 검색을 예고합니다
+
+## 실측: 이 랩이 쓰는 모델들의 메타데이터
+
+`09_model_info.py`는 키 없이 돌아갑니다 (litellm 1.96.2 내장 단가표 기준,
+2026-08-14 실측).
+
+```text
+  모델                                입력한도     출력한도   입력$/1M   출력$/1M
+  gemini/gemini-2.5-flash           1,048,576    65,535      0.30      2.50
+  openai/gpt-5-mini                   272,000   128,000      0.25      2.00
+  anthropic/claude-haiku-4-5          200,000    64,000      1.00      5.00
+  gemini/gemini-embedding-001           2,048         0      0.15      0.00
+```
+
+같은 "한 호출"이라도 모델에 따라 단가가 다릅니다. 싼 모델로 충분한 일과
+비싼 모델이 필요한 일을 가르는 것, 그것이 Day 3 coding-agent의 난이도별
+모델 배정입니다.
+
+다음 세션: [Tool calling 심화](/course/day-01-session-04/)

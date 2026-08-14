@@ -1,0 +1,71 @@
+---
+title: "Day 1 · 4. Tool calling 심화"
+description: "examples/03_tools 10종과 v0.2: 왕복 해부, Pydantic 스키마, 병렬 호출, 에러 되먹임, 인자 환각 검증, 구조화 출력"
+summary: "도구 호출 왕복을 JSON 원문으로 해부하고, Pydantic 모델이 스키마와 검증을 겸하는 구조를 익힙니다. 세션 끝에서 에이전트가 v0.2로 오릅니다."
+date: 2026-08-14
+category: day-1
+order: "3896"
+level: 1
+slides: []
+tags: ["tool calling", "Pydantic", "구조화 출력", "v0.2"]
+---
+
+> 원안 5.3절. 교재는 `examples/03_tools/` 10종이고, 세션 끝에서
+> 릴리즈 사다리의 **v0.2**로 오릅니다.
+
+- **교재**: [examples/03_tools](https://github.com/2026-ai-agents/day-01/tree/main/examples/03_tools)
+- **핵심 문장**: 모델은 함수를 실행하지 못한다. "실행해 달라"고 요청할 뿐이고, 실행은 우리 코드의 일이다
+
+## 예제 10종
+
+| | 파일 | 무엇을 보는가 |
+| --- | --- | --- |
+| ★ | `01_single_tool.py` | 환율 조회 도구 1개, 요청부터 응답까지 왕복 전체 |
+| ★ | `02_roundtrip_raw.py` | tool call의 JSON 원문 해부: 모델이 보내는 것의 실체 |
+| ★ | `03_pydantic_schema.py` | Pydantic 모델에서 도구 스키마 자동 생성 |
+| | `04_parallel_tools.py` | 항공+숙소 동시 도구 호출 |
+| | `05_arg_constraints.py` | 선택 인자·기본값·enum 제약이 스키마에 실리는 모양 |
+| | `06_tool_choice.py` | 특정 도구 강제/도구 사용 금지 제어 |
+| ★ | `07_tool_error.py` | 도구 예외를 모델에 되먹여 스스로 복구하는 패턴 |
+| | `08_hallucinated_args.py` | 모델이 인자를 지어내는 사고 재현과 검증 코드 |
+| | `09_structured_output.py` | 도구 호출을 응용해 LLM을 "타입 있는 함수"처럼 쓰기 |
+| | `10_tool_selection.py` | 도구 10개 중 맞는 것을 고르게 하기: 설명 문구가 선택 품질을 가름 |
+
+## 세션 포인트
+
+- **[[tool-calling|tool call]]의 실체는 메시지 필드 하나**: `02_roundtrip_raw.py`가
+  보여주듯, "모델이 함수를 호출한다"는 assistant 메시지의 tool_calls 필드이고,
+  우리가 돌려주는 것도 role이 tool인 평범한 메시지입니다
+- **Pydantic 모델 하나가 두 가지를 겸한다**: 모델에게 보여줄 JSON 스키마
+  생성과, 도착한 인자의 타입·범위 검증. `03_pydantic_schema.py`에서 확인합니다
+- **에러도 결과다**: `07_tool_error.py`처럼 도구 예외를 프로그램 중단이 아니라
+  role이 tool인 에러 결과로 되먹이면, 모델이 읽고 방법을 바꿉니다. 루프가
+  예외에도 계속 도는 비결입니다
+- **LLM이 만든 값은 실행 직전에 코드로 검증한다**: `08_hallucinated_args.py`가
+  재현하는 인자 환각은 스키마만으로 못 잡습니다. 값의 실재는 검증 코드의
+  몫입니다
+- **도구 설명은 곧 프롬프트**: `10_tool_selection.py`에서 설명을 "도구7"로
+  바꾸는 순간 선택 품질이 무너집니다
+
+## v0.2 코드 포인트: 예산 계산 도구가 스키마로 실리는 지점
+
+에이전트 본체에 도구 3종(검색·이동시간·예산)이 실립니다. 코드에서 보는 곳은
+[agent/tools.py](https://github.com/2026-ai-agents/day-01/blob/main/agent/tools.py)입니다.
+
+- `BudgetArgs` pydantic 모델: nights의 범위 제약, style의 enum(절약·보통·고급),
+  include_flight 기본값이 그대로 JSON 스키마가 됩니다
+- `tool_schemas()`: 레지스트리의 모델들에서 도구 명세를 자동 생성합니다.
+  docstring이 곧 도구 설명입니다
+- `run_tool()`: 도구 실행의 단일 관문. 검증 실패·미등록 도구도 예외가 아니라
+  에러 결과로 돌려줍니다
+
+```bash
+git checkout v0.2
+docker compose exec lab python -m agent.main "3박 4일 오사카 2명, 예산 얼마나 들까?"
+docker compose exec lab pytest        # 이 시점의 테스트 16개 통과
+```
+
+v0.2의 에이전트는 도구를 딱 1왕복만 씁니다. 여러 도구를 오가며 반복하는
+루프는 다음 세션의 v0.3에서 완성됩니다.
+
+다음 세션: [ReAct 루프](/course/day-01-session-05/)

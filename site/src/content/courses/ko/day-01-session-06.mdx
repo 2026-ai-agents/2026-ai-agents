@@ -1,0 +1,68 @@
+---
+title: "Day 1 · 6. ReAct 너머의 루프들"
+description: "examples/05_loops 6종과 v0.4: Plan-and-Execute, 재계획, Reflexion, 루브릭 실험, ReWOO, 루프 비용 비교"
+summary: "한 스텝씩 더듬는 ReAct의 비용 구조를 공격하는 루프들을 예제 6종으로 봅니다. 세션 끝에서 에이전트에 Reflexion 재시도가 실려 v0.4가 됩니다."
+date: 2026-08-14
+category: day-1
+order: "3894"
+level: 1
+slides: []
+tags: ["Plan-and-Execute", "Reflexion", "ReWOO", "v0.4"]
+---
+
+> 원안 5.5절. 교재는 `examples/05_loops/` 6종이고, 세션 끝에서 **v0.4**로
+> 오릅니다.
+
+- **교재**: [examples/05_loops](https://github.com/2026-ai-agents/day-01/tree/main/examples/05_loops)
+- **출발점**: [[react|ReAct]]의 한계. 한 스텝씩 더듬어 가느라 느리고, 매 스텝에 전체 히스토리를 실어 비쌉니다
+
+## 예제 6종
+
+| | 파일 | 무엇을 보는가 |
+| --- | --- | --- |
+| ★ | `01_plan_execute.py` | 계획을 먼저 세우고 순차 실행하는 Plan-and-Execute |
+| ★ | `02_replan.py` | 실행 중 막히면 계획을 다시 세우는 재계획 루프 |
+| ★ | `03_reflexion.py` | 생성 결과를 평가자가 채점, 미달이면 피드백과 함께 재시도 |
+| | `04_eval_rubric.py` | 평가 기준(루브릭)을 바꾸면 결과 품질이 달라지는 실험 |
+| | `05_rewoo.py` | 관찰 없이 플랜 한 번으로 도구를 병렬 실행하는 ReWOO |
+| | `06_loop_cost_compare.py` | 같은 여행 과제를 ReAct vs Plan-and-Execute로 풀어 비용 비교 |
+
+## 세션 포인트
+
+- **[[plan-execute|Plan-and-Execute]]는 호출 횟수를 고정한다**: 계획 1번 +
+  종합 1번. 도구 실행 사이에 LLM이 없으므로 컨텍스트 팽창 곡선이 아예 생기지
+  않습니다. 대신 계획이 틀리면 그대로 틀립니다
+- **재계획이 그 약점을 메운다**: `02_replan.py`는 실패 기록을 첨부해 계획을
+  다시 세웁니다. "계획 → 실행 → 막히면 재계획"이 Day 3 coding-agent 복구
+  루프의 원형입니다
+- **[[reflexion|Reflexion]]은 생성과 평가를 분리한다**: "한 번에 잘 쓰기"보다
+  "고칠 점을 알고 다시 쓰기"가 쉽다는 사실을 구조로 만든 것입니다
+- **평가 기준이 품질을 정의한다**: `04_eval_rubric.py`에서 같은 글의 승자가
+  루브릭에 따라 뒤집힙니다. 평가자를 두는 순간 "무엇이 좋은 결과인가"의
+  정의가 코드에 박제됩니다
+- **[[rewoo|ReWOO]]는 토큰 절약 특화**: 결과 자리를 #E1, #E2 변수로 비워 둔 채
+  계획을 세우고 도구를 병렬 실행합니다. 적응력과 비용의 트레이드오프에서
+  비용 쪽 끝에 있는 루프입니다
+
+## v0.4 코드 포인트: 평가 → 재시도 분기
+
+에이전트 본체에는 Reflexion이 실립니다. 코드에서 보는 곳은
+[agent/reflexion.py](https://github.com/2026-ai-agents/day-01/blob/main/agent/reflexion.py)입니다.
+
+- **루브릭**: 일정 완결성, 예산 준수, 근거 사용을 각 10점씩 채점합니다.
+  채점은 temperature 0입니다. 채점이 흔들리면 재시도가 도박이 됩니다
+- **통과 기준과 재시도 상한**: 24/30 미만이면 피드백을 질문에 붙여 재생성하고,
+  재시도는 최대 2회입니다. 상한 없는 재시도는 무한 루프의 다른 이름입니다
+- **실패해도 마지막 답을 돌려준다**: 재시도가 소진되면 평가 이력과 함께
+  마지막 답을 내놓습니다. 조용히 죽지 않습니다
+
+```bash
+git checkout v0.4
+docker compose exec lab python -m agent.main --verbose "2박 3일 교토, 예산 50만원"
+docker compose exec lab pytest        # 이 시점의 테스트 21개 통과
+```
+
+이 패턴들은 Day 3 coding-agent에서 전부 재등장합니다. 계획 분해, 실패 로그
+되먹임, 수정 한도 초과 시 재계획까지 오늘 본 구조 그대로입니다.
+
+다음 세션: [하네스 엔지니어링](/course/day-01-session-07/)
