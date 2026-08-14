@@ -1,6 +1,6 @@
 ---
-title: "Day 1: 에이전트 해부, 고급 루프, 하네스"
-description: "Day 1 슬라이드 뼈대: 과정 소개, 릴리즈 사다리, 세션 구성. 상세 덱은 준비 중"
+title: "Day 1 · 1. 오리엔테이션과 환경 점검"
+description: "Day 1 첫 세션 슬라이드: 과정 규칙, 저장소와 릴리즈 사다리 사용법, 랩 기동, 3일 로드맵"
 presenter: CodeCompose
 date: "2026-08-14"
 transition: none
@@ -16,7 +16,7 @@ import Slide from 'stack-site-builder/components/Slide.astro';
 
 # AI Agent 실전
 
-Day 1 · 에이전트 해부, 고급 루프, 하네스 엔지니어링
+Day 1 · 1. 오리엔테이션과 환경 점검
 
 *CodeCompose · 2026*
 
@@ -40,14 +40,15 @@ Day 1 · 에이전트 해부, 고급 루프, 하네스 엔지니어링
 ::sub[Day 1은 실습 랩, Day 2부터는 독립된 제품]
 
 ```bash
-git clone <저장소 주소>
-cd <저장소>
+git clone https://github.com/2026-ai-agents/day-01.git
+cd day-01
 cp .env.sample .env
-docker compose up --build
+docker compose up --build -d
+docker compose exec lab python check_env.py
 ```
 
 - 공통인 것은 시작 명령뿐
-- 저장소 레이아웃은 통일하지 않음. 각 README가 안내
+- `check_env.py` 전부 ✓면 준비 끝
 
 </Slide>
 
@@ -78,8 +79,10 @@ docker compose up --build
 
 <Slide class="center">
 
-## 상세 덱은 준비 중입니다
+## 다음 세션부터 예제를 실행합니다
 
-이 덱은 뼈대이고, 세션 자료가 확정되는 대로 채워집니다
+**LLM API의 본질** · `examples/01_api/` 11종
+
+교안: 강의 사이트의 Day 1 세션 문서
 
 </Slide>
