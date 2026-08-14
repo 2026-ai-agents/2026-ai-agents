@@ -72,6 +72,94 @@ docker compose up --build
 - app → `http://localhost:8000/docs` (API)
 - 테스트: `docker compose exec app pytest` (키·네트워크 불필요)
 
+## LangGraph란 무엇인가
+
+이 세션에서 처음 등장하는 이름이니 짚고 갑니다. [[langgraph|LangGraph]]는
+LangChain 팀이 만든 오픈소스 프레임워크로, 에이전트의 제어 흐름을 **상태를
+나르는 그래프**로 선언합니다. 재료는 셋뿐입니다.
+
+- **State**: 그래프가 나르는 데이터의 형태. 우리는 대화 메시지 목록 하나
+- **Node**: 상태를 받아 상태 조각을 돌려주는 **평범한 파이썬 함수**.
+  상속도 데코레이터도 없습니다
+- **Edge**: 노드 사이의 실행 순서. 조건 분기는 함수로 선언합니다
+
+#### 기존 코딩과 무엇이 다른가
+
+Day 1에서 같은 일을 하는 코드를 이미 짰습니다. 나란히 놓으면 차이가
+분명해집니다.
+
+```python
+# Day 1 (day-01/agent/react.py) — 제어 흐름이 함수 '본문 안'에 있다
+for step_no in range(1, max_steps + 1):
+    response = completion(model=model, messages=messages, tools=tool_schemas())
+    message = response.choices[0].message
+    if not message.tool_calls:                 # 분기: if
+        result.answer = message.content        # 종료: return
+        return result
+    for call in message.tool_calls:            # 도구 실행 + 되먹임
+        observation = run_tool(…)
+        messages.append({"role": "tool", …})   # 축적: append
+```
+
+```python
+# diet-agent (app/agent/graph.py) — 제어 흐름이 코드 '밖'에 선언된다
+builder = StateGraph(DietState)
+builder.add_node("advisor", advisor)
+builder.add_node("tools", tools)
+builder.add_edge(START, "advisor")
+builder.add_conditional_edges("advisor", route_after_advisor,
+                              {"tools": "tools", END: END})
+builder.add_edge("tools", "advisor")
+graph = builder.compile()
+```
+
+같은 동작인데 성격이 다릅니다.
+
+| | 수제 루프 (Day 1) | 그래프 선언 (LangGraph) |
+| --- | --- | --- |
+| 흐름이 사는 곳 | 함수 본문 속. 읽어야 안다 | 선언부. 보면 안다 |
+| 실행 주체 | 내가 쓴 while이 돈다 | 그래프 런타임이 노드를 부른다 |
+| 상태 관리 | append를 내가 챙긴다 | reducer가 규칙으로 합친다 |
+| 기능 추가 | 루프 본문을 수술 (저장·중단·병렬…) | 부품을 꽂는다 (checkpointer, interrupt, Send) |
+| 그림과 코드 | 그림은 문서에 따로 그린다 | 코드에서 그림이 나온다 (아래) |
+
+루프를 손으로 쥐고 있으면 자유롭지만, 모든 기능을 본문에 꿰매야 합니다.
+선언으로 넘기면 자유는 줄지만, 저장·중단·병렬 같은 부품이 **루프를 다시
+짜지 않고** 꽂힙니다. Day 2\~3의 모든 개념이 그 부품들입니다.
+
+#### 코드가 그림을 그린다: draw_mermaid
+
+선언의 보너스 하나. 그래프 구조를 코드에서 바로 뽑을 수 있습니다.
+
+```bash
+docker compose exec app python -c \
+  "from agent.graph import graph; print(graph.get_graph().draw_mermaid())"
+```
+
+실측 출력에서 색 지정(classDef 3줄)만 걷어내고 렌더한 그림입니다. 실선은
+무조건 가는 길, 점선은 route_after_advisor가 고르는 조건 분기입니다.
+
+```mermaid
+---
+config:
+  flowchart:
+    curve: linear
+---
+graph TD;
+	__start__([<p>__start__</p>])
+	advisor(advisor)
+	tools(tools)
+	__end__([<p>__end__</p>])
+	__start__ --> advisor;
+	advisor -.-> __end__;
+	advisor -.-> tools;
+	tools --> advisor;
+```
+
+이 문서의 다른 그림들은 사람이 그렸지만, 이 그림은 코드가 그렸습니다.
+선언과 그림의 원천이 같으므로 어긋날 수가 없습니다. 코드 리뷰에서 "그래프가
+어떻게 생겼더라"를 논쟁할 필요가 없어지는 지점입니다.
+
 ## 릴리즈 사다리: 그래프가 자라는 순서
 
 | 릴리즈 | 상태 | 테스트 |
@@ -165,6 +253,23 @@ def chat(req: ChatRequest) -> ChatResponse:
 
 ```bash
 git checkout v0.1 && docker compose up --build
+```
+
+이 시점의 그래프를 draw_mermaid로 뽑으면, 색 지정만 걷어내고 렌더했을 때
+일직선이 그대로 나옵니다.
+
+```mermaid
+---
+config:
+  flowchart:
+    curve: linear
+---
+graph TD;
+	__start__([<p>__start__</p>])
+	advisor(advisor)
+	__end__([<p>__end__</p>])
+	__start__ --> advisor;
+	advisor --> __end__;
 ```
 
 db에 시드가 실제로 적재됐는지 psql로 확인합니다.
