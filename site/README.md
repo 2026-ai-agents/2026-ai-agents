@@ -38,8 +38,10 @@ docker compose -f docker-compose.yml -f docker-compose.dev.yml up  # site/ 바�
 | 소개 등 독립 페이지 | `src/content/pages/ko/<slug>.mdx` | `/<slug>/`로 렌더, `nav` 프론트매터로 헤더 노출 제어 |
 | 용어집 | `src/data/glossary.mjs` | 본문에서 `[[용어]]` / `[[용어\|표시명]]`으로 참조 (미등록 용어는 빌드 실패) |
 
-각 컬렉션에 시드 문서가 들어 있으니(Day 1\~3 개요, Day 1 슬라이드 뼈대,
-공지·사전 준비 글, 도구 7종, 소개) 새 문서는 그것을 복사해 시작하면 된다.
+각 컬렉션에 문서가 들어 있으니(Day 1 세션 8개와 개요, Day 2\~3 개요,
+세션 슬라이드, 공지·사전 준비 글, 도구 7종, 소개) 새 문서는 그것을 복사해
+시작하면 된다. 강의 문서의 `order`는 내림차순 정렬이다. 공식은
+`../docs/course-site-plan.md` 참고
 
 강의 내용의 단일 원본은 저장소의 `docs/course-plan.md`다. 세부 교안을 채울
 때는 그 문서를 근거로 삼는다.
