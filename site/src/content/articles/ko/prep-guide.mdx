@@ -1,0 +1,108 @@
+---
+title: "사전 준비 가이드"
+description: "강의 전에 완료해 두면 좋은 두 단계: API 키 발급과 소액 충전, 그리고 Docker 셋업과 환경 점검"
+date: 2026-08-14
+category: guide
+tags: ["사전 준비", "API 키", "Docker"]
+---
+
+이 과정은 **GPU가 전혀 필요 없습니다**. 모델 추론과 임베딩은 전부 외부 API로
+처리하며, 로컬 Python 환경도 필요 없습니다.  
+준비는 아래 두 단계가 전부이고, 순서대로 진행합니다. API 키가 있어야 `.env`를
+채울 수 있으므로 충전이 먼저입니다.
+
+1. 플랫폼 3사(Google AI Studio · OpenAI · Anthropic) 중 **1개 이상 API 키 발급 + 소액 충전**
+2. **Docker 셋업**: Docker Desktop 설치 → `day1-agent-lab` 클론 → `.env`에 키 세팅 → `docker compose up --build` → `check_env.py` 통과 확인
+
+## 1. API 키 발급과 소액 충전
+
+무료 티어만으로도 일부 진행은 가능하지만, 결제(소액 $5\~$10 충전)를 권장합니다.
+
+권장하는 이유는 두 가지입니다.
+
+- 무료 티어는 rate limit이 빡빡해 멀티 에이전트의 폭발적 호출에서 금방 막힙니다
+- 도구 호출([[tool-calling|tool calling]]) 안정성은 상위 모델일수록 확연히 좋습니다
+
+### 플랫폼별 특징과 발급 절차
+
+화면 문구는 바뀔 수 있으니 흐름만 참고하세요.
+
+- **Google AI Studio / Gemini**: 무료 티어가 관대하고 Flash 계열이 저렴합니다.
+  의미 검색용 [[embedding|임베딩]](`gemini-embedding-001`)도 이쪽 키를 쓰므로,
+  **최소 1개만 발급한다면 Google을 권장**합니다
+    - [aistudio.google.com](https://aistudio.google.com) 접속 → 구글 계정 로그인
+      → "Get API key"에서 키 생성 → 유료 사용 시 Google Cloud 결제 계정 연결
+- **OpenAI Platform**: 함수 호출이 안정적이고 자료가 풍부합니다
+    - [platform.openai.com](https://platform.openai.com) 접속 → 가입 →
+      Settings > Billing에서 카드 등록·크레딧 충전 → API keys에서 키 생성
+- **Anthropic Claude Platform**: 긴 컨텍스트와 tool use 추론이 강해 복잡한
+  멀티 에이전트·코딩 에이전트에 유리합니다
+    - [console.anthropic.com](https://console.anthropic.com) 접속 → 가입 →
+      Billing에서 크레딧 충전 → API Keys에서 키 생성
+
+발급한 키는 메모장 등에 임시 보관하세요. 다음 단계에서 `.env`에 넣습니다.
+**키는 절대 공개 저장소나 채팅에 올리지 않습니다.**
+
+[[litellm|LiteLLM]]이 세 플랫폼을 동일 인터페이스로 통일하므로, 같은 코드로
+3사를 교체하며 비용·품질·지연을 비교할 수 있습니다.
+
+## 2. Docker 셋업
+
+### 2-1. Docker Desktop 설치
+
+- [docker.com/products/docker-desktop](https://www.docker.com/products/docker-desktop)에서
+  OS에 맞는 설치 파일을 받아 설치하고 실행합니다
+- Windows는 설치 중 WSL2 활성화 안내를 따르면 됩니다
+- 설치 확인: 터미널에서 아래 명령이 버전을 출력하면 완료입니다
+
+```bash
+docker compose version
+```
+
+### 2-2. 저장소 클론과 .env 세팅
+
+```bash
+git clone https://github.com/2026-ai-agents/day1-agent-lab.git
+cd day1-agent-lab
+cp .env.sample .env
+```
+
+`.env.sample`은 키 이름만 있고 값이 비어 있는 견본 파일입니다. 복사본인 `.env`를
+편집기로 열어 앞 단계에서 발급한 키를 채웁니다. **셋 중 하나만 있어도 됩니다.**
+
+```bash
+# .env (예시)
+GEMINI_API_KEY=여기에_붙여넣기
+OPENAI_API_KEY=
+ANTHROPIC_API_KEY=
+```
+
+`.env`는 gitignore 되어 있어 커밋되지 않습니다. `.env.sample`에는 절대 실제
+키를 넣지 마세요.
+
+### 2-3. 기동과 환경 점검
+
+```bash
+docker compose up --build -d
+docker compose exec lab python check_env.py
+```
+
+`check_env.py`가 확인하는 것은 세 가지입니다. 전부 통과하면 준비가 끝납니다.
+
+- 채워진 키로 실제 호출 1회 (유효성)
+- 사용 가능한 모델
+- 컨테이너 내 패키지 버전
+
+### 잘 안 될 때
+
+| 증상 | 확인할 것 |
+| --- | --- |
+| `docker: command not found` | Docker Desktop이 실행 중인지 확인 |
+| 키 인증 실패 | `.env`의 키 앞뒤 공백·따옴표, 충전 여부 확인 |
+| 그 외 | 첫날 오리엔테이션 시간에 함께 해결 |
+
+## 준비물 체크리스트
+
+- 노트북 (GPU 불필요, RAM 8GB 이상 권장. 컨테이너 3\~4개를 동시에 띄웁니다)
+- git + [[docker|Docker]] Desktop. 로컬 Python 환경은 불필요하고, 의존성은 전부 컨테이너 이미지에 들어 있습니다
+- 플랫폼 3사 중 최소 1개 API 키. 의미 검색 실습에는 Google 키를 권장합니다

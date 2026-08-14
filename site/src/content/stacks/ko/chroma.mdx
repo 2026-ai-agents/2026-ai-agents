@@ -1,0 +1,26 @@
+---
+name: Chroma
+category: agent-stack
+description: 의미 검색을 담당하는 rag 컨테이너의 벡터 데이터베이스
+website: https://www.trychroma.com
+repo: https://github.com/chroma-core/chroma
+docs: https://docs.trychroma.com
+tags: [vector-db, embedding, retrieval]
+language: Python
+license: Apache-2.0
+pricing: [free, open-source]
+---
+
+## 개요
+
+[[embedding|임베딩]] 벡터를 저장하고 유사도 검색을 제공하는 [[vector-db|벡터 DB]]입니다.
+검색이 필요한 에이전트에서만 `rag` 컨테이너로 뜹니다.
+
+## 이 과정에서
+
+- `food-rag-agent`: 음식명 + 위키 설명을 벡터화한 인덱스. 깔때기의 2차 층을 맡습니다
+- `support-agent`: 요금제·약관 문서 벡터. 요금 에이전트가 문서를 인용할 때 씁니다
+
+원칙 하나를 계속 지킵니다. **원본은 한 벌, 색인은 옆에** 둡니다. 음식 행의
+원본은 PostgreSQL에만 있고, 이쪽에는 벡터와 필터용 최소 메타데이터만 둡니다.
+2차 선별도 id top-k를 얻은 뒤 원본 행은 PostgreSQL에서 꺼냅니다.

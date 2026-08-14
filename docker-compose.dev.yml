@@ -1,0 +1,36 @@
+# Live editing — the everyday dev workflow, from the repo root:
+#
+#   docker compose -f docker-compose.yml -f docker-compose.dev.yml up
+#
+# then open http://localhost:4321/2026-ai-agents/ . site/ is bind-mounted, so
+# edits on the host hot-reload in the container. Same site/Dockerfile.dev image
+# as the default compose, but source comes from the mount instead of the baked-in
+# copy. For the zero-setup, view-only mode, use `docker compose up`.
+#
+# This is an OVERRIDE, not a second stack: it reuses the `app` service name so
+# the two files merge into one container. Naming it something else would give
+# you two services fighting over port 4321.
+services:
+  app:
+    build:
+      context: ./site
+      dockerfile: Dockerfile.dev
+    ports:
+      - '4321:4321'
+    environment:
+      # Non-interactive pnpm: the startup install below (and pnpm's own pre-run
+      # dep check) must not stop at a TTY prompt to purge node_modules — that no-
+      # TTY abort is exactly what breaks a naive `pnpm install` over a bind mount.
+      CI: 'true'
+    volumes:
+      # Live source: edit on the host, the dev server reloads (Vite polls for
+      # changes — set by the stack-site-builder theme — needed over a bind mount).
+      - ./site:/app
+      # Keep the image's installed node_modules; don't let the host mount
+      # overlay it (the host may have none, or a different platform's binaries).
+      # Seeded from the image on first `up`; persists until `down -v`.
+      - /app/node_modules
+    # Reconcile deps with the bind-mounted lockfile (installs into the anonymous
+    # node_modules volume above), then start the dev server. `exec` hands PID 1
+    # to Astro so Ctrl-C stops it cleanly.
+    command: sh -c "pnpm install && exec pnpm dev"

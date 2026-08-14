@@ -1,0 +1,16 @@
+# os / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*~
+
+# env / secrets
+.env
+.env.*
+!.env.sample
+
+# 임시 파일
+*.log
+*.tmp

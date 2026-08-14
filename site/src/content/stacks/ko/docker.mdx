@@ -1,0 +1,33 @@
+---
+name: Docker
+vendor: Docker, Inc.
+category: runtime
+description: 이 과정의 모든 저장소가 뜨는 컨테이너 실행 환경
+website: https://www.docker.com
+repo: https://github.com/docker
+docs: https://docs.docker.com
+tags: [container, compose, runtime]
+license: Apache-2.0
+pricing: [free, paid]
+---
+
+## 개요
+
+실행 환경을 이미지로 굳혀 어디서나 같은 결과를 내게 하는 컨테이너 도구입니다.
+이 과정에서 **로컬에 Python 환경을 만들지 않는 이유**가 여기 있습니다.
+
+## 이 과정에서
+
+- 모든 저장소가 `docker compose up --build` 하나로 뜹니다
+- 저장소마다 **완전히 독립된 compose 스택**입니다. 컨테이너·볼륨·네트워크를 저장소 사이에서 공유하지 않습니다
+- 컨테이너 이름은 저장소들이 반복 쓰는 규약입니다: `lab` · `app` · `ui` · `db` · `rag`
+- 준비 절차는 [사전 준비 가이드](/article/prep-guide/) 참고
+
+## 자주 쓰는 명령
+
+```bash
+docker compose up --build -d      # 백그라운드 기동
+docker compose exec lab python check_env.py
+docker compose logs -f app        # 로그 따라가기
+docker compose down               # 중지·정리
+```

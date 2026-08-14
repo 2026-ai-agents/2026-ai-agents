@@ -1,0 +1,15 @@
+# Dockerfile.dev bakes the whole tree in (`COPY . .`), so keep the context — and
+# the image — small: exclude installed deps, build output, caches, VCS metadata,
+# and dev-only tooling the running site doesn't need.
+node_modules
+dist
+.astro
+.git
+.github
+.claude
+.aas-cache
+.pnpm-store
+.pnpm
+# Local secrets — never send to the build context.
+**/.env
+.DS_Store
