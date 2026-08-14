@@ -16,7 +16,7 @@ export const courseCategories: Category[] = [
     id: 'day-2',
     label: { ko: 'Day 2 · LangGraph 제품 4종' },
     description: {
-      ko: '그래프 기본기, 영속성과 승인, 장기 메모리, Agentic RAG — 제품형 단일 에이전트',
+      ko: '제품형 단일 에이전트 4종: 그래프 기본기, 영속성과 승인, 장기 메모리, Agentic RAG',
     },
   },
   {

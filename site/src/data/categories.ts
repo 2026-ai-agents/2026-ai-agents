@@ -21,7 +21,7 @@ const categories: Category[] = [
       {
         id: 'runtime',
         label: { ko: '실행 환경' },
-        description: { ko: '컨테이너와 데이터 저장소 — 저장소마다 compose로 함께 뜬다' },
+        description: { ko: '컨테이너와 데이터 저장소. 저장소마다 compose로 함께 뜬다' },
       },
       {
         id: 'agent-stack',

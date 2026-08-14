@@ -50,20 +50,20 @@ export const site = {
     hero: {
       title: 'AI Agent 실전',
       subtitle:
-        'LiteLLM · LangGraph · RAG · Multi-agent · MCP<br>3일 12시간, 시연과 코드 리딩으로 보는<br>제품형 에이전트 8종',
+        'LiteLLM · LangGraph · RAG · Multi-agent · MCP<br>3일 12시간, 시연과 코드 리딩으로 보는<br>실습 랩 1종 + 제품형 에이전트 7종',
     },
     cardsTitle: '바로가기',
     cards: [
       {
         href: '/course/',
         name: '강의',
-        description: '일차별 강의 자료 —<br>에이전트 원리부터 멀티 에이전트, MCP까지',
+        description: '일차별 강의 자료<br>에이전트 원리부터 멀티 에이전트, MCP까지',
         tags: ['Day 1 원리·하네스', 'Day 2 LangGraph', 'Day 3 Multi-agent'],
       },
       {
         href: '/slides/',
         name: '슬라이드',
-        description: '일차별 강의 슬라이드 —<br>브라우저에서 바로 보는 프레젠테이션',
+        description: '일차별 강의 슬라이드<br>브라우저에서 바로 보는 프레젠테이션',
         tags: ['프레젠테이션'],
       },
       {
@@ -95,7 +95,7 @@ export const site = {
   ui: {
     ko: {
       'site.tagline':
-        'AI Agent 실전 — LiteLLM·LangGraph·RAG·Multi-agent·MCP를 다루는 3일 과정의 강의 자료, 슬라이드, 용어집',
+        'AI Agent 실전: LiteLLM·LangGraph·RAG·Multi-agent·MCP를 다루는 3일 과정의 강의 자료, 슬라이드, 용어집',
     },
   } as Record<string, Record<string, string>>,
 };
