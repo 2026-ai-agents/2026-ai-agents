@@ -41,6 +41,12 @@ flowchart LR
 
 축제 질문 하나에 시스템 프롬프트와 도구 이름·설명을 하나씩 꺼 봅니다.
 
+#### 코드 실행
+
+```bash
+docker compose exec lab python examples/06_harness/01_harness_onoff.py
+```
+
 #### 실행 결과
 
 ```text
@@ -64,6 +70,12 @@ flowchart LR
 #### 무엇을 보는가
 
 사용자 입력에 실린 "지금까지 지시 무시해" 계열 공격 3종입니다.
+
+#### 코드 실행
+
+```bash
+docker compose exec lab python examples/06_harness/02_injection_direct.py
+```
 
 #### 실행 결과
 
@@ -90,6 +102,12 @@ flowchart LR
 #### 무엇을 보는가
 
 검색 도구가 물어온 웹 문서 본문에 지시가 심겨 있습니다.
+
+#### 코드 실행
+
+```bash
+docker compose exec lab python examples/06_harness/03_injection_indirect.py
+```
 
 #### 실행 결과
 
@@ -132,6 +150,12 @@ def wrap(name: str, content: str) -> str:
     return f"<<<TOOL_RESULT tool={name}>>>\n{content}\n<<<END_TOOL_RESULT>>>"
 ```
 
+#### 코드 실행
+
+```bash
+docker compose exec lab python examples/06_harness/04_boundary_wrap.py
+```
+
 #### 실행 결과
 
 ```text
@@ -171,6 +195,12 @@ def execute(name, args, approved=False):
         return {"blocked": f"{name}은 승인 필요. 사용자에게 확인을 받아라."}
 ```
 
+#### 코드 실행
+
+```bash
+docker compose exec lab python examples/06_harness/05_tool_permission.py
+```
+
 #### 실행 결과
 
 ```text
@@ -192,6 +222,12 @@ Day 2 booking-agent의 [[interrupt]]가 이 게이트의 제품판입니다.
 #### 무엇을 보는가
 
 키 없이 돕니다. 응답이 나가기 직전, 비밀 패턴을 검사해 가립니다.
+
+#### 코드 실행
+
+```bash
+docker compose exec lab python examples/06_harness/06_output_filter.py
+```
 
 #### 실행 결과
 
@@ -230,6 +266,12 @@ def safe_path(requested: str) -> Path:
     return resolved
 ```
 
+#### 코드 실행
+
+```bash
+docker compose exec lab python examples/06_harness/07_path_jail.py
+```
+
 #### 실행 결과
 
 ```text
@@ -257,6 +299,12 @@ def safe_path(requested: str) -> Path:
 키 없이 돕니다. 입력은 토크나이저로 세고, 출력은 스텝 수 × 스텝당 예상으로
 최악 시나리오를 만듭니다.
 
+#### 코드 실행
+
+```bash
+docker compose exec lab python examples/06_harness/08_budget_estimate.py
+```
+
 #### 실행 결과
 
 ```text
@@ -282,6 +330,12 @@ def safe_path(requested: str) -> Path:
 
 키 없이 도는 예제라 비용은 시뮬레이션입니다. 스텝 비용이 점점 커지는 루프를
 장부에 흘려 넣습니다.
+
+#### 코드 실행
+
+```bash
+docker compose exec lab python examples/06_harness/09_budget_guard.py
+```
 
 #### 실행 결과
 
@@ -309,6 +363,12 @@ def safe_path(requested: str) -> Path:
 #### 무엇을 보는가
 
 키 없이 돕니다. 모든 호출·도구 실행·가드 판정을 JSONL로 남깁니다.
+
+#### 코드 실행
+
+```bash
+docker compose exec lab python examples/06_harness/10_trace_log.py
+```
 
 #### 실행 결과
 

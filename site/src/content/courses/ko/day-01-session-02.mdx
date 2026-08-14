@@ -48,6 +48,12 @@ response = completion(**request)
 print(response.model_dump_json(indent=2))
 ```
 
+#### 코드 실행
+
+```bash
+docker compose exec lab python examples/01_api/01_hello_completion.py
+```
+
 #### 실행 결과
 
 ```text
@@ -99,6 +105,12 @@ personas = {
 }
 ```
 
+#### 코드 실행
+
+```bash
+docker compose exec lab python examples/01_api/02_roles.py
+```
+
 #### 실행 결과
 
 ```text
@@ -129,6 +141,12 @@ personas = {
 #### 무엇을 보는가
 
 API 호출 없이 토크나이저만으로 도는 예제라 키가 필요 없습니다.
+
+#### 코드 실행
+
+```bash
+docker compose exec lab python examples/01_api/03_tokens.py
+```
 
 #### 실행 결과
 
@@ -161,6 +179,12 @@ API 호출 없이 토크나이저만으로 도는 예제라 키가 필요 없습
 model = min(available_models(), key=lambda m: get_model_info(m)["max_input_tokens"])
 limit = get_model_info(model)["max_input_tokens"]
 text = chunk * (int(limit * 1.5) // chunk_tokens + 1)   # 확실히 초과
+```
+
+#### 코드 실행
+
+```bash
+docker compose exec lab python examples/01_api/04_context_limit.py
 ```
 
 #### 실행 결과
@@ -200,6 +224,12 @@ temperature 0과 1로 같은 질문을 5번씩 던집니다.
 model = next((m for m in models if not m.startswith("gemini/")), models[0])
 ```
 
+#### 코드 실행
+
+```bash
+docker compose exec lab python examples/01_api/05_temperature.py
+```
+
 #### 실행 결과
 
 ```text
@@ -229,6 +259,12 @@ model = next((m for m in models if not m.startswith("gemini/")), models[0])
 
 stream=True로 같은 질문을 던지고, 완성된 답 대신 흘러오는 델타 청크의
 원문을 그대로 관찰합니다. 채팅 UI가 글자를 한 글자씩 흘리는 것의 실체입니다.
+
+#### 코드 실행
+
+```bash
+docker compose exec lab python examples/01_api/06_streaming.py
+```
 
 #### 실행 결과
 
@@ -265,6 +301,12 @@ tasks = [acompletion(model=model, messages=[…]) for city in cities]
 await asyncio.gather(*tasks)
 ```
 
+#### 코드 실행
+
+```bash
+docker compose exec lab python examples/01_api/07_async_parallel.py
+```
+
 #### 실행 결과
 
 ```text
@@ -287,6 +329,12 @@ worker가 이 확장판입니다.
 
 이름을 알려준 뒤 두 가지로 다시 묻습니다. 히스토리 없이, 그리고 히스토리를
 실어서. 기억이 서버에 있는지 배열에 있는지를 가르는 실험입니다.
+
+#### 코드 실행
+
+```bash
+docker compose exec lab python examples/01_api/08_multiturn_stateless.py
+```
 
 #### 실행 결과
 
@@ -317,6 +365,12 @@ messages 배열 전체를 매번 다시 보내서 만드는 착시입니다. 이
 
 같은 요청을 두 방식으로 보냅니다. 프롬프트로 부탁만 한 버전과
 response_format으로 강제한 버전. 각각을 json.loads에 통과시켜 봅니다.
+
+#### 코드 실행
+
+```bash
+docker compose exec lab python examples/01_api/09_json_mode.py
+```
 
 #### 실행 결과
 
@@ -358,6 +412,12 @@ content = [
 ]
 ```
 
+#### 코드 실행
+
+```bash
+docker compose exec lab python examples/01_api/10_vision.py
+```
+
 #### 실행 결과
 
 ```text
@@ -382,6 +442,12 @@ User-Agent 차단과 썸네일 정책에 두 번 깨졌습니다. 이미지를 �
 #### 무엇을 보는가
 
 키 없이 돕니다. 비용 = 입력 토큰 × 입력 단가 + 출력 토큰 × 출력 단가.
+
+#### 코드 실행
+
+```bash
+docker compose exec lab python examples/01_api/11_cost_calc.py
+```
 
 #### 실행 결과
 

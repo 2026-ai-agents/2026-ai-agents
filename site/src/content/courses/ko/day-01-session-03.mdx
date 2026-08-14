@@ -35,6 +35,12 @@ for model in available_models():          # 키가 채워진 프로바이더들
     ).choices[0].message.content
 ```
 
+#### 코드 실행
+
+```bash
+docker compose exec lab python examples/02_litellm/01_provider_swap.py
+```
+
 #### 실행 결과
 
 ```text
@@ -61,6 +67,12 @@ for model in available_models():          # 키가 채워진 프로바이더들
 #### 무엇을 보는가
 
 "어느 모델을 쓸까"는 감이 아니라 측정의 문제입니다.
+
+#### 코드 실행
+
+```bash
+docker compose exec lab python examples/02_litellm/02_three_way_compare.py
+```
 
 #### 실행 결과
 
@@ -96,6 +108,12 @@ resp = completion(
 )
 ```
 
+#### 코드 실행
+
+```bash
+docker compose exec lab python examples/02_litellm/03_fallback.py
+```
+
 #### 실행 결과
 
 ```text
@@ -121,6 +139,12 @@ LiteLLM:ERROR: … Fallback attempt failed for model openai/gpt-없는-모델:
 
 일부러 불가능한 타임아웃(0.001초)으로 Timeout 에러를 재현하고, 정상
 설정(30초 + 재시도 2회)이 조용히 통과하는 것과 대조합니다.
+
+#### 코드 실행
+
+```bash
+docker compose exec lab python examples/02_litellm/04_retry_timeout.py
+```
 
 #### 실행 결과
 
@@ -156,6 +180,12 @@ r1 = completion(model=model, messages=messages, caching=True)
 r2 = completion(model=model, messages=messages, caching=True)   # 캐시에서
 ```
 
+#### 코드 실행
+
+```bash
+docker compose exec lab python examples/02_litellm/05_cache.py
+```
+
 #### 실행 결과
 
 ```text
@@ -189,6 +219,12 @@ def track_cost(kwargs, completion_response, start_time, end_time):
 litellm.success_callback = [track_cost]
 ```
 
+#### 코드 실행
+
+```bash
+docker compose exec lab python examples/02_litellm/06_cost_callback.py
+```
+
 #### 실행 결과
 
 ```text
@@ -212,6 +248,12 @@ completion의 비용이 장부로 흘러듭니다. 7세션의 [[budget-guard|bud
 
 429를 만나면 1초 → 2초 → 4초 기다렸다 재시도하는 백오프를 달고, 빠른 연속
 호출 15번으로 한도를 만나러 갑니다.
+
+#### 코드 실행
+
+```bash
+docker compose exec lab python examples/02_litellm/07_rate_limit.py
+```
 
 #### 실행 결과
 
@@ -250,6 +292,12 @@ router = Router(model_list=deployments, routing_strategy="simple-shuffle")
 resp = router.completion(model="travel-llm", messages=[…])
 ```
 
+#### 코드 실행
+
+```bash
+docker compose exec lab python examples/02_litellm/08_router.py
+```
+
 #### 실행 결과
 
 ```text
@@ -276,6 +324,12 @@ resp = router.completion(model="travel-llm", messages=[…])
 
 키 없이 도는 예제입니다. litellm이 내장한 모델 메타데이터를 읽습니다.
 
+#### 코드 실행
+
+```bash
+docker compose exec lab python examples/02_litellm/09_model_info.py
+```
+
 #### 실행 결과
 
 ```text
@@ -301,6 +355,12 @@ resp = router.completion(model="travel-llm", messages=[…])
 
 completion이 문장을 돌려준다면 embedding은 숫자 벡터를 돌려줍니다.
 Google 키가 필요한 예제입니다.
+
+#### 코드 실행
+
+```bash
+docker compose exec lab python examples/02_litellm/10_embedding.py
+```
 
 #### 실행 결과
 

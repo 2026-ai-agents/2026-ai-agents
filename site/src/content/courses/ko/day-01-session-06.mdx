@@ -52,6 +52,12 @@ observations = [run(step) for step in plan]
 final = completion(…, content=f"요청: {question}\n도구 결과: {observations}…")
 ```
 
+#### 코드 실행
+
+```bash
+docker compose exec lab python examples/05_loops/01_plan_execute.py
+```
+
 #### 실행 결과
 
 ```text
@@ -91,6 +97,12 @@ final = completion(…, content=f"요청: {question}\n도구 결과: {observatio
 ```python
 if attempt > 1:
     extra = f"주의: 직전 계획의 {failed!r} 검색이 빈 결과였다. 검색 가능한 도시: 오사카, 교토"
+```
+
+#### 코드 실행
+
+```bash
+docker compose exec lab python examples/05_loops/02_replan.py
 ```
 
 #### 실행 결과
@@ -136,6 +148,12 @@ if total >= 24: break               # 통과 기준
 feedback = score["feedback"]        # 미달이면 피드백을 들고 재시도
 ```
 
+#### 코드 실행
+
+```bash
+docker compose exec lab python examples/05_loops/03_reflexion.py
+```
+
 #### 실행 결과
 
 ```text
@@ -163,6 +181,12 @@ feedback = score["feedback"]        # 미달이면 피드백을 들고 재시도
 
 같은 초안 2개(정보형 A, 감성형 B)를 두 루브릭으로 채점합니다.
 
+#### 코드 실행
+
+```bash
+docker compose exec lab python examples/05_loops/04_eval_rubric.py
+```
+
 #### 실행 결과
 
 ```text
@@ -188,6 +212,12 @@ feedback = score["feedback"]        # 미달이면 피드백을 들고 재시도
 #### 무엇을 보는가
 
 결과 자리를 #E1, #E2 변수로 비워 둔 채 계획을 세웁니다.
+
+#### 코드 실행
+
+```bash
+docker compose exec lab python examples/05_loops/05_rewoo.py
+```
 
 #### 실행 결과
 
@@ -221,6 +251,12 @@ feedback = score["feedback"]        # 미달이면 피드백을 들고 재시도
 
 같은 과제를 미니 ReAct와 Plan-and-Execute로 각각 풀고, LLM 호출 수·토큰·
 비용을 한 장의 계산서에 나란히 놓습니다.
+
+#### 코드 실행
+
+```bash
+docker compose exec lab python examples/05_loops/06_loop_cost_compare.py
+```
 
 #### 실행 결과
 

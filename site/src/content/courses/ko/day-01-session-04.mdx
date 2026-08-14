@@ -50,6 +50,12 @@ messages.append({"role": "tool", "tool_call_id": call.id,
                  "content": json.dumps(result)})       # ③ 결과 회신
 ```
 
+#### 코드 실행
+
+```bash
+docker compose exec lab python examples/03_tools/01_single_tool.py
+```
+
 #### 실행 결과
 
 ```text
@@ -77,6 +83,12 @@ messages.append({"role": "tool", "tool_call_id": call.id,
 #### 무엇을 보는가
 
 같은 왕복을 이번엔 원문으로 봅니다.
+
+#### 코드 실행
+
+```bash
+docker compose exec lab python examples/03_tools/02_roundtrip_raw.py
+```
 
 #### 실행 결과
 
@@ -132,6 +144,12 @@ schema = BudgetArgs.model_json_schema()      # ① 모델에게 보여줄 스키
 BudgetArgs.model_validate(raw_args)          # ② 도착한 인자의 검증
 ```
 
+#### 코드 실행
+
+```bash
+docker compose exec lab python examples/03_tools/03_pydantic_schema.py
+```
+
 #### 실행 결과
 
 ```text
@@ -165,6 +183,12 @@ BudgetArgs.model_validate(raw_args)          # ② 도착한 인자의 검증
 항공과 숙소, 서로 의존이 없는 조회 2건을 한 질문에 담습니다. 모델이
 tool_calls 배열에 두 요청을 함께 실어 보내는지 봅니다.
 
+#### 코드 실행
+
+```bash
+docker compose exec lab python examples/03_tools/04_parallel_tools.py
+```
+
 #### 실행 결과
 
 ```text
@@ -189,6 +213,12 @@ tool_calls는 배열입니다. 서로 의존이 없는 조회면 모델이 두 �
 #### 무엇을 보는가
 
 키 없이 돕니다. 선택 인자·기본값·enum이 스키마에 실리는 모양입니다.
+
+#### 코드 실행
+
+```bash
+docker compose exec lab python examples/03_tools/05_arg_constraints.py
+```
 
 #### 실행 결과
 
@@ -215,6 +245,12 @@ enum은 "이 셋 중 하나만", default는 "안 주면 이 값", required 밖�
 #### 무엇을 보는가
 
 도구가 전혀 필요 없는 인사말에 tool_choice 세 값을 시험합니다.
+
+#### 코드 실행
+
+```bash
+docker compose exec lab python examples/03_tools/06_tool_choice.py
+```
 
 #### 실행 결과
 
@@ -247,6 +283,12 @@ except ValueError as e:
 messages.append({"role": "tool", "tool_call_id": call.id, "content": result})
 ```
 
+#### 코드 실행
+
+```bash
+docker compose exec lab python examples/03_tools/07_tool_error.py
+```
+
 #### 실행 결과
 
 ```text
@@ -273,6 +315,12 @@ messages.append({"role": "tool", "tool_call_id": call.id, "content": result})
 #### 무엇을 보는가
 
 호텔 목록을 알려주지 않고 예약을 시키면, 모델은 이름을 지어냅니다.
+
+#### 코드 실행
+
+```bash
+docker compose exec lab python examples/03_tools/08_hallucinated_args.py
+```
 
 #### 실행 결과
 
@@ -312,6 +360,12 @@ resp = completion(…, tools=[tool],
 plan = TripPlan.model_validate(json.loads(raw))   # 여기서부터는 파이썬 객체
 ```
 
+#### 코드 실행
+
+```bash
+docker compose exec lab python examples/03_tools/09_structured_output.py
+```
+
 #### 실행 결과
 
 ```text
@@ -335,6 +389,12 @@ plan = TripPlan.model_validate(json.loads(raw))   # 여기서부터는 파이썬
 
 같은 10개 도구를 ① 성의 있는 이름·설명, ② 익명 이름(tool_0…)·무성의한 설명
 두 벌로 등록하고 같은 질문("이번 주말 오사카에 축제 하나요?")을 던집니다.
+
+#### 코드 실행
+
+```bash
+docker compose exec lab python examples/03_tools/10_tool_selection.py
+```
 
 #### 실행 결과
 
