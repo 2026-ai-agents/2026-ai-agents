@@ -14,6 +14,12 @@
 - [deployment.md](deployment.md): GitHub Pages 공개 배포 (워크플로 동작,
   저장소 설정, base 경로)
 
+## 작업 계획
+
+- [course-site-plan.md](course-site-plan.md): 강의 문서를 일차 단위에서 세션
+  단위로 나누는 계획. 슬러그·프론트매터 규약(`order` 내림차순 주의), 세션 22개
+  목록, 작업 순서, 그리고 커리큘럼 원안 점검 결과
+
 ## 커리큘럼 원안
 
 - [course-plan.md](course-plan.md): 강의 기획 원안 v16. 3일 구성, 저장소별
