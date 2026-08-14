@@ -1,7 +1,7 @@
 ---
 title: "Day 1 · 8. MCP 맛보기"
-description: "도구를 표준 프로토콜로 가져오기: 공개 MCP 서버를 여행 에이전트에 연결하는 시연과 Day 3 예고"
-summary: "지금까지 손으로 정의한 도구를 MCP라는 표준 프로토콜로 주고받으면 무엇이 달라지는지 봅니다. 공개 MCP 서버의 도구가 코드 수정 없이 에이전트에 실리는 시연입니다."
+description: "examples/07_mcp 시연 3종 실측: 도구를 서버로 내어놓기, 도구 목록을 프로토콜로 받기, 받은 도구를 루프에 연결하기"
+summary: "지금까지 손으로 정의한 도구를 MCP라는 표준 프로토콜로 주고받으면 무엇이 달라지는지, 서버·클라이언트·루프 연결 시연 3종의 실제 실행 결과로 봅니다."
 date: 2026-08-14
 category: day-1
 order: "3892"
@@ -11,8 +11,10 @@ tags: ["MCP", "도구", "표준 프로토콜"]
 ---
 
 > 원안 5.7절. Day 1의 마지막 세션입니다.  
-> 시연 중심의 짧은 세션이며, 시연 구성은 확정되는 대로 이 문서에 채워집니다.
+> 교재는 v1.1.0에서 추가된 `examples/07_mcp/` 시연 3종이고, 전부 수업에서
+> 실행합니다. 이 문서에는 **3종의 실제 실행 결과**를 실었습니다.
 
+- **교재**: [examples/07_mcp](https://github.com/2026-ai-agents/day-01/tree/main/examples/07_mcp)
 - **핵심 문장**: 도구를 손으로 정의하는 대신, 표준 프로토콜로 주고받는다
 
 ## 무엇이 달라지는가
@@ -21,27 +23,183 @@ tags: ["MCP", "도구", "표준 프로토콜"]
 만들고, 결과를 되먹였습니다. Model Context Protocol, 곧 [[mcp|MCP]]는 그 도구를
 표준 프로토콜로 주고받는 방식입니다.
 
-- 도구 제공자가 MCP 서버를 열면, 클라이언트는 그 도구 목록을 프로토콜로
-  받아옵니다
+- 도구 제공자가 MCP 서버를 열면, 클라이언트는 도구 목록을 프로토콜로 받아옵니다
 - 우리 코드에는 도구별 구현이 없어도 됩니다. 연결만 하면 도구 목록이 늘어납니다
-- 도구 정의(스키마·설명)의 모양은 오늘 본 것과 같습니다. 표준화된 것은 껍데기가
-  아니라 주고받는 방법입니다
+- 도구 정의(이름·설명·스키마)의 모양은 4세션에서 본 것과 같습니다. 표준화된
+  것은 내용이 아니라 주고받는 방법입니다
 
-## 시연
+```mermaid
+flowchart LR
+    subgraph S["MCP 서버 (도구 제공자)"]
+        direction TB
+        F1["get_exchange_rate()"]
+        F2["search_places()"]
+    end
+    subgraph C["우리 쪽 (도구 사용자)"]
+        direction TB
+        L["루프 + LLM"]
+        B["MCP 클라이언트"]
+    end
+    B -->|"list_tools()"| S
+    S -->|"도구 목록 + 스키마"| B
+    B -->|"call_tool()"| S
+    S -->|"실행 결과"| B
+    B --- L
+```
 
-공개 MCP 서버의 도구를 여행 에이전트에 연결해, 코드 수정 없이 도구 목록이
-늘어나는 것을 관찰합니다.
+## 1. 도구를 서버로 내어놓는다
 
-- 연결 전: `agent/tools.py`의 3종(검색·이동시간·예산)뿐
-- 연결 후: MCP 서버가 제공하는 도구들이 같은 목록에 나란히 등장
-- 에이전트 루프는 어느 쪽 도구인지 구분하지 않고 같은 방식으로 부릅니다
+코드: [`01_mcp_server.py`](https://github.com/2026-ai-agents/day-01/blob/main/examples/07_mcp/01_mcp_server.py)
+
+#### 무엇을 보는가
+
+4세션에서 손으로 등록하던 것과 같은 평범한 함수 2개(환율·장소 검색)를,
+데코레이터 하나로 MCP 서버에 싣습니다. 함수 시그니처와 docstring이 그대로
+프로토콜의 도구 명세가 됩니다.
+
+#### 코드 발췌
+
+```python
+mcp = FastMCP("travel-tools")
+
+@mcp.tool()
+def get_exchange_rate(currency: str) -> dict:
+    """통화 코드(JPY, USD, EUR)의 원화 환율을 돌려준다."""
+    if currency not in RATES:
+        return {"error": f"지원하지 않는 통화: {currency}. 지원 목록: {list(RATES)}"}
+    return {"currency": currency, "krw": RATES[currency]}
+
+if __name__ == "__main__":
+    mcp.run()  # stdio 전송으로 클라이언트를 기다린다
+```
+
+#### 코드 실행
+
+```bash
+docker compose exec lab python examples/07_mcp/01_mcp_server.py
+```
+
+#### 실행 결과
+
+단독으로 실행하면 stdio로 클라이언트를 기다리며 침묵하고, Ctrl+C로
+종료합니다. 2번 클라이언트가 접속하면 서버 쪽 로그에 요청이 흐릅니다.
+
+```text
+Processing request of type ListToolsRequest
+Processing request of type CallToolRequest
+```
+
+#### 결과 읽기
+
+함수에 스키마를 손으로 쓴 곳이 없습니다. 타입 힌트에서 자동 생성됩니다.
+이 파일이 일부러 self-contained인 것도 포인트입니다. stdio 클라이언트는
+서버 하위 프로세스에 최소 환경만 넘기므로, 서버는 어디서 띄워도 도는 독립
+실행체로 쓰는 것이 실전 형태입니다.
+
+## 2. 도구 목록이 프로토콜로 배달된다
+
+코드: [`02_list_tools.py`](https://github.com/2026-ai-agents/day-01/blob/main/examples/07_mcp/02_list_tools.py)
+
+#### 무엇을 보는가
+
+키 없이 도는 예제입니다. 1번 서버를 하위 프로세스로 띄워 접속한 뒤, 도구
+목록을 받아 출력하고 도구 하나를 원격 호출합니다.
+
+#### 코드 발췌
+
+```python
+async with stdio_client(SERVER) as (read, write):
+    async with ClientSession(read, write) as session:
+        await session.initialize()
+        tools = (await session.list_tools()).tools          # 목록 수신
+        result = await session.call_tool(                    # 원격 실행
+            "get_exchange_rate", {"currency": "JPY"})
+```
+
+#### 코드 실행
+
+```bash
+docker compose exec lab python examples/07_mcp/02_list_tools.py
+```
+
+#### 실행 결과
+
+```text
+=== 서버가 내어놓은 도구 목록 (프로토콜로 수신) ===
+  get_exchange_rate: 통화 코드(JPY, USD, EUR)의 원화 환율을 돌려준다.
+    입력 스키마: {"properties": {"currency": {"title": "Currency", "type": "string"}},
+                 "required": ["currency"], …}
+  search_places: 도시의 관광지·식당을 검색한다. 지원 도시: 오사카, 교토.
+    입력 스키마: {"properties": {"city": {"title": "City", "type": "string"}}, …}
+
+=== 원격 도구 호출: get_exchange_rate(JPY) ===
+  { "currency": "JPY", "krw": 9.1 }
+```
+
+#### 결과 읽기
+
+수신된 입력 스키마를 보세요. 4세션에서 pydantic으로 뽑던 것과 같은 JSON
+스키마입니다. 우리 코드에는 도구 구현이 한 줄도 없는데 목록도 실행도
+됩니다. 도구의 구현과 사용이 프로토콜을 사이에 두고 분리된 것입니다.
+
+## 3. 받은 도구를 루프에 꽂는다
+
+코드: [`03_mcp_to_agent.py`](https://github.com/2026-ai-agents/day-01/blob/main/examples/07_mcp/03_mcp_to_agent.py)
+
+#### 무엇을 보는가
+
+MCP로 받은 도구 목록을 litellm 도구 스키마로 변환해 4세션의 왕복 루프에
+쥐여줍니다. 루프는 도구가 어디서 왔는지 모릅니다. 실행만 원격이 됩니다.
+
+#### 코드 발췌
+
+```python
+def to_litellm_schema(tool) -> dict:
+    """MCP 도구 명세 → litellm 도구 명세. 필드가 그대로 1:1로 옮겨진다."""
+    return {"type": "function", "function": {
+        "name": tool.name,
+        "description": tool.description or "",
+        "parameters": tool.inputSchema,
+    }}
+
+tools = [to_litellm_schema(t) for t in (await session.list_tools()).tools]
+resp = completion(model=model, messages=messages, tools=tools)   # 4세션 그대로
+result = await session.call_tool(call.function.name, args)       # 실행만 원격
+```
+
+#### 코드 실행
+
+```bash
+docker compose exec lab python examples/07_mcp/03_mcp_to_agent.py
+```
+
+#### 실행 결과
+
+```text
+=== 프로토콜로 받은 도구 2개를 루프에 장착 ===
+  get_exchange_rate
+  search_places
+  [step 1] get_exchange_rate({"currency": "USD"}) → { "currency": "USD", "krw": 1385.0 }…
+  [step 1] search_places({"city": "교토"}) → { "name": "후시미 이나리", … }…
+
+=== 최종 답 ===
+  100달러는 현재 환율(약 1,385원) 기준으로 **138,500원**입니다.
+  그리고 교토 관광지로는 **후시미 이나리 신사**를 추천합니다. …
+```
+
+#### 결과 읽기
+
+모델이 프로토콜로 받은 도구 2개를 한 턴에 병렬로 부르고 답을 조립했습니다.
+변환 함수가 하는 일이 필드 1:1 복사뿐이라는 것이 핵심입니다. MCP의 도구
+명세와 4세션의 도구 명세는 사실상 같은 물건이고, 그래서 "코드 수정 없이
+도구 목록이 늘어난다"가 성립합니다.
 
 ## Day 3 예고: 역방향
 
 오늘은 도구를 **가져오는** 쪽이었다면, Day 3에서는 우리가 만든 에이전트를
-MCP 서버로 만들어 **내어주는** 쪽을 봅니다. food-rag-agent의 식단 추천 도구를
-개인 Claude 계정에 커스텀 커넥터로 등록해, 폰의 Claude 앱에서 동작하는
-순간까지가 시연입니다.
+MCP 서버로 만들어 **내어주는** 쪽을 봅니다. 1번 예제의 데코레이터가 그
+출발점입니다. food-rag-agent의 식단 추천 도구를 개인 Claude 계정에 커스텀
+커넥터로 등록해, 폰의 Claude 앱에서 동작하는 순간까지가 시연입니다.
 
 ## Day 1 마무리
 
@@ -54,6 +212,7 @@ MCP 서버로 만들어 **내어주는** 쪽을 봅니다. food-rag-agent의 식
 | v0.3 | [[react\|ReAct]] 루프와 트레이스 |
 | v0.4 | [[reflexion\|Reflexion]] 평가·재시도 |
 | v1.0 | [[harness\|하네스]]: 경계 방어와 [[budget-guard\|budget guard]] |
+| v1.1 | [[mcp\|MCP]]: 도구를 프로토콜로 주고받기 |
 
 내일은 이 수제 루프를 [[langgraph|LangGraph]]의 선언적 그래프로 다시 세우는
 것에서 시작합니다. 같은 동작, 다른 구조를 나란히 놓고 비교합니다.
