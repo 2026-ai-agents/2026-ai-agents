@@ -1,0 +1,69 @@
+# 강의 사이트 배포 — main에 push되면 site/를 빌드해서 GitHub Pages에 올린다.
+#
+# 사이트가 저장소 루트가 아니라 site/ 아래 있으므로, pnpm·node 캐시·아티팩트
+# 경로가 전부 site/를 가리킨다. 공개 페이지 주소는
+# https://2026-ai-agents.github.io/2026-ai-agents/ 이고, 이 경로가 곧
+# site/astro.config.mjs의 base 값이다.
+#
+# 이 저장소는 공개이므로 private(수강생 전용) 콘텐츠는 쓰지 않는다.
+# 암호화된 본문이라도 소스 저장소가 공개면 안전하지 않다(테마 README 참고).
+#
+# 저장소 설정: Settings > Pages > Source를 "GitHub Actions"로 둬야 동작한다.
+# 자세한 내용은 docs/deployment.md 참고
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: # 수동 실행 (설정 변경 후 재배포 등)
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: site
+    env:
+      TZ: Asia/Seoul
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: pnpm/action-setup@v6
+        with:
+          # 버전은 site/package.json의 packageManager를 따른다.
+          package_json_file: site/package.json
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 26
+          cache: pnpm
+          cache-dependency-path: site/pnpm-lock.yaml
+
+      - name: Build
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm build
+
+      # path는 워크스페이스 루트 기준이라 working-directory의 영향을 받지 않는다.
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site/dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
