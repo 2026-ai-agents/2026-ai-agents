@@ -1,6 +1,6 @@
 ---
 title: "Day 1 · 3. LiteLLM 통합 레이어"
-description: "examples/02_litellm 10종 전수 실행: 프로바이더 교체, 3사 비교, 폴백, 재시도, 캐싱, 비용 콜백, rate limit, 라우터, 임베딩"
+description: "왜 LiteLLM인가부터 examples/02_litellm 10종 전수 실행까지: 프로바이더 교체, 3사 비교, 폴백, 재시도, 캐싱, 비용 콜백, rate limit, 라우터, 임베딩"
 summary: "모델 문자열만 바꿔 3사를 오가는 통일 인터페이스 위에서 폴백·재시도·캐싱·비용 집계·라우팅을 예제 10종의 실제 실행 결과로 다집니다."
 date: 2026-08-14
 category: day-1
@@ -17,9 +17,62 @@ tags: ["LiteLLM", "폴백", "라우터", "임베딩"]
 
 - **교재**: [examples/02_litellm](https://github.com/2026-ai-agents/day-01/tree/main/examples/02_litellm)
 - **핵심 문장**: [[litellm|LiteLLM]]에서 프로바이더 교체는 model= 문자열 한 줄이다
-- **선행**: 공식 SDK 대신 이 층을 쓰는 이유와 대가는 [2세션 3절](/course/day-01-session-02/)에서 정리했습니다
 
-## 1. 프로바이더 교체는 문자열 한 줄
+## 1. 왜 LiteLLM인가: 공식 SDK 대신 통합 레이어
+
+2세션의 예제들이 이미 `from litellm import completion`을 썼습니다. 각 사가
+공식 SDK를 제공하는데도 이 랩이 LiteLLM 하나로 통일한 이유를, 장비 투어에
+들어가기 전에 정리하고 갑니다.
+
+#### 공식 SDK의 세계
+
+OpenAI는 `openai`, Google은 `google-genai`, Anthropic은 `anthropic` 패키지를
+제공합니다. 셋은 함수 이름도, 인자도, 응답 구조도 다릅니다.
+
+```python
+# 세 회사의 공식 SDK — 같은 일을 세 가지 문법으로
+openai.OpenAI().chat.completions.create(model="gpt-5.4-nano", messages=[…])
+genai.Client().models.generate_content(model="gemini-3.5-flash-lite", contents="…")
+anthropic.Anthropic().messages.create(model="claude-haiku-4-5", max_tokens=1024, messages=[…])
+
+# LiteLLM — 셋 다 이 한 줄. 바뀌는 것은 model 문자열뿐
+litellm.completion(model="<프로바이더/모델>", messages=[…])
+```
+
+공식 SDK로 3사를 지원하려면 호출부 세 벌, 응답 파싱 세 벌, 에러 처리 세 벌을
+유지해야 합니다. LiteLLM은 그 셋을 OpenAI 호환 형태 하나로 통일합니다.
+
+#### 장점: 왜 쓰는가
+
+- **교체 비용이 문자열 한 줄**: 프로바이더를 바꾸는 일이 코드 수정이 아니라
+  설정 변경이 됩니다. 이 랩이 2026-08-14 하루에 Gemini와 OpenAI 기본 모델을
+  갈아끼우고도 예제 51종을 한 줄도 안 고친 것이 그 실증입니다. 이 세션 끝의
+  사례 절이 그 기록입니다
+- **셋 중 어떤 키를 채워도 같은 코드**: 이 과정의 요구사항입니다. 수강생마다
+  가진 키가 달라도 모든 예제가 그대로 돕니다
+- **부대 장비 내장**: 단가표(`get_model_info`), 토큰 카운터, 폴백, 재시도,
+  캐시, 라우터, 비용 콜백. 이 세션에서 하나씩 씁니다
+- **넓은 커버리지**: 100개 이상의 프로바이더를 같은 인터페이스로 다룹니다
+
+#### 단점: 무엇을 대가로 치르는가
+
+- **추상화 한 겹의 비용**: 에러가 litellm 예외로 감싸여 오고, 디버깅 시
+  스택이 한 층 깊어집니다
+- **프로바이더 고유 기능의 지연·누수**: 새 기능은 litellm이 지원할 때까지
+  기다리거나, 2세션 1번의 응답 원문에서 본 `provider_specific_fields`처럼
+  표준 밖 필드로 새어 나옵니다. Gemini 3+의 temperature 은퇴를 경고로만
+  전달하던 2세션의 temperature 예제도 같은 결입니다
+- **라이브러리 자체에 의존**: 단가표의 최신성, 새 모델 등재 속도, 버그가
+  전부 litellm 버전에 묶입니다. 이 랩이 버전을 고정한 이유입니다
+
+#### 판단 기준
+
+- 프로바이더 하나를 확정했고 그 고유 기능을 깊이 쓴다면: 공식 SDK
+- 멀티 프로바이더, 교체 가능성, 비용·품질 비교가 필요하다면: 통합 레이어
+- 이 과정은 3사를 오가며 비교하는 것 자체가 커리큘럼이므로 LiteLLM입니다.
+  폴백·라우터·캐시 같은 실전 장비를 지금부터 하나씩 돌려 봅니다
+
+## 2. 프로바이더 교체는 문자열 한 줄
 
 코드: [`01_provider_swap.py`](https://github.com/2026-ai-agents/day-01/blob/main/examples/02_litellm/01_provider_swap.py)
 
@@ -61,7 +114,7 @@ docker compose exec lab python examples/02_litellm/01_provider_swap.py
 모델 문자열은 전부 `agent/config.py` 한 곳에 있고, 예제 어디에도 하드코딩이
 없습니다. 이 통일이 이후 모든 것(폴백·라우팅·모델 배정)의 토대입니다.
 
-## 2. 3사 비교: 응답·지연·비용을 나란히
+## 3. 3사 비교: 응답·지연·비용을 나란히
 
 코드: [`02_three_way_compare.py`](https://github.com/2026-ai-agents/day-01/blob/main/examples/02_litellm/02_three_way_compare.py)
 
@@ -91,7 +144,7 @@ docker compose exec lab python examples/02_litellm/02_three_way_compare.py
 프로바이더마다 토크나이저와 내부 포장이 다르기 때문입니다. 품질은 눈으로
 (전체 로그에 세 답이 나란히 있습니다), 지연과 비용은 숫자로 비교합니다.
 
-## 3. 폴백: 주 모델이 죽으면 이어받는다
+## 4. 폴백: 주 모델이 죽으면 이어받는다
 
 코드: [`03_fallback.py`](https://github.com/2026-ai-agents/day-01/blob/main/examples/02_litellm/03_fallback.py)
 
@@ -132,7 +185,7 @@ LiteLLM:ERROR: … Fallback attempt failed for model openai/gpt-없는-모델:
 응답을 완성했습니다. 이 세션 끝의 "모델 교체 사례"처럼 모델은 예고 없이
 은퇴합니다. 폴백은 옵션이 아니라 기본 장비입니다.
 
-## 4. 재시도와 타임아웃: 순간 장애의 방어
+## 5. 재시도와 타임아웃: 순간 장애의 방어
 
 코드: [`04_retry_timeout.py`](https://github.com/2026-ai-agents/day-01/blob/main/examples/02_litellm/04_retry_timeout.py)
 
@@ -164,7 +217,7 @@ timeout은 "이 시간 안에 답이 없으면 끊는다", num_retries는 "끊�
 다시"입니다. 폴백(모델 장애)과 재시도(순간 장애)와 백오프(rate limit)는 각각
 다른 종류의 장애를 맡는 세 겹의 방어입니다.
 
-## 5. 캐싱: 같은 질문 두 번째는 공짜·즉시
+## 6. 캐싱: 같은 질문 두 번째는 공짜·즉시
 
 코드: [`05_cache.py`](https://github.com/2026-ai-agents/day-01/blob/main/examples/02_litellm/05_cache.py)
 
@@ -201,7 +254,7 @@ docker compose exec lab python examples/02_litellm/05_cache.py
 손잡이입니다. 단, 같은 요청이어야 하고(messages가 1바이트라도 다르면 미스),
 신선도가 중요한 질문에는 쓰지 않습니다.
 
-## 6. 비용 콜백: 호출마다 장부에 쌓인다
+## 7. 비용 콜백: 호출마다 장부에 쌓인다
 
 코드: [`06_cost_callback.py`](https://github.com/2026-ai-agents/day-01/blob/main/examples/02_litellm/06_cost_callback.py)
 
@@ -241,7 +294,7 @@ docker compose exec lab python examples/02_litellm/06_cost_callback.py
 completion의 비용이 장부로 흘러듭니다. 7세션의 [[budget-guard|budget guard]]가
 정확히 이 자리에서 누적 비용을 지켜봅니다.
 
-## 7. rate limit: 백오프로 살아남기
+## 8. rate limit: 백오프로 살아남기
 
 코드: [`07_rate_limit.py`](https://github.com/2026-ai-agents/day-01/blob/main/examples/02_litellm/07_rate_limit.py)
 
@@ -273,7 +326,7 @@ docker compose exec lab python examples/02_litellm/07_rate_limit.py
 `429! 1초 백오프 후 재시도` 줄이 등장합니다. 걸리든 안 걸리든 코드는 같아야
 한다는 것이 요점입니다.
 
-## 8. 라우터: 별명 하나 뒤에 배포 여러 개
+## 9. 라우터: 별명 하나 뒤에 배포 여러 개
 
 코드: [`08_router.py`](https://github.com/2026-ai-agents/day-01/blob/main/examples/02_litellm/08_router.py)
 
@@ -317,7 +370,7 @@ docker compose exec lab python examples/02_litellm/08_router.py
 라우터의 일이고, 6건이 3사에 흩어졌습니다. Day 3 coding-agent의 난이도별 모델
 배정이 이 구조 위에 섭니다.
 
-## 9. 모델 메타데이터: 한도와 단가를 코드로 읽는다
+## 10. 모델 메타데이터: 한도와 단가를 코드로 읽는다
 
 코드: [`09_model_info.py`](https://github.com/2026-ai-agents/day-01/blob/main/examples/02_litellm/09_model_info.py)
 
@@ -348,7 +401,7 @@ docker compose exec lab python examples/02_litellm/09_model_info.py
 수 있다는 뜻입니다. 2세션의 한도 초과 예제가 저 입력한도 열을 읽었고,
 7세션의 사전 비용 추정이 저 단가 열을 읽습니다.
 
-## 10. 임베딩: 같은 인터페이스의 다른 출구
+## 11. 임베딩: 같은 인터페이스의 다른 출구
 
 코드: [`10_embedding.py`](https://github.com/2026-ai-agents/day-01/blob/main/examples/02_litellm/10_embedding.py)
 
@@ -404,6 +457,7 @@ food-rag-agent의 의미 검색이 섭니다.
 
 ## 이 세션이 남기는 것
 
+- 공식 SDK 세 벌 대신 통합 레이어 한 벌. 그 이득과 대가를 알고 쓴다
 - 프로바이더 교체는 문자열 한 줄, 모델 이름은 `agent/config.py` 한 곳
 - 장애의 종류마다 다른 방어: 재시도(순간), 폴백(모델), 백오프(한도)
 - 비용은 콜백으로 집계하고, 한도·단가는 실행 전에 코드로 읽는다
