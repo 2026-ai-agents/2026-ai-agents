@@ -1,0 +1,29 @@
+# Clone and run — view the lecture site with nothing installed but Docker,
+# from the repo root:
+#
+#   docker compose up
+#
+# then open http://localhost:4321/2026-ai-agents/ (the site carries a base path
+# because it is published as a GitHub Pages project site).
+#
+# The site lives in site/; the build context points there. Self-contained: deps
+# and source are baked into the image (site/Dockerfile.dev), so this needs no
+# other files from your host and works on a fresh clone. It serves the Astro dev
+# server — the public site is the static `astro build` output (dist/) deployed by
+# .github/workflows/deploy.yml, not this image.
+#
+# Editing content? Layer docker-compose.dev.yml on top — it bind-mounts site/
+# so edits hot-reload:
+#
+#   docker compose -f docker-compose.yml -f docker-compose.dev.yml up
+services:
+  app:
+    build:
+      context: ./site
+      dockerfile: Dockerfile.dev
+    ports:
+      - '4321:4321'
+    environment:
+      # Non-interactive: should pnpm's pre-run dependency check ever want to
+      # touch node_modules, let it proceed instead of aborting at a TTY prompt.
+      CI: 'true'
