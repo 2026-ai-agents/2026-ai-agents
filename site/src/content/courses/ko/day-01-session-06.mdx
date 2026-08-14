@@ -20,16 +20,21 @@ tags: ["Plan-and-Execute", "Reflexion", "ReWOO", "v0.4"]
 - **출발점**: [[react|ReAct]]의 한계. 한 스텝씩 더듬어 가느라 느리고, 매 스텝에 전체 히스토리를 실어 비쌉니다
 
 ```mermaid
-flowchart TD
+flowchart LR
     subgraph R["ReAct: 스텝마다 LLM"]
+        direction TB
         R1["LLM"] --> RT1["도구"] --> R2["LLM"] --> RT2["도구"] --> R3["LLM 최종답"]
     end
     subgraph P["Plan-and-Execute: LLM 2번 고정"]
+        direction TB
         P1["LLM 계획"] --> PT1["도구"] --> PT2["도구"] --> P2["LLM 종합"]
     end
     subgraph W["ReWOO: 변수로 미리 배선"]
+        direction TB
         W1["LLM 플랜 (#E1, #E2)"] --> WT1["도구 병렬 실행"] --> W2["LLM 변수 채워 풀기"]
     end
+    R1 ~~~ P1
+    P1 ~~~ W1
 ```
 
 ## 1. Plan-and-Execute: 계획 먼저, 실행은 LLM 없이
