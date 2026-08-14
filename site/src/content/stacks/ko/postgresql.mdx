@@ -1,0 +1,25 @@
+---
+name: PostgreSQL
+category: runtime
+description: 도메인 데이터와 그래프 상태(checkpointer)를 함께 담는 db 컨테이너
+website: https://www.postgresql.org
+repo: https://github.com/postgres/postgres
+docs: https://www.postgresql.org/docs/
+tags: [database, sql, checkpointer]
+language: C
+license: PostgreSQL
+pricing: [free, open-source]
+---
+
+## 개요
+
+Day 2부터 등장하는 `db` 컨테이너입니다. 한 인스턴스가 두 가지 일을 합니다.
+
+- **도메인 데이터**: 식품 칼로리, 예약, 전력량 시계열 등
+- **[[checkpointer]] 영속화**: LangGraph의 그래프 상태를 thread 단위로 저장
+
+## 이 과정에서
+
+- `booking-agent` v0.2에서 처음 등장합니다. v0.1은 메모리 대화만 하다가 재시작 한 번에 전부 백지가 됩니다
+- 저장된 상태를 덤프로 열어 "안에 뭐가 들었는지" 직접 읽는 시연이 있습니다
+- `food-rag-agent`에서는 검색 깔때기의 1차 층을 맡습니다. 정형 조건으로 2만 건을 수백 건까지 좁히는 공짜 층입니다

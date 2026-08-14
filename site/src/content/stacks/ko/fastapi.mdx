@@ -1,0 +1,23 @@
+---
+name: FastAPI
+category: agent-stack
+description: 에이전트 본체를 API로 노출하는 app 컨테이너의 웹 프레임워크
+website: https://fastapi.tiangolo.com
+repo: https://github.com/fastapi/fastapi
+docs: https://fastapi.tiangolo.com/learn/
+tags: [api, python, pydantic, mcp]
+language: Python
+license: MIT
+pricing: [free, open-source]
+---
+
+## 개요
+
+Day 2부터 등장하는 `app` 컨테이너의 뼈대입니다. LangGraph 에이전트를 감싸
+HTTP로 노출합니다.
+
+## 이 과정에서
+
+- `app` 컨테이너 = FastAPI + LangGraph 에이전트 본체
+- Pydantic 모델이 그대로 도구 스키마가 되는 지점을 Day 1 3절에서 먼저 봅니다
+- Day 3 마지막에는 `food-rag-agent`의 app에 FastMCP 엔드포인트를 얹어 [[mcp\|MCP]] 서버로 내어줍니다

@@ -1,0 +1,36 @@
+# syntax=docker/dockerfile:1
+# App image for local viewing/editing: Node + pnpm + this site, running the Astro
+# dev server (`pnpm dev`). Both compose files at the REPO ROOT build it with
+# `context: ./site` (run `docker compose up` from the repo root):
+#   - docker-compose.yml (default) runs it as-is — a self-contained "clone and
+#     `docker compose up`" with deps and source baked in, no host files needed.
+#   - docker-compose.dev.yml bind-mounts site/ over it for live edits.
+# This is NOT the production build — the public site is the static `astro build`
+# output (dist/), deployed to GitHub Pages by .github/workflows/deploy.yml.
+FROM node:26-slim
+
+# git + certs for tooling; pnpm installed directly via npm (Node 25+ dropped
+# Corepack from the default install), pinned to package.json's packageManager
+# version so the image matches CI.
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends git ca-certificates \
+    && rm -rf /var/lib/apt/lists/* \
+    && npm install -g pnpm@11.17.0
+
+WORKDIR /app
+
+# Install dependencies as their own layer (cached until the manifests change).
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+RUN pnpm install --frozen-lockfile
+
+# Bake the source in so `docker compose up` is self-contained (see .dockerignore
+# for what's excluded). docker-compose.dev.yml bind-mounts the host tree over
+# this at run time, keeping node_modules from the layer above via an anonymous
+# volume — so live edits win there, while the baked copy serves the default mode.
+COPY . .
+
+EXPOSE 4321
+
+# The stack-site-builder theme sets server.host = true, so this listens on
+# 0.0.0.0:4321.
+CMD ["pnpm", "dev"]
