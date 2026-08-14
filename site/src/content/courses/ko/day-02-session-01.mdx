@@ -69,9 +69,10 @@ flowchart LR
 | 5. food-rag-agent (준비 중) | `food-rag-agent` | [[agentic-rag\|Agentic RAG]]: 선별 깔때기와 검증자 | app · ui · db · rag |
 
 이 이어달리기는 결핍으로 연결됩니다. diet-agent의 기억은 프로세스 메모리라
-재시작하면 사라지고(→ booking-agent가 PostgreSQL로 해결), thread를 넘는
-기억은 없으며(→ secretary-agent의 store), 수치는 45종 시드가 전부입니다
-(→ food-rag-agent가 대규모 데이터와 검증으로 확장).
+재시작하면 사라지고, 그것을 booking-agent가 PostgreSQL로 해결합니다.
+그래도 기억은 thread를 못 넘어서 secretary-agent의 store가 이어받고,
+수치는 45종 시드가 전부라 food-rag-agent가 대규모 데이터와 검증으로
+확장합니다.
 
 ## 왜 LangGraph인가
 

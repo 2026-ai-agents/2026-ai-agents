@@ -1,6 +1,6 @@
 ---
 title: "Day 2 · 2. diet-agent: LangGraph 기본기"
-description: "식단 상담 웹앱을 릴리즈 사다리 4단으로 해부: 그래프 뼈대, conditional edge 분기, reducer와 checkpointer, 제품 UI까지 실측 기반"
+description: "식단 상담 웹앱을 릴리즈 사다리 4단으로 해부: 그래프 뼈대, conditional edge 분기, reducer와 checkpointer, 스트리밍, 제품 UI까지 실측 기반"
 summary: "Day 1의 수제 ReAct를 선언적 그래프로 다시 세웁니다. compose 기동부터 분기·대화 누적·스트리밍을 거쳐 상담 제품이 완성되는 과정을, 실제 시연 출력과 화면으로 봅니다."
 date: 2026-08-15
 category: day-2
@@ -15,8 +15,49 @@ tags: ["LangGraph", "conditional edge", "reducer", "checkpointer"]
 > 이 문서의 실행 결과·화면은 2026-08-15에 실제로 돌린 실측입니다.
 
 - **제품**: 식단을 입력하면 칼로리·영양을 분석하고 조언하는 상담 웹앱
-- **컨테이너**: `app`(FastAPI + LangGraph) · `ui`(Streamlit) · `db`(PostgreSQL, 식품 45종 시드)
 - **핵심 문장**: Day 1의 수제 ReAct를 선언적 그래프로 다시 세운다. 같은 동작, 다른 구조
+
+## 시스템 구조: 컨테이너 3개
+
+Day 1의 `lab` 하나가 제품의 세 컨테이너로 갈라집니다. 역할 규약은 Day 2\~3의
+모든 저장소에서 반복됩니다.
+
+```mermaid
+flowchart LR
+    B["브라우저"] -->|":8501"| UI["ui<br/>Streamlit 상담 화면"]
+    UI -->|"HTTP /chat"| APP["app<br/>FastAPI + LangGraph 그래프"]
+    APP -->|"SQL"| DB[("db<br/>PostgreSQL<br/>식품 45종 시드")]
+    APP -->|"completion()"| LLM["LLM API<br/>(litellm, 3사 중 하나)"]
+```
+
+- `app`이 에이전트 본체입니다. 그래프도, 도구도, LLM 키도 여기에만 있습니다
+- `ui`는 화면일 뿐입니다. app의 HTTP API만 알고, 키도 DB도 모릅니다
+- `db`는 도메인 데이터(식품 영양)를 담습니다. 뒤에서는 대화 상태의
+  영속화까지 맡게 됩니다 (booking-agent)
+
+상담 요청 하나가 지나는 길을 역할별로 펼치면 이렇습니다.
+
+```mermaid
+sequenceDiagram
+    participant U as 사용자
+    participant UI as ui (Streamlit)
+    participant APP as app (FastAPI + 그래프)
+    participant L as LLM API
+    participant DB as db (PostgreSQL)
+    U->>UI: "김치찌개랑 공기밥 먹었어"
+    UI->>APP: POST /chat
+    APP->>L: messages + 도구 스키마
+    L-->>APP: tool_calls: daily_total(…)
+    APP->>DB: SELECT … FROM foods
+    DB-->>APP: 240 kcal, 310 kcal
+    APP->>L: 결과를 role: tool로 회신
+    L-->>APP: 최종 답 (550 kcal 근거)
+    APP-->>UI: answer
+    UI-->>U: 말풍선 렌더
+```
+
+Day 1 4세션의 왕복 그대로입니다. 달라진 것은 그 왕복이 **제품의 컨테이너들
+사이**에서 일어난다는 것뿐입니다.
 
 ## 시작하기
 
@@ -31,7 +72,7 @@ docker compose up --build
 - app → `http://localhost:8000/docs` (API)
 - 테스트: `docker compose exec app pytest` (키·네트워크 불필요)
 
-## 릴리즈 사다리
+## 릴리즈 사다리: 그래프가 자라는 순서
 
 | 릴리즈 | 상태 | 테스트 |
 | --- | --- | --- |
@@ -41,15 +82,35 @@ docker compose up --build
 | v1.0 | UI 연결 완성: 식단 상담 제품 | 8개 |
 
 네 태그 전부에서 `git checkout → docker compose up --build → pytest`가
-통과하는 것을 확인해 두었습니다. 완성된 그래프의 모양은 이렇습니다.
+통과하는 것을 확인해 두었습니다. 그래프의 성장을 나란히 놓으면 이렇습니다.
 
 ```mermaid
 flowchart LR
-    S(("START")) --> A["advisor<br/>판단: 도구인가 답인가"]
-    A -->|"tool_calls 있음"| T["tools<br/>db 조회 실행"]
-    T --> A
-    A -->|"답이 나옴"| E(("END"))
+    subgraph G1["v0.1 · 일직선"]
+        direction TB
+        A1["START"] --> B1["advisor"] --> C1["END"]
+    end
+    subgraph G2["v0.2 · 분기와 순환"]
+        direction TB
+        A2["START"] --> B2["advisor"]
+        B2 -->|"tool_calls"| T2["tools"]
+        T2 --> B2
+        B2 -->|"답"| C2["END"]
+    end
+    subgraph G3["v0.3 · 기억 장착"]
+        direction TB
+        A3["START"] --> B3["advisor"]
+        B3 -->|"tool_calls"| T3["tools"]
+        T3 --> B3
+        B3 -->|"답"| C3["END"]
+        CP[("checkpointer<br/>thread별 상태")] -.저장/복원.- B3
+    end
+    G1 ~~~ G2
+    G2 ~~~ G3
 ```
+
+v1.0은 그래프가 아니라 UI가 완성되는 단입니다. 그래프는 v0.3에서 이미
+끝나 있습니다.
 
 ## v0.1 · 뼈대: 그래프의 네 재료
 
@@ -59,7 +120,7 @@ compose가 3컨테이너를 띄우고, db에 식품 45종이 자동 적재되며
 [[langgraph|LangGraph]]의 네 재료가 전부 보이는 최소 구성입니다. 도구도
 분기도 누적도 아직 없습니다.
 
-#### 코드 발췌
+#### 코드 발췌: 그래프
 
 `app/agent/graph.py` 전체가 화면 하나에 들어옵니다.
 
@@ -84,15 +145,52 @@ builder.add_edge("advisor", END)
 graph = builder.compile()            # 선언을 실행 가능한 그래프로
 ```
 
-#### 시연
+노드는 평범한 함수입니다. 상태를 받아 상태 조각을 돌려줄 뿐, LangGraph의
+클래스를 상속하지도, 데코레이터를 달지도 않습니다. Day 1에서 짠 함수들이
+그대로 노드가 될 수 있다는 뜻입니다.
+
+#### 코드 발췌: 그래프를 HTTP로
+
+FastAPI는 그래프를 감싸는 얇은 껍데기입니다. `app/main.py`의 핵심은 한
+줄입니다.
+
+```python
+@app.post("/chat", response_model=ChatResponse)
+def chat(req: ChatRequest) -> ChatResponse:
+    result = graph.invoke({"messages": [{"role": "user", "content": req.message}]})
+    return ChatResponse(answer=result["messages"][-1]["content"])
+```
+
+#### 시연: 기동과 데이터 확인
 
 ```bash
 git checkout v0.1 && docker compose up --build
 ```
 
-![v0.1의 빈 상담 화면 — 입력창과 말풍선 틀만 있다](./ui-v01-empty.jpg)
+db에 시드가 실제로 적재됐는지 psql로 확인합니다.
 
-같은 질문을 API로 던져 보면:
+```bash
+docker compose exec db psql -U diet -d dietdb \
+  -c "SELECT name, category, serving, kcal, protein_g FROM foods LIMIT 5;"
+```
+
+```text
+    name    | category |   serving   | kcal | protein_g
+------------+----------+-------------+------+-----------
+ 비빔밥     | 밥       | 1인분(500g) |  580 |      18.0
+ 공기밥     | 밥       | 1공기(210g) |  310 |       5.5
+ 김치찌개   | 국찌개   | 1인분(400g) |  240 |      14.0
+ 닭가슴살   | 구이     | 1쪽(100g)   |  110 |      23.0
+ 아메리카노 | 음료     | 1잔(355ml)  |   10 |       0.5
+```
+
+UI는 입력창과 말풍선 틀만 있는 빈 화면입니다.
+
+![v0.1의 빈 상담 화면: 입력창과 말풍선 틀만 있다](./ui-v01-empty.jpg)
+
+#### 실행 결과: 도구 없는 상담
+
+같은 질문을 API로 던져 봅니다.
 
 ```text
 질문: 점심에 김치찌개랑 공기밥 먹었어요. 어때요?
@@ -106,9 +204,10 @@ git checkout v0.1 && docker compose up --build
 #### 결과 읽기
 
 그럴듯하지만 수치가 하나도 없습니다. "들어가는 돼지고기나 참치"처럼
-일반론으로 얼버무립니다. db에 김치찌개 240kcal이 있는데 에이전트는 그것을
-모릅니다. 도구가 없기 때문이고, 그것이 v0.2입니다. State에 reducer가 없어
-노드가 전체 목록을 다시 돌려주고 있다는 것도 봐 두세요. v0.3의 복선입니다.
+일반론으로 얼버무립니다. 방금 psql로 확인한 대로 db에는 김치찌개
+240kcal이 있는데, 에이전트는 그것을 모릅니다. 도구가 없기 때문이고,
+그것이 v0.2입니다. State에 reducer가 없어 노드가 전체 목록을 다시
+돌려주고 있다는 것도 봐 두세요. v0.3의 복선입니다.
 
 ## v0.2 · 분기: 루프의 if가 선언이 된다
 
@@ -118,7 +217,38 @@ git checkout v0.1 && docker compose up --build
 부를 것인가, 답할 것인가"를 판단합니다. Day 1 루프 안의 `if
 message.tool_calls`가 여기서는 **conditional edge 함수 하나의 선언**입니다.
 
-#### 코드 발췌
+```mermaid
+flowchart LR
+    S(("START")) --> A["advisor<br/>판단: 도구인가 답인가"]
+    A -->|"tool_calls 있음"| T["tools<br/>db 조회 실행"]
+    T -->|"observation 되먹임"| A
+    A -->|"답이 나옴"| E(("END"))
+```
+
+#### 코드 발췌: 도구는 Day 1 규약 그대로
+
+`app/agent/tools.py`는 Day 1에서 확립한 규약의 재사용입니다. pydantic
+모델이 스키마와 검증을 겸하고, 실행은 관문 하나로만 지나가며, 에러도
+결과로 돌려줍니다. 달라진 것은 데이터가 목데이터가 아니라 **진짜 db**라는
+점뿐입니다.
+
+```python
+class LookupFoodArgs(BaseModel):
+    """음식 이름으로 영양 정보를 검색한다. 부분 일치로 최대 5건."""
+    name: str = Field(min_length=1, description="음식 이름 (예: 김치찌개)")
+
+def lookup_food(args: LookupFoodArgs) -> dict:
+    with psycopg.connect(DATABASE_URL) as conn:
+        rows = conn.execute(
+            """SELECT name, category, serving, kcal, protein_g, fat_g, carbs_g
+               FROM foods WHERE name ILIKE %s ORDER BY name LIMIT 5""",
+            (f"%{args.name}%",),
+        ).fetchall()
+    if not rows:
+        return {"error": f"'{args.name}'을(를) 찾지 못했다. …"}
+```
+
+#### 코드 발췌: conditional edge
 
 ```python
 def route_after_advisor(state: DietState) -> Literal["tools", "__end__"]:
@@ -130,6 +260,9 @@ builder.add_conditional_edges("advisor", route_after_advisor,
                               {"tools": "tools", END: END})
 builder.add_edge("tools", "advisor")   # observation은 다시 판단으로 돌아간다
 ```
+
+분기 조건이 이 함수 하나에 격리되어 있어, 위의 그래프 그림과 코드가
+1:1입니다. Day 1에서는 이 분기가 while 루프 본문 안에 묻혀 있었습니다.
 
 #### 시연
 
@@ -156,8 +289,10 @@ docker compose exec app python demos/trace.py "김치찌개랑 공기밥 먹었�
 v0.1과 같은 질문인데 답의 성격이 바뀌었습니다. 일반론 대신 **db 원본
 수치**(240 + 310 = 550)가 근거로 나옵니다. 트레이스의 세 줄이 그래프 그림과
 1:1입니다: advisor가 요청하고, tools가 회신하고, advisor가 답합니다.
-`graph.stream(stream_mode="updates")`가 노드 단위 관찰을 공짜로 줍니다.
-Day 1에서는 StepRecord를 손으로 만들었던 자리입니다.
+
+트레이스를 공짜로 얻은 것도 봐 두세요. `graph.stream(stream_mode="updates")`
+한 줄이 노드 단위 관찰을 줍니다. Day 1에서는 StepRecord를 손으로 만들었던
+자리입니다.
 
 ## v0.3 · 누적: reducer 한 줄이 멀티턴을 만든다
 
@@ -166,6 +301,20 @@ Day 1에서는 StepRecord를 손으로 만들었던 자리입니다.
 두 가지가 바뀌며 멀티턴 상담이 성립합니다. State의 messages에 reducer가
 붙어 노드는 **델타만** 돌려주게 되고, [[checkpointer]]가 thread_id별 상태를
 저장합니다.
+
+```mermaid
+flowchart LR
+    subgraph N["reducer 없음 (v0.2까지의 의미론)"]
+        direction TB
+        N1["상태: [user1]"] -->|"노드 반환 [답1]"| N2["상태: [답1]<br/>(user1 증발 — 덮어쓰기)"]
+    end
+    subgraph R["reducer 있음 (operator.add)"]
+        direction TB
+        R1["상태: [user1]"] -->|"노드 반환 [답1]"| R2["상태: [user1, 답1]<br/>(이어붙임)"]
+        R2 -->|"다음 턴 [user2]"| R3["상태: [user1, 답1, user2]"]
+    end
+    N ~~~ R
+```
 
 #### 코드 발췌
 
@@ -179,6 +328,24 @@ def advisor(state: DietState) -> dict:
     return {"messages": [message.model_dump()]}   # 델타만 — 합치는 건 그래프가
 
 graph = builder.compile(checkpointer=MemorySaver())   # thread별 기억
+```
+
+호출하는 쪽도 바뀝니다. 이제 **새 사용자 메시지 하나만** 넣고, 이전 대화는
+그래프가 기억합니다.
+
+```python
+result = graph.invoke(
+    {"messages": [{"role": "user", "content": req.message}]},   # 델타 하나
+    config={"configurable": {"thread_id": req.thread_id}},      # 대화의 열쇠
+)
+```
+
+```mermaid
+flowchart LR
+    C1["요청 A<br/>thread_id: ui-1a2b"] --> CP[("checkpointer<br/>(MemorySaver)")]
+    C2["요청 B<br/>thread_id: ui-9z8y"] --> CP
+    CP --> S1["상태 보관함 ui-1a2b<br/>[user, 답, user, 답…]"]
+    CP --> S2["상태 보관함 ui-9z8y<br/>[user, 답]"]
 ```
 
 #### 시연: thread 안의 기억, thread 밖의 백지
@@ -223,14 +390,17 @@ docker compose exec app python demos/broken_reducer.py
     response message …
 ```
 
-사고 ①은 예상대로의 기억 상실입니다. 사고 ②가 더 깊습니다. tools 노드의
-델타(role이 tool인 메시지)가 상태를 덮어써서, 짝이 되는 tool_calls를 잃은
-**고아 tool 메시지**만 남고, 다음 advisor 호출을 API가 거부합니다. reducer
-없이는 멀티턴이 아니라 한 턴도 못 버팁니다. 해법은 State의 한 줄입니다.
+사고 ①은 위의 왼쪽 다이어그램 그대로의 기억 상실입니다. 사고 ②가 더
+깊습니다. tools 노드의 델타(role이 tool인 메시지)가 상태를 덮어써서, 짝이
+되는 tool_calls를 잃은 **고아 tool 메시지**만 남고, 다음 advisor 호출을
+API가 거부합니다. reducer 없이는 멀티턴이 아니라 한 턴도 못 버팁니다.
+해법은 State의 한 줄입니다.
 
 #### 스트리밍도 여기서
 
-advisor가 토큰을 custom 스트림으로 흘리고, `/chat/stream`이 SSE로 relay합니다.
+advisor가 토큰을 custom 스트림으로 흘리고(`get_stream_writer`), 완성
+메시지는 `stream_chunk_builder`로 복원합니다. 스텝 단위(updates)와 토큰
+단위(custom)를 함께 구독하면:
 
 ```bash
 docker compose exec app python demos/stream.py "김치찌개 열량 알려줘"
@@ -241,6 +411,17 @@ docker compose exec app python demos/stream.py "김치찌개 열량 알려줘"
 [스텝] tools → 결과 회신
 DB 기준으로 **김치찌개(1인분, 400g)**의 영양 정보는 다음과 같습니다.
 * **칼로리:** 240 kcal …          ← 토큰이 오는 대로 찍힌다
+```
+
+app은 이것을 `/chat/stream`에서 SSE로 relay합니다. 이벤트 원문은 이런
+모양입니다.
+
+```text
+data: {"type": "step", "node": "advisor", "tools": ["lookup_food"]}
+data: {"type": "token", "token": "DB에"}
+data: {"type": "token", "token": " 따르면 **바나나 1개(120g)**의 영"}
+…
+data: {"type": "answer", "answer": "…전체 답…"}
 ```
 
 #### 결과 읽기
@@ -260,6 +441,36 @@ Streamlit UI가 세션마다 thread_id를 만들어 서버의 기억과 연결�
 SSE로 토큰이 오는 대로 그려지며, 도구 조회가 일어나면 말풍선 위에
 표시됩니다. 사이드바에서 새 상담(새 thread)을 시작할 수 있습니다.
 
+```mermaid
+sequenceDiagram
+    participant U as 브라우저
+    participant UI as ui (Streamlit)
+    participant APP as app (/chat/stream)
+    U->>UI: 메시지 입력
+    UI->>APP: POST (message, thread_id) — SSE 연결
+    APP-->>UI: data: step (advisor → lookup_food)
+    Note over UI: "🔍 DB 조회: lookup_food" 표시
+    APP-->>UI: data: token × N
+    Note over UI: st.write_stream이 토큰을 그리는 대로 렌더
+    APP-->>UI: data: answer
+    UI-->>U: 완성된 말풍선 + 히스토리에 보관
+```
+
+#### 코드 발췌: UI가 스트림을 그리는 법
+
+```python
+def tokens():
+    with requests.post(f"{APP_URL}/chat/stream", json=payload, stream=True) as resp:
+        for line in resp.iter_lines(decode_unicode=True):
+            event = json.loads(line[len("data: "):])
+            if event["type"] == "token":
+                yield event["token"]                       # 토큰은 본문으로
+            elif event["type"] == "step":
+                activity.caption(f"🔍 DB 조회: {…}")        # 스텝은 상태줄로
+
+answer = st.write_stream(tokens())
+```
+
 #### 시연
 
 ```bash
@@ -270,7 +481,7 @@ git checkout v1.0 && docker compose up --build    # main과 같다
 2턴은 "방금 김치찌개와 공기밥(총 550 kcal)"을 정확히 기억한 채 저녁을
 추천합니다.
 
-![v1.0 상담 화면 — 1턴의 DB 근거 분석과, 그것을 기억한 2턴의 저녁 추천](./ui-v10-multiturn.jpg)
+![v1.0 상담 화면: 1턴의 DB 근거 분석과, 그것을 기억한 2턴의 저녁 추천](./ui-v10-multiturn.jpg)
 
 #### Day 1과 나란히: 같은 동작, 다른 구조
 
@@ -281,17 +492,44 @@ git checkout v1.0 && docker compose up --build    # main과 같다
 | 히스토리 축적 | `messages.append(…)` 손으로 | State의 reducer (`operator.add`) |
 | 멀티턴 기억 | 호출자가 배열을 들고 다님 | checkpointer + thread_id |
 | 트레이스 | 직접 만든 StepRecord | `graph.stream(stream_mode=…)` 내장 |
+| 토큰 스트리밍 | litellm stream을 직접 조립 | `get_stream_writer` + custom 스트림 |
 
 동작은 같습니다. 달라진 것은 그 동작이 **선언**되어 있어서, 다음 세션들의
 부품(영속 checkpointer, [[interrupt]], store, 병렬 Send)이 루프를 다시 짜지
 않고 꽂힌다는 점입니다.
 
+## 테스트도 교재다
+
+이 저장소의 테스트는 두 가지 원칙으로 서 있습니다. LLM은 각본 대역으로
+갈아끼우되, **도구가 때리는 db는 진짜**를 씁니다. 그래서 키 없이 돌면서도
+그래프의 경로와 데이터 접근을 함께 검증합니다.
+
+```python
+def test_tool_branch_roundtrip(monkeypatch):
+    wire(monkeypatch, [
+        fake_response(tool_calls=[fake_tool_call("lookup_food", '{"name": "김치찌개"}')]),
+        fake_response(content="김치찌개는 1인분 240kcal입니다."),
+    ])
+    result = graph_module.graph.invoke(
+        {"messages": [{"role": "user", "content": "김치찌개 칼로리?"}]}, cfg()
+    )
+    # advisor → tools → advisor 경로를 지났고, tools는 진짜 db를 조회했다
+    tool_msg = [m for m in result["messages"] if m.get("role") == "tool"][0]
+    assert json.loads(tool_msg["content"])["foods"][0]["kcal"] == 240
+```
+
+`test_same_thread_remembers`(2턴째 호출에 1턴 히스토리가 실려 가는지),
+`test_threads_are_isolated`(다른 thread는 백지로 시작하는지)가 v0.3의
+약속을 박제합니다. `git checkout v0.2 && docker compose exec app pytest`처럼
+어느 태그에서든 그 시점의 테스트가 통과합니다.
+
 ## 이 세션이 남기는 것
 
-- LangGraph의 재료는 넷뿐이다: State, Node, Edge, compile
+- LangGraph의 재료는 넷뿐이다: State, Node, Edge, compile. 노드는 평범한 함수다
 - 분기는 conditional edge 함수의 선언이고, 그래프 그림과 코드가 1:1이 된다
 - reducer는 장식이 아니다. 없으면 한 턴도 못 버티는 사고를 실측으로 봤다
 - checkpointer는 배열을 thread별로 보관하는 장치이고, MemorySaver의 휘발성이
   다음 세션의 출발점이 된다
+- 테스트는 각본 LLM + 진짜 db. 어느 태그에서든 통과한다
 
-다음 세션: booking-agent — 영속성과 승인 (준비 중)
+다음 세션: booking-agent, 영속성과 승인 (준비 중)
