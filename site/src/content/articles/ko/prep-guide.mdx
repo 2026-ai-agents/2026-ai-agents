@@ -12,7 +12,7 @@ tags: ["사전 준비", "API 키", "Docker"]
 채울 수 있으므로 충전이 먼저입니다.
 
 1. 플랫폼 3사(Google AI Studio · OpenAI · Anthropic) 중 **1개 이상 API 키 발급 + 소액 충전**
-2. **Docker 셋업**: Docker Desktop 설치 → `day1-agent-lab` 클론 → `.env`에 키 세팅 → `docker compose up --build` → `check_env.py` 통과 확인
+2. **Docker 셋업**: Docker Desktop 설치 → `day-01` 클론 → `.env`에 키 세팅 → `docker compose up --build` → `check_env.py` 통과 확인
 
 ## 1. API 키 발급과 소액 충전
 
@@ -28,7 +28,7 @@ tags: ["사전 준비", "API 키", "Docker"]
 화면 문구는 바뀔 수 있으니 흐름만 참고하세요.
 
 - **Google AI Studio / Gemini**: 무료 티어가 관대하고 Flash 계열이 저렴합니다.
-  의미 검색용 [[embedding|임베딩]](`gemini-embedding-001`)도 이쪽 키를 쓰므로,
+  의미 검색용 [[embedding|임베딩]] 모델(`gemini-embedding-001`)도 이쪽 키를 쓰므로,
   **최소 1개만 발급한다면 Google을 권장**합니다
     - [aistudio.google.com](https://aistudio.google.com) 접속 → 구글 계정 로그인
       → "Get API key"에서 키 생성 → 유료 사용 시 Google Cloud 결제 계정 연결
@@ -62,8 +62,8 @@ docker compose version
 ### 2-2. 저장소 클론과 .env 세팅
 
 ```bash
-git clone https://github.com/2026-ai-agents/day1-agent-lab.git
-cd day1-agent-lab
+git clone https://github.com/2026-ai-agents/day-01.git
+cd day-01
 cp .env.sample .env
 ```
 

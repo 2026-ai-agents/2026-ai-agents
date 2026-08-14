@@ -145,16 +145,16 @@ site/src/content/slides/ko/day-01-session-04/index.mdx
 
 ## 작업 순서
 
-`feature/base_setup`을 `develop`에 머지한 뒤, `feature/course-sessions`
-브랜치에서 진행한다. 커밋은 단계별로 나눈다.
+`feature/base_setup`을 `develop`에 머지한 뒤, feature 브랜치에서 진행한다.
+커밋은 단계별로 나눈다. 진행 표시는 완료 날짜다.
 
-1. `order` 방향 수정 (기존 3개 문서)
-2. Day 1 세션 8개 생성, `day-01` 개요를 조망용으로 축소
+1. `order` 방향 수정 (기존 3개 문서) [완료 2026-08-14]
+2. Day 1 세션 8개 생성, `day-01` 개요를 조망용으로 축소 [완료 2026-08-14]
 3. Day 2 세션 5개 생성, `day-02` 개요 축소
 4. Day 3 세션 6개 생성, `day-03` 개요 축소
-5. 슬라이드 덱 이름 변경 (`day-01` → `day-01-session-01`)
+5. 슬라이드 덱 이름 변경 (`day-01` → `day-01-session-01`) [완료 2026-08-14]
 6. `site/README.md`(콘텐츠 작성 위치·order 공식), `docs/documentation-rules.md`,
-   `CHANGELOG.md` 갱신
+   `CHANGELOG.md` 갱신 [Day 1분 완료 2026-08-14]
 
 각 단계 후 `cd site && pnpm build && pnpm check`와
 `python3 scripts/check-style.py`를 돌린다.
@@ -196,6 +196,20 @@ site/src/content/slides/ko/day-01-session-04/index.mdx
 - 원안의 세션별 시간은 이 문서의 세션 목록 표에 참조용으로 남겨 둔다.
   나중에 시간을 노출하기로 하면 `hours`를 채우면 된다
 
+### Day 1 랩 저장소 이름은 `day-01` (2026-08-14)
+
+원안의 `day1-agent-lab` 대신 실제 저장소 이름을 `day-01`로 확정했다.
+일차와 저장소가 1:1이 되어 강의 슬러그(`day-01-session-NN`)와 저장소 이름이
+정렬된다. 사이트의 모든 참조(클론 URL·저장소 표·규칙 예시)를 `day-01`로
+맞췄고, 원안(`course-plan.md`)만 원문 그대로 남는다.
+
+### ★ 구분은 표기하지 않는다 (2026-08-14)
+
+처음에는 원안의 파일별 별표(합계 20종)를 세션 문서에 옮겼으나, 예제 51종을
+전부 수업에서 실행하기로 하면서 ★ 구분 자체를 걷어냈다. 이로써 원안 점검의
+★ 개수 불일치(§8 "약 25종" vs 실제 별표 20개) 문제도 사이트 쪽에서는
+소멸한다. 원안을 갱신할 때 §8의 별표 서술을 함께 정리하면 된다.
+
 ### 음식 DB 건수는 뒤로 미룬다
 
 원안의 "약 2만 건"과 `week03-meal-planner`의 30만 건대 데이터 사이의 차이는
@@ -203,10 +217,7 @@ site/src/content/slides/ko/day-01-session-04/index.mdx
 
 ## 선행 확인 사항
 
-세션 문서를 쓰기 전에 원안에서 정리되어야 할 것이다.
-
-- **★ 예제 개수**: 원안은 "약 25종"이라는데 실제 별표는 20개다. 세션별 예제
-  목록을 옮길 때 어느 쪽을 따를지 정해야 한다.
+세션 문서 작성 전에 남아 있던 미결은 전부 해소되었다. 결정 사항 참고
 
 ## 원안 점검 결과
 

@@ -28,7 +28,7 @@ flowchart LR
 
 | 저장소 | 일차 | 형태 | 컨테이너 | 릴리즈 |
 | --- | --- | --- | --- | --- |
-| `day1-agent-lab` | Day 1 | compose 실습 랩 (터미널 실행) | lab 단일 | v0.1 \~ v1.0 (5단) |
+| `day-01` | Day 1 | compose 실습 랩 (터미널 실행) | lab 단일 | v0.1 \~ v1.0 (5단) |
 | `diet-agent` | Day 2 ① | compose 웹 제품 | app · ui · db | v0.1 \~ v1.0 (4단) |
 | `booking-agent` | Day 2 ② | compose 웹 제품 | app · ui · db | v0.1 \~ v1.0 (4단) |
 | `secretary-agent` | Day 2 ③ | compose 웹 제품 | app · ui · db | v0.1 \~ v1.0 (4단) |
