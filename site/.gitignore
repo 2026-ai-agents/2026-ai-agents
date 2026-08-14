@@ -1,0 +1,18 @@
+# build
+dist/
+.astro/
+.aas-cache/
+
+# deps
+node_modules/
+
+# env / secrets (private 콘텐츠용 AAS_PRIVATE_* 등)
+.env
+.env.*
+!.env.sample
+
+# os / editor
+.DS_Store
+
+# pnpm 로컬 스토어 (캐시)
+.pnpm-store/

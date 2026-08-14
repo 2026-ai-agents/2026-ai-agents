@@ -1,0 +1,88 @@
+---
+title: "Day 1 · 1. 오리엔테이션과 환경 점검"
+description: "Day 1 첫 세션 슬라이드: 과정 규칙, 저장소와 릴리즈 사다리 사용법, 랩 기동, 3일 로드맵"
+presenter: CodeCompose
+date: "2026-08-14"
+transition: none
+toc_open: false
+---
+
+import Slide from 'stack-site-builder/components/Slide.astro';
+
+{/* 이 덱은 뼈대입니다. 새 덱은 이 파일을 복사해 시작하세요. */}
+{/* 슬라이드 작성 규칙은 docs/writing-rules.md의 "슬라이드 규칙"을 따릅니다. */}
+
+<Slide class="cover">
+
+# AI Agent 실전
+
+Day 1 · 1. 오리엔테이션과 환경 점검
+
+*CodeCompose · 2026*
+
+</Slide>
+
+<Slide>
+
+## 이 과정의 규칙
+::sub[따라 치지 않습니다. 읽고, 돌리고, 재현합니다]
+
+- 코드는 **전부 완성본**으로 제공
+- 수업은 강사 시연 + 코드 리딩
+- 재현은 각자의 속도로. `git checkout v0.2` 하면 그 시점의 동작
+- 모든 소스는 `github.com/2026-ai-agents`
+
+</Slide>
+
+<Slide>
+
+## 저장소 하나 = 에이전트 하나
+::sub[Day 1은 실습 랩, Day 2부터는 독립된 제품]
+
+```bash
+git clone https://github.com/2026-ai-agents/day-01.git
+cd day-01
+cp .env.sample .env
+docker compose up --build -d
+docker compose exec lab python check_env.py
+```
+
+- 공통인 것은 시작 명령뿐
+- `check_env.py` 전부 ✓면 준비 끝
+
+</Slide>
+
+<Slide class="center">
+
+## 릴리즈 사다리
+
+**v0.1 뼈대 → v0.2 도구 → v0.3 ReAct → v0.4 고급 루프 → v1.0 하네스**
+
+세션 진행이 태그를 오르는 것과 1:1
+
+</Slide>
+
+<Slide>
+
+## Day 1의 흐름
+::sub[240분, 예제 51종 중 25종을 함께 봅니다]
+
+1. LLM API의 본질 (25분)
+2. LiteLLM 통합 레이어 (25분)
+3. Tool calling 심화 (40분) → **v0.2**
+4. ReAct 루프 (45분) → **v0.3**
+5. ReAct 너머의 루프들 (35분) → **v0.4**
+6. 하네스 엔지니어링 (40분) → **v1.0**
+7. MCP 맛보기 (15분)
+
+</Slide>
+
+<Slide class="center">
+
+## 다음 세션부터 예제를 실행합니다
+
+**LLM API의 본질** · `examples/01_api/` 11종
+
+교안: 강의 사이트의 Day 1 세션 문서
+
+</Slide>

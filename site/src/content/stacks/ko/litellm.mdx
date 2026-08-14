@@ -1,0 +1,24 @@
+---
+name: LiteLLM
+category: agent-stack
+description: 3사 LLM을 하나의 호출 인터페이스로 통일하는 라이브러리
+website: https://www.litellm.ai
+repo: https://github.com/BerriAI/litellm
+docs: https://docs.litellm.ai
+tags: [llm, provider, router, fallback]
+language: Python
+license: MIT
+pricing: [free, open-source]
+---
+
+## 개요
+
+여러 LLM 프로바이더를 하나의 호출 인터페이스로 추상화합니다. **모델 문자열만
+바꾸면 코드 수정 없이 프로바이더가 교체**됩니다.
+
+## 이 과정에서
+
+- Day 1 2절에서 예제 10종으로 다룹니다. 프로바이더 교체, 3사 비교, 폴백 체인, 재시도·타임아웃, 캐싱, 비용 콜백, rate limit 백오프, 라우터
+- 같은 코드로 3사를 교체하며 **비용·품질·지연을 나란히 비교**합니다
+- Day 3 `coding-agent`의 난이도별 모델 배정도 같은 코드 위에서 이뤄집니다
+- [[budget-guard|Budget guard]]는 이 호출 층 위에 얹습니다. 공용 라이브러리로 빼지 않고 저장소마다 자기 코드를 갖습니다. 클론 하나로 재현되는 것이 더 중요하기 때문입니다

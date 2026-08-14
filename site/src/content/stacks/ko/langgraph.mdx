@@ -1,0 +1,33 @@
+---
+name: LangGraph
+vendor: LangChain
+category: agent-stack
+description: 에이전트의 제어 흐름을 State·Node·Edge 그래프로 선언하는 프레임워크
+website: https://www.langchain.com/langgraph
+repo: https://github.com/langchain-ai/langgraph
+docs: https://langchain-ai.github.io/langgraph/
+tags: [agent, graph, checkpointer, multi-agent]
+language: Python
+license: MIT
+pricing: [free, open-source]
+---
+
+## 개요
+
+손으로 짠 루프를 선언적 그래프로 옮기고, 그 위에 영속성·중단·병렬 실행을
+얹습니다. Day 2와 Day 3의 모든 에이전트가 이 위에 있습니다.
+
+## 이 과정에서
+
+| 저장소 | 이 프레임워크에서 보는 것 |
+| --- | --- |
+| `diet-agent` | State·Node·Edge·compile, conditional edge, 메시지 reducer |
+| `booking-agent` | [[checkpointer]], [[interrupt]], time-travel |
+| `secretary-agent` | [[store]], 기억 판단 노드 |
+| `food-rag-agent` | 선별 깔때기와 검증자 재선별 분기 |
+| `energy-agent` | [[supervisor]] 라우팅 |
+| `support-agent` | [[handoff]] tool |
+| `coding-agent` | Send 병렬 디스패치, 재계획 분기 |
+
+Day 1의 수제 [[react|ReAct]] 루프를 `diet-agent`에서 같은 동작·다른 구조로
+다시 세우는 것이 이 프레임워크의 출발점입니다.
