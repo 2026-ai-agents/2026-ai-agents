@@ -36,6 +36,13 @@ flowchart TD
 
 코드: [`01_plan_execute.py`](https://github.com/2026-ai-agents/day-01/blob/main/examples/05_loops/01_plan_execute.py)
 
+#### 무엇을 보는가
+
+ReAct가 한 스텝씩 더듬던 같은 여행 과제를, 계획을 먼저 세우고 도구는 LLM
+없이 돌린 뒤 마지막에 한 번만 종합하는 방식으로 풉니다.
+
+#### 코드 발췌
+
 ```python
 # ① 계획: 도구 호출 목록을 JSON으로 한 번에 뽑는다
 plan = json.loads(completion(…, response_format={"type": "json_object"}).…)["steps"]
@@ -44,6 +51,8 @@ observations = [run(step) for step in plan]
 # ③ 종합: 결과를 모아 한 번에 답을 만든다
 final = completion(…, content=f"요청: {question}\n도구 결과: {observations}…")
 ```
+
+#### 실행 결과
 
 ```text
 === ① 계획 (LLM 호출 1번) ===
@@ -62,7 +71,9 @@ final = completion(…, content=f"요청: {question}\n도구 결과: {observatio
   LLM 호출 총 2번 (ReAct였다면 도구 2개 + 최종답 = 3번 이상)
 ```
 
-읽기: [[plan-execute|Plan-and-Execute]]는 호출 횟수가 계획 1 + 종합 1로
+#### 결과 읽기
+
+[[plan-execute|Plan-and-Execute]]는 호출 횟수가 계획 1 + 종합 1로
 고정입니다. 도구 실행 사이에 LLM이 없으니 5세션의 팽창 계단이 아예 생기지
 않습니다. 대신 계획이 틀리면 그대로 틀립니다. 그 약점을 다음 예제가
 메웁니다.
@@ -71,12 +82,18 @@ final = completion(…, content=f"요청: {question}\n도구 결과: {observatio
 
 코드: [`02_replan.py`](https://github.com/2026-ai-agents/day-01/blob/main/examples/05_loops/02_replan.py)
 
+#### 무엇을 보는가
+
 목DB에 없는 도시(나라)를 물어 실패 경로를 확실히 밟습니다.
+
+#### 코드 발췌
 
 ```python
 if attempt > 1:
     extra = f"주의: 직전 계획의 {failed!r} 검색이 빈 결과였다. 검색 가능한 도시: 오사카, 교토"
 ```
+
+#### 실행 결과
 
 ```text
 === 계획 시도 1 ===
@@ -90,7 +107,9 @@ if attempt > 1:
   교토 → 2곳: ['후시미 이나리', '기요미즈데라']
 ```
 
-읽기: 실패 기록("나라가 빈 결과였다")과 힌트를 첨부해 계획을 다시 세우자,
+#### 결과 읽기
+
+실패 기록("나라가 빈 결과였다")과 힌트를 첨부해 계획을 다시 세우자,
 2차 계획이 지원 도시로 옮겨 갔습니다. "계획 → 실행 → 막히면 재계획"이
 Day 3 coding-agent 복구 루프의 원형입니다. 재계획에도 한도(3회)가 있다는 것,
 소진되면 사람에게 넘긴다는 것까지가 설계입니다.
@@ -99,7 +118,11 @@ Day 3 coding-agent 복구 루프의 원형입니다. 재계획에도 한도(3회
 
 코드: [`03_reflexion.py`](https://github.com/2026-ai-agents/day-01/blob/main/examples/05_loops/03_reflexion.py)
 
+#### 무엇을 보는가
+
 가족 단톡방 후기 3문장을 쓰고, 평가자가 루브릭으로 채점합니다.
+
+#### 코드 발췌
 
 ```python
 RUBRIC = """다음 기준으로 채점하라 (각 0~10, JSON으로만 답):
@@ -113,6 +136,8 @@ if total >= 24: break               # 통과 기준
 feedback = score["feedback"]        # 미달이면 피드백을 들고 재시도
 ```
 
+#### 실행 결과
+
 ```text
 === 시도 1 — 평가 28/30 ===
   "가족들 생각나서 여행 내내 틈틈이 선물 골랐는데 … 다음에는 꼭 우리 가족
@@ -123,7 +148,9 @@ feedback = score["feedback"]        # 미달이면 피드백을 들고 재시도
   → 통과 기준(24) 도달, 종료
 ```
 
-읽기: 이번 실행은 1회 만에 통과했지만, 구조가 중요합니다. 평가자는 점수와
+#### 결과 읽기
+
+이번 실행은 1회 만에 통과했지만, 구조가 중요합니다. 평가자는 점수와
 함께 "무엇이 부족한가"를 한 줄로 돌려주고, 미달이면 그 피드백이 다음 생성
 프롬프트에 박힙니다. "한 번에 잘 쓰기"보다 "고칠 점을 알고 다시 쓰기"가 쉽다는
 사실을 구조로 만든 것이 [[reflexion|Reflexion]]입니다.
@@ -132,7 +159,11 @@ feedback = score["feedback"]        # 미달이면 피드백을 들고 재시도
 
 코드: [`04_eval_rubric.py`](https://github.com/2026-ai-agents/day-01/blob/main/examples/05_loops/04_eval_rubric.py)
 
+#### 무엇을 보는가
+
 같은 초안 2개(정보형 A, 감성형 B)를 두 루브릭으로 채점합니다.
+
+#### 실행 결과
 
 ```text
 === 루브릭 ①: 정보 밀도 ===
@@ -144,7 +175,9 @@ feedback = score["feedback"]        # 미달이면 피드백을 들고 재시도
   초안 B (감성형): 9점 — 풍경이 시각적으로 선명하게 그려지며 깊은 여운
 ```
 
-읽기: 같은 글이 10점과 4점, 1점과 9점을 오갔습니다. 바뀐 것은 글이 아니라
+#### 결과 읽기
+
+같은 글이 10점과 4점, 1점과 9점을 오갔습니다. 바뀐 것은 글이 아니라
 기준입니다. 평가자를 두는 순간 "무엇이 좋은 결과인가"의 정의가 코드에
 박제되므로, Reflexion의 품질은 생성자가 아니라 루브릭 설계에서 나옵니다.
 
@@ -152,7 +185,11 @@ feedback = score["feedback"]        # 미달이면 피드백을 들고 재시도
 
 코드: [`05_rewoo.py`](https://github.com/2026-ai-agents/day-01/blob/main/examples/05_loops/05_rewoo.py)
 
+#### 무엇을 보는가
+
 결과 자리를 #E1, #E2 변수로 비워 둔 채 계획을 세웁니다.
+
+#### 실행 결과
 
 ```text
 === ① 플랜 (변수 자리가 비어 있다) ===
@@ -169,7 +206,9 @@ feedback = score["feedback"]        # 미달이면 피드백을 들고 재시도
   * 숙박비 120,000원 / 식비 200,000원 / 항공료 700,000원 / 총 합계 1,020,000원
 ```
 
-읽기: [[rewoo|ReWOO]]도 LLM 호출 2번 고정이지만, Plan-and-Execute와 달리
+#### 결과 읽기
+
+[[rewoo|ReWOO]]도 LLM 호출 2번 고정이지만, Plan-and-Execute와 달리
 플랜 시점에 결과를 변수로 미리 배선해 두므로 도구를 전부 병렬로 던질 수
 있습니다. 대가는 적응력입니다. 중간 결과를 보고 방향을 트는 능력이 없어서,
 2번 예제 같은 상황이 오면 그대로 무너집니다. 토큰 절약 특화 루프입니다.
@@ -178,6 +217,13 @@ feedback = score["feedback"]        # 미달이면 피드백을 들고 재시도
 
 코드: [`06_loop_cost_compare.py`](https://github.com/2026-ai-agents/day-01/blob/main/examples/05_loops/06_loop_cost_compare.py)
 
+#### 무엇을 보는가
+
+같은 과제를 미니 ReAct와 Plan-and-Execute로 각각 풀고, LLM 호출 수·토큰·
+비용을 한 장의 계산서에 나란히 놓습니다.
+
+#### 실행 결과
+
 ```text
 === 계산서 ===
   루프                     LLM호출     입력tk     출력tk        비용
@@ -185,7 +231,9 @@ feedback = score["feedback"]        # 미달이면 피드백을 들고 재시도
   Plan-and-Execute           2      207      373 $  0.000995
 ```
 
-읽기: 정직하게 읽어야 하는 결과입니다. 이 과제는 도구 2개짜리로 작아서,
+#### 결과 읽기
+
+정직하게 읽어야 하는 결과입니다. 이 과제는 도구 2개짜리로 작아서,
 ReAct도 2호출 만에 끝났고 비용 차이가 사실상 없습니다. Plan-and-Execute의
 이득은 스텝이 늘수록 벌어집니다. 5세션의 팽창 그래프(6스텝, 입력 7,400토큰)와
 나란히 놓고 보면, 루프 선택은 과제의 크기와 성격이 정하는 문제라는 것이

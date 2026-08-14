@@ -33,7 +33,11 @@ flowchart LR
 
 코드: [`01_single_tool.py`](https://github.com/2026-ai-agents/day-01/blob/main/examples/03_tools/01_single_tool.py)
 
+#### 무엇을 보는가
+
 환율 조회 도구 1개짜리 최소 구성입니다.
+
+#### 코드 발췌
 
 ```python
 def get_exchange_rate(currency: str) -> dict:
@@ -45,6 +49,8 @@ result = get_exchange_rate(**json.loads(call.function.arguments))  # ② 우리�
 messages.append({"role": "tool", "tool_call_id": call.id,
                  "content": json.dumps(result)})       # ③ 결과 회신
 ```
+
+#### 실행 결과
 
 ```text
 === 1왕복: 모델이 도구를 요청한다 ===
@@ -58,7 +64,9 @@ messages.append({"role": "tool", "tool_call_id": call.id,
   현재 환율 기준으로 100엔은 약 **910원**입니다.
 ```
 
-읽기: "100엔이 얼마쯤이죠?"라는 자연어가 `{"currency": "JPY"}`라는 구조화된
+#### 결과 읽기
+
+"100엔이 얼마쯤이죠?"라는 자연어가 `{"currency": "JPY"}`라는 구조화된
 인자로 바뀌었습니다. 이 번역이 모델의 몫이고, 실행과 회신은 전부 우리 코드의
 몫입니다.
 
@@ -66,7 +74,11 @@ messages.append({"role": "tool", "tool_call_id": call.id,
 
 코드: [`02_roundtrip_raw.py`](https://github.com/2026-ai-agents/day-01/blob/main/examples/03_tools/02_roundtrip_raw.py)
 
+#### 무엇을 보는가
+
 같은 왕복을 이번엔 원문으로 봅니다.
+
+#### 실행 결과
 
 ```text
 === ① 모델이 보낸 assistant 메시지 원문 ===
@@ -91,7 +103,9 @@ messages.append({"role": "tool", "tool_call_id": call.id,
   오사카의 오늘 날씨는 맑고, 기온은 21도입니다. 야외활동하기 좋은 날씨네요!
 ```
 
-읽기: "모델이 함수를 호출한다"의 실체는 assistant 메시지의 `tool_calls` 필드
+#### 결과 읽기
+
+"모델이 함수를 호출한다"의 실체는 assistant 메시지의 `tool_calls` 필드
 하나입니다. `content`는 null이고, 우리가 돌려주는 것도 role이 tool인 평범한
 메시지입니다. Gemini는 call id에 자기 내부 서명을 붙여 보내는 것도 원문에서만
 보입니다. 프로바이더마다 이런 결이 다르고, 그것을 담요처럼 덮는 것이
@@ -101,7 +115,11 @@ LiteLLM의 일입니다.
 
 코드: [`03_pydantic_schema.py`](https://github.com/2026-ai-agents/day-01/blob/main/examples/03_tools/03_pydantic_schema.py)
 
+#### 무엇을 보는가
+
 스키마 생성 부분은 키 없이 돕니다.
+
+#### 코드 발췌
 
 ```python
 class BudgetArgs(BaseModel):
@@ -113,6 +131,8 @@ class BudgetArgs(BaseModel):
 schema = BudgetArgs.model_json_schema()      # ① 모델에게 보여줄 스키마
 BudgetArgs.model_validate(raw_args)          # ② 도착한 인자의 검증
 ```
+
+#### 실행 결과
 
 ```text
 === pydantic 모델에서 뽑은 JSON 스키마 ===
@@ -130,13 +150,22 @@ BudgetArgs.model_validate(raw_args)          # ② 도착한 인자의 검증
   불량 인자 → ValidationError (ge 제약이 잡았다)
 ```
 
-읽기: 손으로 쓰던 JSON 스키마가 파이썬 클래스에서 자동으로 나오고, 같은
+#### 결과 읽기
+
+손으로 쓰던 JSON 스키마가 파이썬 클래스에서 자동으로 나오고, 같은
 클래스가 도착한 인자를 검증합니다. 명세와 검증이 한 몸이라 어긋날 수가
 없습니다. 아래 v0.2에서 보듯 에이전트 본체의 도구가 전부 이 방식입니다.
 
 ## 4. 병렬 도구 호출: 독립 조회는 한 턴에
 
 코드: [`04_parallel_tools.py`](https://github.com/2026-ai-agents/day-01/blob/main/examples/03_tools/04_parallel_tools.py)
+
+#### 무엇을 보는가
+
+항공과 숙소, 서로 의존이 없는 조회 2건을 한 질문에 담습니다. 모델이
+tool_calls 배열에 두 요청을 함께 실어 보내는지 봅니다.
+
+#### 실행 결과
 
 ```text
 === 한 턴에 실려 온 도구 요청: 2건 ===
@@ -148,14 +177,20 @@ BudgetArgs.model_validate(raw_args)          # ② 도착한 인자의 검증
   * 숙소 (1박 기준): 난바 지역 기준 약 120,000원
 ```
 
-읽기: tool_calls는 배열입니다. 서로 의존이 없는 조회면 모델이 두 요청을 한
+#### 결과 읽기
+
+tool_calls는 배열입니다. 서로 의존이 없는 조회면 모델이 두 요청을 한
 턴에 실어 보내고, 왕복이 줄어든 만큼 싸고 빠릅니다.
 
 ## 5. 인자 제약: 스키마는 프롬프트보다 강하다
 
 코드: [`05_arg_constraints.py`](https://github.com/2026-ai-agents/day-01/blob/main/examples/03_tools/05_arg_constraints.py)
 
+#### 무엇을 보는가
+
 키 없이 돕니다. 선택 인자·기본값·enum이 스키마에 실리는 모양입니다.
+
+#### 실행 결과
 
 ```text
   "category": {
@@ -167,7 +202,9 @@ BudgetArgs.model_validate(raw_args)          # ② 도착한 인자의 검증
   "required": ["city"]
 ```
 
-읽기: enum은 "이 셋 중 하나만", default는 "안 주면 이 값", required 밖은 "안
+#### 결과 읽기
+
+enum은 "이 셋 중 하나만", default는 "안 주면 이 값", required 밖은 "안
 줘도 됨"을 모델에게 선언합니다. "카테고리는 관광·식당·카페 중 하나로 해줘"라는
 프롬프트 문장보다, 스키마에 박힌 enum이 강합니다.
 
@@ -175,7 +212,11 @@ BudgetArgs.model_validate(raw_args)          # ② 도착한 인자의 검증
 
 코드: [`06_tool_choice.py`](https://github.com/2026-ai-agents/day-01/blob/main/examples/03_tools/06_tool_choice.py)
 
+#### 무엇을 보는가
+
 도구가 전혀 필요 없는 인사말에 tool_choice 세 값을 시험합니다.
+
+#### 실행 결과
 
 ```text
 === tool_choice = auto (기본) ===      인사말에 대한 반응: 그냥 답변
@@ -183,7 +224,9 @@ BudgetArgs.model_validate(raw_args)          # ② 도착한 인자의 검증
 === tool_choice = required (강제) ===  인사말에 대한 반응: 도구 요청 calc_budget
 ```
 
-읽기: required가 인사에도 예산 도구를 부르게 만들었습니다. 강제는 강력하지만
+#### 결과 읽기
+
+required가 인사에도 예산 도구를 부르게 만들었습니다. 강제는 강력하지만
 질문과 무관한 호출도 만듭니다. 구조화 출력(9번)처럼 제어권을 코드가 가져야
 하는 자리에 골라 씁니다.
 
@@ -191,14 +234,20 @@ BudgetArgs.model_validate(raw_args)          # ② 도착한 인자의 검증
 
 코드: [`07_tool_error.py`](https://github.com/2026-ai-agents/day-01/blob/main/examples/03_tools/07_tool_error.py)
 
+#### 무엇을 보는가
+
 도구는 THB(태국 바트)를 모릅니다. 예외를 죽이는 대신 에러를 결과로
 돌려줍니다.
+
+#### 코드 발췌
 
 ```python
 except ValueError as e:
     result = json.dumps({"error": str(e)}, ensure_ascii=False)
 messages.append({"role": "tool", "tool_call_id": call.id, "content": result})
 ```
+
+#### 실행 결과
 
 ```text
 === [1] get_exchange_rate({'currency': 'THB'}) → 실패를 되먹임 ===
@@ -211,7 +260,9 @@ messages.append({"role": "tool", "tool_call_id": call.id, "content": result})
   대신 엔화(JPY) 환율을 기준으로 대략적인 금액을 …
 ```
 
-읽기: 에러 메시지를 읽은 모델이 지원 통화(JPY)로 방법을 바꿔 답을
+#### 결과 읽기
+
+에러 메시지를 읽은 모델이 지원 통화(JPY)로 방법을 바꿔 답을
 완성했습니다. 좋은 에러 메시지는 사람을 위한 것이기 전에 모델을 위한
 것입니다. 지원 목록을 에러에 담았기에 복구가 한 번에 됐습니다.
 
@@ -219,7 +270,11 @@ messages.append({"role": "tool", "tool_call_id": call.id, "content": result})
 
 코드: [`08_hallucinated_args.py`](https://github.com/2026-ai-agents/day-01/blob/main/examples/03_tools/08_hallucinated_args.py)
 
+#### 무엇을 보는가
+
 호텔 목록을 알려주지 않고 예약을 시키면, 모델은 이름을 지어냅니다.
+
+#### 실행 결과
 
 ```text
 === 모델이 보낸 인자 ===
@@ -231,7 +286,9 @@ messages.append({"role": "tool", "tool_call_id": call.id, "content": result})
   → 스키마는 통과했지만 값이 허구다. 검증이 없었다면 유령 예약이 실행됐다
 ```
 
-읽기: '오사카 오션뷰 호텔'은 문자열 타입이라 스키마는 통과합니다. 값이
+#### 결과 읽기
+
+'오사카 오션뷰 호텔'은 문자열 타입이라 스키마는 통과합니다. 값이
 실재하는지는 스키마가 모릅니다. pydantic validator의 존재 확인이 실행 직전에
 잡았습니다. LLM이 만든 값은 실행 직전에 코드로 검증한다, 예외 없이. 이것이
 Day 2 food-rag-agent 검증자의 씨앗입니다.
@@ -240,7 +297,11 @@ Day 2 food-rag-agent 검증자의 씨앗입니다.
 
 코드: [`09_structured_output.py`](https://github.com/2026-ai-agents/day-01/blob/main/examples/03_tools/09_structured_output.py)
 
+#### 무엇을 보는가
+
 도구를 실행할 생각이 없어도, 원하는 출력 구조를 스키마로 강제할 수 있습니다.
+
+#### 코드 발췌
 
 ```python
 tool = {"type": "function", "function": {
@@ -251,6 +312,8 @@ resp = completion(…, tools=[tool],
 plan = TripPlan.model_validate(json.loads(raw))   # 여기서부터는 파이썬 객체
 ```
 
+#### 실행 결과
+
 ```text
 === 검증까지 통과한 타입 있는 결과 ===
   city = 교토, budget = 400,000원, days = 2일
@@ -258,7 +321,9 @@ plan = TripPlan.model_validate(json.loads(raw))   # 여기서부터는 파이썬
   2일차: 아침 후시미이나리 신사 … / 점심 산넨자카 두부 요리 … / 저녁 기요미즈데라 야간개장 …
 ```
 
-읽기: 2세션의 JSON 모드가 형태만 보장했다면, 이것은 `plan.days[0].lunch`처럼
+#### 결과 읽기
+
+2세션의 JSON 모드가 형태만 보장했다면, 이것은 `plan.days[0].lunch`처럼
 타입까지 보장합니다. 자유 문장이 검증된 객체가 되는 순간이고, 문자열 파싱은
 없습니다.
 
@@ -266,8 +331,12 @@ plan = TripPlan.model_validate(json.loads(raw))   # 여기서부터는 파이썬
 
 코드: [`10_tool_selection.py`](https://github.com/2026-ai-agents/day-01/blob/main/examples/03_tools/10_tool_selection.py)
 
+#### 무엇을 보는가
+
 같은 10개 도구를 ① 성의 있는 이름·설명, ② 익명 이름(tool_0…)·무성의한 설명
 두 벌로 등록하고 같은 질문("이번 주말 오사카에 축제 하나요?")을 던집니다.
+
+#### 실행 결과
 
 ```text
 === 성의 있는 이름·설명 ===
@@ -277,7 +346,9 @@ plan = TripPlan.model_validate(json.loads(raw))   # 여기서부터는 파이썬
   선택된 도구: tool_0  (정답: tool_8)
 ```
 
-읽기: 실행 코드는 한 줄도 바뀌지 않았는데, 문자열을 지우자 선택이
+#### 결과 읽기
+
+실행 코드는 한 줄도 바뀌지 않았는데, 문자열을 지우자 선택이
 틀렸습니다. tool_0은 장소 검색 자리입니다. 모델이 보는 것은 코드가 아니라
 이름과 설명 문자열뿐입니다. 도구 설명은 곧 프롬프트입니다.
 

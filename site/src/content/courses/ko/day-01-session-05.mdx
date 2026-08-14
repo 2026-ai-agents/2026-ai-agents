@@ -55,7 +55,11 @@ response = completion(model=model, messages=messages)
 
 코드: [`01_react_trace.py`](https://github.com/2026-ai-agents/day-01/blob/main/examples/04_react/01_react_trace.py)
 
+#### 무엇을 보는가
+
 "3박 4일 오사카, 예산 80만원"을 verbose로 돌립니다.
+
+#### 실행 결과
 
 ```text
 [step 1] calc_budget({"people": 1, "nights": 3, "style": "보통"})
@@ -75,7 +79,9 @@ response = completion(model=model, messages=messages)
   초과하므로, '절약 스타일'을 기준으로 예산을 맞추어야 합니다. …
 ```
 
-읽기: 트레이스에 에이전트의 사고가 그대로 보입니다. 보통 스타일로 계산해 보고
+#### 결과 읽기
+
+트레이스에 에이전트의 사고가 그대로 보입니다. 보통 스타일로 계산해 보고
 (91만원, 예산 초과), 절약 스타일로 다시 계산하고(65만원, 통과), 그다음에야
 장소를 검색했습니다. 시키지 않은 "예산 초과 시 재계산"이 루프 구조에서
 자연스럽게 나온 것입니다. 이 실행은 8스텝을 꽉 채워 한도 종료됐다는 것도
@@ -84,6 +90,13 @@ response = completion(model=model, messages=messages)
 ## 2. 스텝 한도: 1, 3, 10의 행동 변화
 
 코드: [`02_max_steps.py`](https://github.com/2026-ai-agents/day-01/blob/main/examples/04_react/02_max_steps.py)
+
+#### 무엇을 보는가
+
+같은 질문을 스텝 한도 1, 3, 10으로 세 번 돌립니다. 한도가 도구 사용량과
+근거의 두께를 어떻게 바꾸는지, 종료 사유가 어떻게 갈리는지 봅니다.
+
+#### 실행 결과
 
 ```text
 === max_steps = 1 ===
@@ -100,7 +113,9 @@ response = completion(model=model, messages=messages)
   답 길이: 983자
 ```
 
-읽기: 한도 1이어도 답은 나옵니다. 마무리 호출이 "지금까지 확인한 것만으로
+#### 결과 읽기
+
+한도 1이어도 답은 나옵니다. 마무리 호출이 "지금까지 확인한 것만으로
 정리하라"를 시키기 때문입니다. 대신 근거가 예산 계산 하나뿐입니다. 한도
 10에서는 7스텝 만에 final로 스스로 멈췄습니다. 스텝 한도는 품질 설정이
 아니라 폭주에 대한 보험이고, 보험이 여유로우면 쓰이지 않습니다.
@@ -109,8 +124,12 @@ response = completion(model=model, messages=messages)
 
 코드: [`03_prompt_ablation.py`](https://github.com/2026-ai-agents/day-01/blob/main/examples/04_react/03_prompt_ablation.py)
 
+#### 무엇을 보는가
+
 같은 질문을 ① 온전한 프롬프트 ② 도구 지침 문단 제거 ③ 빈 프롬프트로
 돌립니다.
+
+#### 실행 결과
 
 ```text
 === ① 온전한 프롬프트 ===
@@ -127,7 +146,9 @@ response = completion(model=model, messages=messages)
   답: … 예산(항공권 불포함 기준 30만 원)에 맞춘 절약·알뜰 코스를 짜드렸습니다!
 ```
 
-읽기: 정직하게 읽어야 하는 결과입니다. 빈 프롬프트에서도 도구는 쓰였습니다.
+#### 결과 읽기
+
+정직하게 읽어야 하는 결과입니다. 빈 프롬프트에서도 도구는 쓰였습니다.
 요즘 모델은 도구 사용 자체를 훈련으로 익히고 있어서, 지침을 빼도 루프가
 무너지지는 않습니다. 대신 차이는 꼼꼼함에서 납니다. 온전한 프롬프트는 "근거를
 도구로 확인하라"는 지침 때문에 도구를 7회 쓰며 검증했고, 빈 프롬프트는 예산
@@ -138,7 +159,11 @@ response = completion(model=model, messages=messages)
 
 코드: [`04_context_growth.py`](https://github.com/2026-ai-agents/day-01/blob/main/examples/04_react/04_context_growth.py)
 
+#### 무엇을 보는가
+
 스텝별 입력 토큰을 막대로 그립니다.
+
+#### 실행 결과
 
 ```text
 === 스텝별 입력(컨텍스트) 토큰 ===
@@ -153,7 +178,9 @@ response = completion(model=model, messages=messages)
   이 한 번의 요청에 입력 토큰 총 7,400개. 마지막 스텝 하나가 1,552개
 ```
 
-읽기: 우상향 계단입니다. 2세션에서 본 무상태의 대가로, 매 스텝 지금까지의
+#### 결과 읽기
+
+우상향 계단입니다. 2세션에서 본 무상태의 대가로, 매 스텝 지금까지의
 모든 메시지를 다시 실어 보내기 때문입니다. 첫 스텝 810토큰이 여섯 스텝 만에
 1,552토큰이 됐고, 합계 7,400토큰 중 대부분이 같은 내용의 재전송입니다.
 이 곡선이 ReAct의 비용 구조이고, 다음 세션의 루프들이 이 곡선을 공격합니다.
