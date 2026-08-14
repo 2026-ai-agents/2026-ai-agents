@@ -1,7 +1,7 @@
 ---
 title: "Day 1 · 5. ReAct 루프"
-description: "examples/04_react 4종과 v0.3: 트레이스 읽기, 스텝 한도, 프롬프트 절제 실험, 컨텍스트 팽창"
-summary: "완성본 여행 플래너를 돌리며 reasoning, action, observation 트레이스를 읽습니다. 무한 루프 사고를 재현하고 스텝 한도가 막아내는 것까지, 세션 끝에서 v0.3입니다."
+description: "examples/04_react 4종 전수 실행과 v0.3: 트레이스 읽기, 스텝 한도 1·3·10, 프롬프트 절제 실험, 컨텍스트 팽창 그래프"
+summary: "완성본 여행 플래너를 돌리며 reasoning, action, observation 트레이스를 실제 실행 결과로 읽습니다. 스텝 한도의 보험 동작과 컨텍스트 팽창 곡선까지, 세션 끝에서 v0.3입니다."
 date: 2026-08-14
 category: day-1
 order: "3895"
@@ -13,55 +13,177 @@ tags: ["ReAct", "트레이스", "스텝 한도", "v0.3"]
 > 원안 5.4절. 교재는 `examples/04_react/` 4종이고, 세션 끝에서 **v0.3**으로
 > 오릅니다.  
 > 이 4종은 에이전트 본체를 사용하므로 v0.3 이상에서 동작합니다. 이전 태그에서
-> 실행하면 checkout 안내가 나옵니다.
+> 실행하면 checkout 안내가 나옵니다. 이 문서에는 **4종 전부의 실제 실행
+> 결과**를 실었습니다.
 
 - **교재**: [examples/04_react](https://github.com/2026-ai-agents/day-01/tree/main/examples/04_react)
 - **핵심 문장**: 에이전트를 이해한다는 것은 트레이스를 읽을 줄 안다는 뜻이다
 
-## 예제 4종
-
-| | 파일 | 무엇을 보는가 |
-| --- | --- | --- |
-| ★ | `01_react_trace.py` | 완성본 에이전트를 돌리며 reasoning→action→observation 트레이스 읽기 |
-| | `02_max_steps.py` | 스텝 한도를 1, 3, 10으로 바꿔가며 행동 변화 관찰 |
-| | `03_prompt_ablation.py` | 시스템 프롬프트를 한 부분씩 빼면 루프가 어떻게 무너지는가 |
-| | `04_context_growth.py` | 스텝마다 컨텍스트가 부풀어 비용이 커지는 것을 그래프로 |
-
-## v0.3 코드 포인트
+## v0.3 코드 포인트: 루프의 전부
 
 루프 본체는
 [agent/react.py](https://github.com/2026-ai-agents/day-01/blob/main/agent/react.py)입니다.
-코드에서 보는 곳은 세 군데입니다.
+뼈대만 추리면 이것이 전부입니다.
 
-- **도구 호출/최종 답변 분기**: 응답에 tool_calls가 있으면 실행하고 계속,
-  없으면 그 content가 최종 답입니다. 분기 조건이 이것뿐이라는 단순함이 핵심입니다
-- **observation 되먹임**: 도구 결과를 role이 tool인 메시지로 붙여 다음 호출에
-  싣습니다. [[react|ReAct]]의 "관찰"은 이 append 한 줄입니다
-- **종료 조건(스텝 한도)**: 한도에 도달하면 도구 없이 마무리 답변만 받습니다.
-  마무리 호출에 tools를 싣지 않는 것이 포인트입니다. 보험은 우회할 수 없어야
+```python
+for step_no in range(1, max_steps + 1):
+    response = completion(model=model, messages=messages, tools=tool_schemas())
+    message = response.choices[0].message
+
+    if not message.tool_calls:            # 종료 ①: 최종 답
+        result.answer = message.content
+        return result
+
+    messages.append(message.model_dump()) # action → observation 되먹임
+    for call in message.tool_calls:
+        observation = run_tool(call.function.name, call.function.arguments)
+        messages.append({"role": "tool", "tool_call_id": call.id,
+                         "content": observation})
+
+# 종료 ②: 스텝 한도 — 도구 없이 마무리 답변만 받는다
+response = completion(model=model, messages=messages)
+```
+
+- 분기 조건은 "tool_calls가 있는가" 하나뿐입니다. 4세션의 왕복을 for 루프에
+  넣은 것이 [[react|ReAct]]의 실체입니다
+- 한도 도달 후의 마무리 호출에는 tools를 싣지 않습니다. 더 돌 수 없어야
   보험입니다
+- 매 스텝이 StepRecord(도구·인자·결과·토큰)로 남아, 아래 예제들이 이 데이터를
+  읽습니다
 
-트레이스는 print가 아니라 데이터(StepRecord)로도 남습니다. 각 스텝의 도구,
-인자, 결과, 토큰 사용량이 담겨서 `04_context_growth.py`가 이것으로 그래프를
-그립니다.
+## 1. `01_react_trace.py` ★ · 완성본 에이전트의 트레이스 읽기
+
+"3박 4일 오사카, 예산 80만원"을 verbose로 돌립니다.
+
+```text
+[step 1] calc_budget({"people": 1, "nights": 3, "style": "보통"})
+         → {"합계": 910000, …}                       (컨텍스트 799tk)
+[step 2] calc_budget({"nights": 3, "people": 1, "style": "절약"})
+         → {"합계": 650000, …}                       (컨텍스트 922tk)
+[step 3] search_places({"category": "관광", "city": "오사카"}) …  (1045tk)
+[step 4] search_places({"category": "식당", "city": "오사카"}) …  (1255tk)
+[step 5] search_places({"category": "카페", "city": "오사카"}) …  (1391tk)
+[step 6] estimate_travel_time({"from_area": "난바", "to_area": "우메다"}) … (1495tk)
+[step 7] estimate_travel_time({…난바→주오구}) …                   (1584tk)
+[step 8] estimate_travel_time({…난바→베이에리어}) …               (1673tk)
+[한도 도달] max_steps=8, 지금까지의 근거로 마무리
+
+=== 최종 답 (앞부분) ===
+  … 도구로 확인한 결과, '보통 스타일'의 예상 합계는 91만 원으로 예산(80만 원)을
+  초과하므로, '절약 스타일'을 기준으로 예산을 맞추어야 합니다. …
+```
+
+읽기: 트레이스에 에이전트의 사고가 그대로 보입니다. 보통 스타일로 계산해 보고
+(91만원, 예산 초과), 절약 스타일로 다시 계산하고(65만원, 통과), 그다음에야
+장소를 검색했습니다. 시키지 않은 "예산 초과 시 재계산"이 루프 구조에서
+자연스럽게 나온 것입니다. 이 실행은 8스텝을 꽉 채워 한도 종료됐다는 것도
+트레이스가 말해 줍니다.
+
+## 2. `02_max_steps.py` · 한도 1, 3, 10의 행동 변화
+
+```text
+=== max_steps = 1 ===
+  사용한 스텝: 1, 종료: max_steps
+  쓴 도구: ['calc_budget'] / 답 길이: 960자
+
+=== max_steps = 3 ===
+  사용한 스텝: 3, 종료: max_steps
+  쓴 도구: ['calc_budget', 'search_places', 'search_places'] / 답 길이: 1161자
+
+=== max_steps = 10 ===
+  사용한 스텝: 7, 종료: final
+  쓴 도구: ['calc_budget', 'search_places' × 3, 'estimate_travel_time' × 2]
+  답 길이: 983자
+```
+
+읽기: 한도 1이어도 답은 나옵니다. 마무리 호출이 "지금까지 확인한 것만으로
+정리하라"를 시키기 때문입니다. 대신 근거가 예산 계산 하나뿐입니다. 한도
+10에서는 7스텝 만에 final로 스스로 멈췄습니다. 스텝 한도는 품질 설정이
+아니라 폭주에 대한 보험이고, 보험이 여유로우면 쓰이지 않습니다.
+
+## 3. `03_prompt_ablation.py` · 시스템 프롬프트를 한 부분씩 빼면
+
+같은 질문을 ① 온전한 프롬프트 ② 도구 지침 문단 제거 ③ 빈 프롬프트로
+돌립니다.
+
+```text
+=== ① 온전한 프롬프트 ===
+  스텝 8, 도구 사용 7회
+  답: … 오사카 1박 2일 '절약' 스타일 예산을 계산한 결과, 항공권을 포함할
+  경우 항공권 비용(약 35만 원)으로 인해 …
+
+=== ② 도구 지침 문단 제거 ===
+  스텝 4, 도구 사용 3회
+  답: … 항공권 비용(약 35만 원 선)만으로도 예산을 초과하게 됩니다 …
+
+=== ③ 빈 프롬프트 ===
+  스텝 4, 도구 사용 3회
+  답: … 예산(항공권 불포함 기준 30만 원)에 맞춘 절약·알뜰 코스를 짜드렸습니다!
+```
+
+읽기: 정직하게 읽어야 하는 결과입니다. 빈 프롬프트에서도 도구는 쓰였습니다.
+요즘 모델은 도구 사용 자체를 훈련으로 익히고 있어서, 지침을 빼도 루프가
+무너지지는 않습니다. 대신 차이는 꼼꼼함에서 납니다. 온전한 프롬프트는 "근거를
+도구로 확인하라"는 지침 때문에 도구를 7회 쓰며 검증했고, 빈 프롬프트는 예산
+초과 문제를 항공권 제외로 슬쩍 우회했습니다. 프롬프트의 각 문단은 루프의
+생사가 아니라 일하는 기준을 바꿉니다.
+
+## 4. `04_context_growth.py` · 팽창 곡선을 눈으로
+
+스텝별 입력 토큰을 막대로 그립니다.
+
+```text
+=== 스텝별 입력(컨텍스트) 토큰 ===
+  step 1    810tk █████████████████████ search_places
+  step 2   1116tk █████████████████████████████ estimate_travel_time
+  step 3   1205tk ███████████████████████████████ estimate_travel_time
+  step 4   1294tk █████████████████████████████████ calc_budget
+  step 5   1423tk █████████████████████████████████████ calc_budget
+  step 6   1552tk ████████████████████████████████████████ 최종답
+
+=== 합계 ===
+  이 한 번의 요청에 입력 토큰 총 7,400개. 마지막 스텝 하나가 1,552개
+```
+
+읽기: 우상향 계단입니다. 2세션에서 본 무상태의 대가로, 매 스텝 지금까지의
+모든 메시지를 다시 실어 보내기 때문입니다. 첫 스텝 810토큰이 여섯 스텝 만에
+1,552토큰이 됐고, 합계 7,400토큰 중 대부분이 같은 내용의 재전송입니다.
+이 곡선이 ReAct의 비용 구조이고, 다음 세션의 루프들이 이 곡선을 공격합니다.
 
 ## 실패 재현: 무한 루프와 스텝 한도
 
-종료 조건을 뺀 버전으로 루프가 멈추지 않는 사고를 먼저 일으키고, 트레이스로
-원인(도구 요청이 반복되는 지점)을 짚은 뒤, 스텝 한도가 막아내는 것을
-확인합니다. 유닛 테스트에도 같은 시나리오가 박제되어 있습니다. 모델이 영원히
-도구만 요청하는 각본에서 한도가 강제 종료시키는지를 `tests/test_react.py`의
-max_steps 테스트가 검증합니다.
+종료 조건이 없다면 모델이 도구만 계속 요청할 때 루프가 영원히 돕니다. 이
+시나리오는 각본 LLM으로 유닛 테스트에 박제되어 있습니다.
 
-## 완성 장면
+```python
+# tests/test_react.py — 모델이 영원히 도구만 요청하는 각본
+llm = ScriptedLLM([
+    fake_response(tool_calls=[fake_tool_call("search_places", '{"city": "오사카"}')]),
+    fake_response(tool_calls=[fake_tool_call("search_places", '{"city": "교토"}', "c2")]),
+    fake_response(content="여기까지 확인한 내용으로 정리합니다."),
+])
+result = react.run("전부 다 검색해", model="fake-model", max_steps=2)
+assert result.stopped_by == "max_steps"
+assert "tools" not in llm.calls[2]     # 마무리 호출엔 도구가 없어야 보험이다
+```
 
-"3박 4일 오사카, 예산 80만원" 요청이 검색 → 이동시간 → 예산 도구를 오가며
-풀리는 것을 확인합니다.
+읽기: 세 번째 단언이 핵심입니다. 한도에 걸린 뒤의 마무리 호출에 tools가
+실렸다면 모델이 또 도구를 요청할 수 있고, 보험이 보험이 아니게 됩니다.
+
+## 완성 확인
 
 ```bash
 git checkout v0.3
 docker compose exec lab python -m agent.main --verbose "3박 4일 오사카, 예산 80만원"
 docker compose exec lab python examples/04_react/01_react_trace.py
+docker compose exec lab pytest        # 이 시점의 테스트 17개 통과
 ```
+
+## 이 세션이 남기는 것
+
+- ReAct는 4세션의 왕복 + for 루프 + 종료 조건 둘. 그 이상이 아니다
+- 트레이스는 print가 아니라 데이터다. 스텝·인자·결과·토큰이 남아야 읽을 수 있다
+- 스텝 한도는 품질이 아니라 보험이고, 마무리 호출에 도구가 없어야 완성된다
+- 컨텍스트는 계단으로 부푼다. 루프 설계가 곧 비용 설계다
 
 다음 세션: [ReAct 너머의 루프들](/course/day-01-session-06/)

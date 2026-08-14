@@ -1,7 +1,7 @@
 ---
 title: "Day 1 · 3. LiteLLM 통합 레이어"
-description: "examples/02_litellm 10종: 프로바이더 교체, 3사 비교, 폴백, 캐싱, 비용 콜백, rate limit, 라우터, 임베딩"
-summary: "모델 문자열만 바꿔 3사를 오가는 통일 인터페이스 위에서 폴백·재시도·캐싱·비용 집계·라우팅을 예제 10종으로 다집니다."
+description: "examples/02_litellm 10종 전수 실행: 프로바이더 교체, 3사 비교, 폴백, 재시도, 캐싱, 비용 콜백, rate limit, 라우터, 임베딩"
+summary: "모델 문자열만 바꿔 3사를 오가는 통일 인터페이스 위에서 폴백·재시도·캐싱·비용 집계·라우팅을 예제 10종의 실제 실행 결과로 다집니다."
 date: 2026-08-14
 category: day-1
 order: "3897"
@@ -11,45 +11,183 @@ tags: ["LiteLLM", "폴백", "라우터", "임베딩"]
 ---
 
 > 원안 5.2절. 교재는 `examples/02_litellm/` 10종입니다.  
-> 이 과정의 모든 코드는 이 통일 인터페이스 위에 섭니다.
+> ★ 표시는 수업 중 함께 실행하는 예제이고, 이 문서에는 **10종 전부의 실제
+> 실행 결과**를 실었습니다.  
+> 실측 환경: 2026-08-14, litellm 1.96.2, 3사 키 전부 채운 상태
 
 - **교재**: [examples/02_litellm](https://github.com/2026-ai-agents/day-01/tree/main/examples/02_litellm)
 - **핵심 문장**: [[litellm|LiteLLM]]에서 프로바이더 교체는 model= 문자열 한 줄이다
 
-## 예제 10종
+## 1. `01_provider_swap.py` ★ · 모델 문자열만 바꿔 3사 교체
 
-| | 파일 | 무엇을 보는가 |
-| --- | --- | --- |
-| ★ | `01_provider_swap.py` | 모델 문자열만 바꿔 3사 교체 |
-| ★ | `02_three_way_compare.py` | 같은 프롬프트를 3사에 던져 응답·지연·비용 나란히 출력 |
-| ★ | `03_fallback.py` | 주 모델 실패 시 폴백 체인 동작 관찰 |
-| | `04_retry_timeout.py` | 재시도 횟수·타임아웃 설정과 동작 |
-| | `05_cache.py` | 응답 캐싱: 같은 질문 두 번째는 공짜·즉시 |
-| | `06_cost_callback.py` | 콜백으로 호출별 토큰·비용 자동 집계 |
-| | `07_rate_limit.py` | 일부러 rate limit을 맞고 백오프로 살아나는 과정 |
-| | `08_router.py` | 여러 모델에 요청을 분산하는 라우터 구성 |
-| | `09_model_info.py` | 모델별 컨텍스트 한도·단가 메타데이터 조회 |
-| | `10_embedding.py` | 임베딩도 같은 인터페이스로 (Day 2 RAG 예고) |
+호출 코드는 한 글자도 바뀌지 않습니다. 바뀌는 것은 `model=` 문자열뿐입니다.
 
-## 세션 포인트
-
-- **모델 이름은 한 곳에만 둔다**: 이 랩의 모델 문자열은 전부
-  `agent/config.py`에 있습니다. 예제 어디에도 하드코딩이 없어서, 모델을
-  바꾸는 일이 파일 한 곳의 일이 됩니다
-- **장애 대응은 세 겹**: 순간 장애의 재시도, 모델 장애의 폴백, rate limit의
-  백오프. `03_fallback.py`는 일부러 존재하지 않는 모델을 1순위로
-  두고 폴백이 이어받는 것을 한 번의 호출 안에서 보여줍니다
-- **비용은 콜백으로 샌다 없이 집계한다**: `06_cost_callback.py`의 훅 자리가
-  Day 1 마지막의 [[budget-guard|budget guard]]가 앉을 자리입니다
-- **[[embedding|임베딩]]도 같은 인터페이스**: `10_embedding.py`가 Day 2
-  food-rag-agent의 의미 검색을 예고합니다
-
-## 실측: 이 랩이 쓰는 모델들의 메타데이터
-
-`09_model_info.py`는 키 없이 돌아갑니다. litellm 1.96.2 내장 단가표 기준,
-2026-08-14 실측입니다.
+```python
+for model in available_models():          # 키가 채워진 프로바이더들
+    answer = completion(
+        model=model, messages=[{"role": "user", "content": question}]
+    ).choices[0].message.content
+```
 
 ```text
+=== gemini/gemini-3.5-flash-lite ===
+  저는 구글(Google)에서 개발한 대규모 언어 모델, 제미나이(Gemini)입니다.
+
+=== openai/gpt-5.4-nano ===
+  저는 OpenAI의 ChatGPT(대화형 AI) 모델입니다.
+
+=== anthropic/claude-haiku-4-5 ===
+  저는 Anthropic이 만든 Claude라는 AI 어시스턴트입니다.
+```
+
+읽기: 세 회사의 세 모델이 같은 `completion()` 하나로 답했습니다. 이 랩의
+모델 문자열은 전부 `agent/config.py` 한 곳에 있고, 예제 어디에도 하드코딩이
+없습니다. 이 통일이 이후 모든 것(폴백·라우팅·모델 배정)의 토대입니다.
+
+## 2. `02_three_way_compare.py` ★ · 응답·지연·비용을 나란히
+
+"어느 모델을 쓸까"는 감이 아니라 측정의 문제입니다.
+
+```text
+=== 비교 표 ===
+  모델                                 지연    입력tk    출력tk        비용
+  gemini/gemini-3.5-flash-lite       1.5s      24      90 $  0.000232
+  openai/gpt-5.4-nano                1.7s      30     120 $  0.000156
+  anthropic/claude-haiku-4-5         2.3s      43     124 $  0.000663
+```
+
+읽기: 같은 프롬프트("오사카 1일 코스 세 줄")인데 입력 토큰부터 다릅니다.
+프로바이더마다 토크나이저와 내부 포장이 다르기 때문입니다. 품질은 눈으로
+(전체 로그에 세 답이 나란히 있습니다), 지연과 비용은 숫자로 비교합니다.
+
+## 3. `03_fallback.py` ★ · 주 모델이 죽으면 폴백이 이어받는다
+
+일부러 존재하지 않는 모델을 1순위로 두고 실제 모델을 폴백으로 답니다.
+
+```python
+resp = completion(
+    model="openai/gpt-없는-모델",          # 반드시 실패하는 1순위
+    messages=[…],
+    fallbacks=["gemini/gemini-3.5-flash-lite"],
+)
+```
+
+```text
+LiteLLM:ERROR: … Fallback attempt failed for model openai/gpt-없는-모델:
+  litellm.BadRequestError: OpenAIException - invalid model ID
+
+=== 결과 ===
+  실제 응답한 모델: gemini-3.5-flash-lite
+  답: 폴백 성공
+```
+
+읽기: 1순위의 실패 로그가 찍히고, 같은 `completion()` 한 번 안에서 폴백이
+응답을 완성했습니다. 이 세션 끝의 "모델 교체 사례"처럼 모델은 예고 없이
+은퇴합니다. 폴백은 옵션이 아니라 기본 장비입니다.
+
+## 4. `04_retry_timeout.py` · 끊는 시간과 다시 시도할 횟수
+
+```text
+=== 타임아웃 재현 (timeout=0.001초) ===
+  litellm.Timeout: Connection timed out …
+
+=== 정상 설정 (timeout=30초, num_retries=2) ===
+  답: 2
+  실패하면 최대 2회까지 자동으로 다시 시도한 뒤에야 에러를 낸다
+```
+
+읽기: timeout은 "이 시간 안에 답이 없으면 끊는다", num_retries는 "끊기면 몇 번
+다시"입니다. 폴백(모델 장애)과 재시도(순간 장애)와 백오프(rate limit)는 각각
+다른 종류의 장애를 맡는 세 겹의 방어입니다.
+
+## 5. `05_cache.py` · 같은 질문 두 번째는 공짜·즉시
+
+```python
+litellm.cache = Cache(type="local")       # 프로세스 안 인메모리 캐시
+r1 = completion(model=model, messages=messages, caching=True)
+r2 = completion(model=model, messages=messages, caching=True)   # 캐시에서
+```
+
+```text
+=== 1회차 (API까지 다녀옴) ===   2.09초
+=== 2회차 (같은 요청) ===   0.002초
+=== 비교 ===   2.09초 → 0.002초. 같은 답인가: True
+```
+
+읽기: 1,000배 빠르고 비용은 0입니다. FAQ·반복 질의가 많은 서비스의 기본
+손잡이입니다. 단, 같은 요청이어야 하고(messages가 1바이트라도 다르면 미스),
+신선도가 중요한 질문에는 쓰지 않습니다.
+
+## 6. `06_cost_callback.py` · 호출마다 비용이 장부에 쌓인다
+
+```python
+def track_cost(kwargs, completion_response, start_time, end_time):
+    ledger["calls"] += 1
+    ledger["cost"] += kwargs.get("response_cost") or 0.0
+
+litellm.success_callback = [track_cost]
+```
+
+```text
+  호출: '1+1은?' / '오사카는 어느 나라?' / '라멘 한 그릇 평균 가격은?'
+
+=== 장부 ===
+  호출 3건, 누적 비용 $0.000870
+```
+
+읽기: 호출부에는 비용 코드가 한 줄도 없습니다. 콜백 하나 등록하면 모든
+completion의 비용이 장부로 흘러듭니다. 7세션의 [[budget-guard|budget guard]]가
+정확히 이 자리에서 누적 비용을 지켜봅니다.
+
+## 7. `07_rate_limit.py` · 한도를 맞고 백오프로 살아나기
+
+429를 만나면 1초 → 2초 → 4초 기다렸다 재시도하는 백오프를 달고, 빠른 연속
+호출 15번으로 한도를 만나러 갑니다.
+
+```text
+=== 연속 15회 빠른 호출 (한도를 만나러 간다) ===
+  1회 성공 … 15회 성공
+
+=== 정리 ===
+  한도는 장애가 아니라 일상이다. 백오프는 에이전트 루프의 기본 장비다.
+```
+
+읽기: 이번 실측은 유료 티어라 15연속으로도 한도에 닿지 않았고, 백오프 코드는
+할 일 없이 통과했습니다. 무료 티어에서 같은 코드를 돌리면 중간에
+`429! 1초 백오프 후 재시도` 줄이 등장합니다. 걸리든 안 걸리든 코드는 같아야
+한다는 것이 요점입니다.
+
+## 8. `08_router.py` · 별명 하나 뒤에 배포 여러 개
+
+```python
+deployments = [
+    {"model_name": "travel-llm", "litellm_params": {"model": m}}
+    for m in available_models()
+]
+router = Router(model_list=deployments, routing_strategy="simple-shuffle")
+resp = router.completion(model="travel-llm", messages=[…])
+```
+
+```text
+=== 배포 3개에 요청 6건 분산 ===
+  요청 1 → 처리한 모델: claude-haiku-4-5-20251001
+  요청 2 → 처리한 모델: gpt-5.4-nano-2026-03-17
+  요청 3 → 처리한 모델: gpt-5.4-nano-2026-03-17
+  요청 4 → 처리한 모델: claude-haiku-4-5-20251001
+  요청 5 → 처리한 모델: claude-haiku-4-5-20251001
+  요청 6 → 처리한 모델: gemini-3.5-flash-lite
+```
+
+읽기: 호출부는 `travel-llm`이라는 별명 하나만 압니다. 어떤 실모델이 받을지는
+라우터의 일이고, 6건이 3사에 흩어졌습니다. Day 3 coding-agent의 난이도별 모델
+배정이 이 구조 위에 섭니다.
+
+## 9. `09_model_info.py` · 한도·단가를 코드로 조회한다
+
+키 없이 도는 예제입니다. litellm이 내장한 모델 메타데이터를 읽습니다.
+
+```text
+=== 이 랩이 쓰는 모델들 ===
   모델                                입력한도     출력한도   입력$/1M   출력$/1M
   gemini/gemini-3.5-flash-lite      1,048,576    65,536      0.30      2.50
   openai/gpt-5.4-nano                 272,000   128,000      0.20      1.25
@@ -57,9 +195,28 @@ tags: ["LiteLLM", "폴백", "라우터", "임베딩"]
   gemini/gemini-embedding-001           2,048         0      0.15      0.00
 ```
 
-같은 "한 호출"이라도 모델에 따라 단가가 다릅니다. 싼 모델로 충분한 일과
-비싼 모델이 필요한 일을 가르는 것, 그것이 Day 3 coding-agent의 난이도별
-모델 배정입니다.
+읽기: "이 입력이 들어가는가"와 "이 호출은 얼마인가"를 코드가 실행 전에 판단할
+수 있다는 뜻입니다. 2세션의 한도 초과 예제가 저 입력한도 열을 읽었고,
+7세션의 사전 비용 추정이 저 단가 열을 읽습니다.
+
+## 10. `10_embedding.py` · 같은 인터페이스의 다른 출구
+
+completion이 문장을 돌려준다면 embedding은 숫자 벡터를 돌려줍니다.
+Google 키가 필요한 예제입니다.
+
+```text
+=== 벡터의 모양 ===
+  문장 1개 → 3072차원 벡터
+  앞 6개 값: [0.0116, -0.004, 0.0088, -0.0772, -0.0033, -0.0068]
+
+=== 코사인 유사도 ===
+  '국물 요리' vs '탕이나 찌개' = 0.843  (의미가 가깝다)
+  '국물 요리' vs '주가 상승'   = 0.599  (멀다)
+```
+
+읽기: 단어가 하나도 겹치지 않는 "든든한 국물 요리"와 "뜨끈한 탕이나 찌개"가
+0.843으로 가깝게 잡혔습니다. 이 [[embedding|임베딩]] 벡터 위에 Day 2
+food-rag-agent의 의미 검색이 섭니다.
 
 ## 사례: 모델 교체가 실제로 일어났다
 
@@ -81,5 +238,11 @@ tags: ["LiteLLM", "폴백", "라우터", "임베딩"]
   에이전트를 끝까지 돌려 도구 호출 품질을 비교했습니다
 - 프로바이더 장애·모델 은퇴는 예외 상황이 아니라 일상입니다. 폴백과 통일
   인터페이스가 있는 이유입니다
+
+## 이 세션이 남기는 것
+
+- 프로바이더 교체는 문자열 한 줄, 모델 이름은 `agent/config.py` 한 곳
+- 장애의 종류마다 다른 방어: 재시도(순간), 폴백(모델), 백오프(한도)
+- 비용은 콜백으로 집계하고, 한도·단가는 실행 전에 코드로 읽는다
 
 다음 세션: [Tool calling 심화](/course/day-01-session-04/)
