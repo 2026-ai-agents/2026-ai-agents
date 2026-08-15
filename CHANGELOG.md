@@ -47,6 +47,11 @@ git 태그(`vX.Y.Z`)로, 사이트 버전은 `site/package.json`으로 관리한
   조항 번호 인용 검증(v1.0)까지 따라간다. 두 그래프 구조, 실측 출력 4종,
   화면 3장
 
+- **사전 준비 가이드에 git 설치 단계**: `git clone`으로 받는 과정인데 설치
+  절차에는 Docker만 있었다. 2절을 "git과 Docker 셋업"으로 바꾸고 OS별 git
+  설치와 `git --version` 확인을 2-1로 넣었다. `git: command not found`도
+  문제 해결 표에 추가
+
 - **Day 3 인터랙티브 도구 3종**: 라우팅 규칙(`<RoutingRules />`), 라우팅
   기준(`<HandoffRules />`), 비용 게이트(`<CostGate />`) 셋. 세 저장소의 결정적
   규칙을 `site/src/lib/day-03-rules.mjs`로 옮겨 브라우저에서 그대로 돌린다
