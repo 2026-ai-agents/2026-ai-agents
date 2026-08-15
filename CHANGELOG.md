@@ -20,6 +20,10 @@ git 태그(`vX.Y.Z`)로, 사이트 버전은 `site/package.json`으로 관리한
   이미지 동봉형 폴더 문서로 v0.1 빈 화면과 v1.0 멀티턴 상담의 실제 스크린샷
 - **diet-agent 저장소 개설**: LangGraph 기본기를 얹은 식단 상담 웹 제품.
   v0.1\~v1.0 네 태그 전부에서 재빌드·테스트 통과, GitHub Releases 4건
+- **diet-agent 수제 루프 대조군(v1.1.0)**: 같은 에이전트를 그래프 없이 짠
+  `demos/handloop.py`를 교안의 "LangGraph란 무엇인가" 절에 나란히 배치.
+  실행 결과와 각본 LLM 테스트 포함. v1.0.1은 trace 데모의 thread_id 누락
+  hotfix
 
 ### 변경
 
