@@ -64,13 +64,15 @@
 | 슬러그 | 제목 | 시간 | 원안 | 저장소 |
 | --- | --- | --- | --- | --- |
 | `day-03` | Day 3 개요 | — | §7 | — |
-| `day-03-session-01` | 멀티 에이전트 설계 원칙 | 25분 | §7 머리말 | — |
+| `day-03-session-01` | 멀티 에이전트 설계 원칙 | 30분 | §7 머리말 | — |
 | `day-03-session-02` | energy-agent: supervisor 패턴 | 65분 | §7.1 | `energy-agent` |
-| `day-03-session-03` | support-agent: handoff 패턴 | 60분 | §7.2 | `support-agent` |
-| `day-03-session-04` | coding-agent: 병렬 코딩 에이전트 | 55분 | §7.3 | `coding-agent` |
-| `day-03-session-05` | 마무리와 회고 | 10분 | §7.5 | — |
+| `day-03-session-03` | support-agent: handoff 패턴 | 65분 | §7.2 | `support-agent` |
+| `day-03-session-04` | coding-agent: 병렬 코딩 에이전트 | 65분 | §7.3 | `coding-agent` |
+| `day-03-session-05` | 마무리와 회고 | 15분 | §7.5 | — |
 
-MCP 활용 시연(§7.4)은 채택하지 않는다. 아래 결정 사항 참고.
+MCP 활용 시연(§7.4)은 채택하지 않는다. 아래 결정 사항 참고. 빠진 25분은
+새로 나오는 개념(`Command`·`Send`·worktree·`tool_choice`)의 설명과 인터랙티브
+도구에 쓴다. 원안의 시간 배분과 갈리는 지점이므로 아래 결정 사항에 남긴다.
 문서 수는 개요 3개 + 세션 18개로 **21개**다.
 
 ## 프론트매터 규약
@@ -168,6 +170,11 @@ site/src/content/slides/ko/day-01-session-04/index.mdx
 ### MCP 활용 시연(§7.4)은 채택하지 않는다 (2026-08-16)
 
 원안 §7.4의 "MCP 내어주기" 시연을 Day 3에서 뺀다. Day 3은 5개 세션이 된다.
+
+시간은 이렇게 나눈다. 설계 원칙 25 → 30분(새 개념 셋을 미리 소개),
+support-agent 60 → 65분(`Command`와 `tool_choice`), coding-agent 55 → 65분
+(`Send`와 worktree는 각각 한 절이 필요하다), 마무리 10 → 15분으로 회고와 Q&A.
+합은 240분 그대로다.
 
 - 시연의 마지막 장면(공개 URL 배포 → 개인 Claude 계정에 커스텀 커넥터 등록
   → 폰에서 사용)이 **강사 개인 계정과 유료 플랜에 묶여 있다.** 수강생이

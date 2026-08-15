@@ -26,6 +26,8 @@
   팽창·compact 시각화가 쓰는 `site/src/data/context-growth.json`을 실제
   에이전트 실행에서 뽑는 방법
   (`scripts/extract-context-growth.py`, `scripts/extract-compact.py`)
+- [day-03-rules-port.md](day-03-rules-port.md): Day 3 인터랙티브 도구가 쓰는
+  규칙의 포팅·대조 기록
 - [harness-gates-port.md](harness-gates-port.md): Day 1 7세션의 게이트
   데모가 쓰는 `site/src/lib/harness-gates.mjs`가 파이썬 원본과 같은 규칙인지
   대조하는 방법 (`scripts/harness-gates-compare.mjs`,
