@@ -179,7 +179,10 @@ docker compose exec app python -c \
 ```
 
 실측 출력에서 색 지정(classDef 3줄)만 걷어내고 렌더한 그림입니다. 실선은
-무조건 가는 길, 점선은 route_after_advisor가 고르는 조건 분기입니다.
+무조건 가는 길, 점선은 route_after_advisor가 고르는 조건 분기입니다. 이것은
+clone 직후(main)의 완성 그래프이고, 아래 사다리를 오르는 동안 이 그림이
+일직선에서 여기까지 자라는 것을 각 단에서 같은 명령으로 다시 뽑아
+확인합니다.
 
 ```mermaid
 ---
@@ -313,6 +316,9 @@ graph TD;
 	__start__ --> advisor;
 	advisor --> __end__;
 ```
+
+이 일직선이 v0.1 그래프의 전부입니다. 분기가 생기는 v0.2 절에서 같은
+명령으로 다시 뽑아, 그림이 자란 것을 실측으로 비교합니다.
 
 db에 시드가 실제로 적재됐는지 psql로 확인합니다.
 
@@ -452,6 +458,41 @@ v0.1과 같은 질문인데 답의 성격이 바뀌었습니다. 일반론 대�
 트레이스를 공짜로 얻은 것도 봐 두세요. `graph.stream(stream_mode="updates")`
 한 줄이 노드 단위 관찰을 줍니다. Day 1에서는 StepRecord를 손으로 만들었던
 자리입니다.
+
+#### 그래프도 실측으로: 분기가 그림에 나타난다
+
+v0.1에서 일직선이던 draw_mermaid를 같은 명령으로 다시 뽑습니다.
+
+```bash
+docker compose exec app python -c \
+  "from agent.graph import graph; print(graph.get_graph().draw_mermaid())"
+```
+
+색 지정만 걷어내고 렌더한 v0.2 시점의 실측 그림입니다. tools 노드와 점선 두
+갈래(조건 분기)가 새로 생겼고, 위의 손그림·conditional edge 코드와
+1:1입니다.
+
+```mermaid
+---
+config:
+  flowchart:
+    curve: linear
+---
+graph TD;
+	__start__([<p>__start__</p>])
+	advisor(advisor)
+	tools(tools)
+	__end__([<p>__end__</p>])
+	__start__ --> advisor;
+	advisor -.-> __end__;
+	advisor -.-> tools;
+	tools --> advisor;
+```
+
+그래프 구조의 변화는 여기가 마지막입니다. v0.3과 v1.0에서 같은 명령을
+실행해 비교하면 출력이 바이트 단위로 같습니다. v0.3의 reducer와
+checkpointer는 상태(State)와 컴파일 옵션의 일이라 그림에 나타나지 않고,
+v1.0은 그래프 밖(UI·API)의 완성이기 때문입니다.
 
 ## v0.3 · 누적: reducer 한 줄이 멀티턴을 만든다
 
