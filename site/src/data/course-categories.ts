@@ -21,9 +21,9 @@ export const courseCategories: Category[] = [
   },
   {
     id: 'day-3',
-    label: { ko: 'Day 3 · Multi-agent와 MCP' },
+    label: { ko: 'Day 3 · Multi-agent와 코딩 에이전트' },
     description: {
-      ko: 'supervisor와 handoff 패턴, 병렬 코딩 에이전트, MCP 서버로 내어주기',
+      ko: 'supervisor와 handoff 패턴, 3일이 합쳐지는 병렬 코딩 에이전트',
     },
   },
   {

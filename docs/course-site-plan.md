@@ -152,7 +152,7 @@ site/src/content/slides/ko/day-01-session-04/index.mdx
 2. Day 1 세션 8개 생성, `day-01` 개요를 조망용으로 축소 [완료 2026-08-14]
 3. Day 2 세션 5개 생성, `day-02` 개요 축소 [완료 2026-08-15]
 4. Day 3 세션 5개 생성, `day-03` 개요 축소 [도입·개요·session-02 완료 2026-08-15,
-   session-03·04 완료 2026-08-16, MCP 시연은 미채택]
+   session-03·04·05 완료 2026-08-16, MCP 시연은 미채택]
 5. 슬라이드 덱 이름 변경 (`day-01` → `day-01-session-01`) [완료 2026-08-14]
 6. `site/README.md`(콘텐츠 작성 위치·order 공식), `docs/documentation-rules.md`,
    `CHANGELOG.md` 갱신 [Day 1분 완료 2026-08-14]
