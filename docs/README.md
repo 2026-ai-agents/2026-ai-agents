@@ -14,6 +14,12 @@
 - [deployment.md](deployment.md): GitHub Pages 공개 배포 (워크플로 동작,
   저장소 설정, base 경로)
 
+## 데이터 재현 기록
+
+- [vector-space-data.md](vector-space-data.md): Day 2 5세션의 벡터 공간
+  시각화가 쓰는 `site/src/data/vector-space.json`을 실제 색인에서 뽑는 방법
+  (`scripts/extract-vector-space.py`, `scripts/pack-vector-space.py`)
+
 ## 작업 계획
 
 - [course-site-plan.md](course-site-plan.md): 강의 문서를 일차 단위에서 세션
