@@ -1,0 +1,517 @@
+---
+title: "Day 1 · 3. LiteLLM 통합 레이어"
+description: "Day 1 세 번째 세션 슬라이드: 왜 LiteLLM인가부터 examples/02_litellm 10종까지. 교체·비교·폴백·재시도·캐싱·비용 콜백·백오프·라우터·메타데이터·임베딩"
+presenter: CodeCompose
+date: "2026-08-14"
+order: 3
+transition: none
+toc_open: false
+---
+
+import Slide from 'stack-site-builder/components/Slide.astro';
+
+<Slide class="cover">
+
+# AI Agent 실전
+
+Day 1 · 3. LiteLLM 통합 레이어
+
+*CodeCompose · 2026*
+
+</Slide>
+
+<Slide>
+
+## 이 세션이 하는 일
+::sub[2세션이 이미 써 온 completion()의 정체를 밝힙니다]
+
+- 왜 공식 SDK 세 벌 대신 통합 레이어 한 벌인가, 그 **이득과 대가**
+- `examples/02_litellm/` **10종을 전부 실행**합니다
+- 폴백·재시도·캐시·라우터·비용 콜백 같은 **실전 장비**를 하나씩 돌려 봅니다
+
+</Slide>
+
+<Slide class="center">
+
+## 핵심 문장
+
+**LiteLLM에서 프로바이더 교체는 `model=` 문자열 한 줄이다**
+
+</Slide>
+
+<Slide class="center">
+
+## Part 1. 왜 LiteLLM인가
+
+각 사가 공식 SDK를 주는데도 이 랩이 하나로 통일한 이유
+
+</Slide>
+
+<Slide>
+
+## 같은 일을 세 가지 문법으로
+
+```python
+# 세 회사의 공식 SDK
+openai.OpenAI().chat.completions.create(model="gpt-5.4-nano", messages=[…])
+genai.Client().models.generate_content(model="gemini-3.5-flash-lite", contents="…")
+anthropic.Anthropic().messages.create(model="claude-haiku-4-5", max_tokens=1024, …)
+
+# LiteLLM — 셋 다 이 한 줄. 바뀌는 것은 model 문자열뿐
+litellm.completion(model="<프로바이더/모델>", messages=[…])
+```
+
+공식 SDK로 3사를 지원하려면 **호출부 세 벌, 응답 파싱 세 벌, 에러 처리 세 벌**.
+LiteLLM은 그 셋을 OpenAI 호환 형태 하나로 통일합니다
+
+</Slide>
+
+<Slide>
+
+## 장점: 왜 쓰는가
+
+- **교체 비용이 문자열 한 줄**: 프로바이더 교체가 코드 수정이 아니라 설정 변경
+- **셋 중 어떤 키를 채워도 같은 코드**: 이 과정의 요구사항입니다.
+  수강생마다 가진 키가 달라도 모든 예제가 그대로 돕니다
+- **부대 장비 내장**: 단가표, 토큰 카운터, 폴백, 재시도, 캐시, 라우터, 비용 콜백.
+  이 세션에서 하나씩 씁니다
+- **넓은 커버리지**: 100개 이상의 프로바이더를 같은 인터페이스로
+
+</Slide>
+
+<Slide>
+
+## 단점: 무엇을 대가로 치르는가
+
+- **추상화 한 겹의 비용**: 에러가 litellm 예외로 감싸여 오고, 디버깅 시
+  스택이 한 층 깊어집니다
+- **프로바이더 고유 기능의 지연·누수**: 새 기능은 litellm이 지원할 때까지
+  기다리거나, `provider_specific_fields`처럼 표준 밖 필드로 새어 나옵니다
+- **라이브러리 자체에 의존**: 단가표의 최신성, 새 모델 등재 속도, 버그가
+  전부 litellm 버전에 묶입니다. 이 랩이 버전을 고정한 이유입니다
+
+</Slide>
+
+<Slide>
+
+## 판단 기준
+
+- 프로바이더 하나를 확정했고 그 고유 기능을 깊이 쓴다면: **공식 SDK**
+- 멀티 프로바이더, 교체 가능성, 비용·품질 비교가 필요하다면: **통합 레이어**
+- 이 과정은 3사를 오가며 비교하는 것 자체가 커리큘럼이므로 LiteLLM입니다
+
+</Slide>
+
+<Slide class="center">
+
+## 추상화를 고르는 일반 규칙
+
+**갈아끼울 계획이 없으면 추상화는 비용입니다**
+
+갈아끼울 것이 확실하면 추상화가 그 비용을 갚습니다.
+모델은 갈아끼워집니다. 오늘 실제로 두 번 갈았습니다
+
+</Slide>
+
+<Slide class="center">
+
+## Part 2. 교체와 비교
+
+같은 코드로 3사를 오간다
+
+</Slide>
+
+<Slide>
+
+## 2. 프로바이더 교체는 문자열 한 줄
+::sub[01_provider_swap.py · 호출 코드는 한 글자도 바뀌지 않는다]
+
+```python
+for model in available_models():          # 키가 채워진 프로바이더들
+    answer = completion(
+        model=model, messages=[{"role": "user", "content": question}]
+    ).choices[0].message.content
+```
+
+```text
+=== gemini/gemini-3.5-flash-lite ===
+  저는 구글(Google)에서 개발한 대규모 언어 모델, 제미나이(Gemini)입니다.
+=== openai/gpt-5.4-nano ===
+  저는 OpenAI의 ChatGPT(대화형 AI) 모델입니다.
+=== anthropic/claude-haiku-4-5 ===
+  저는 Anthropic이 만든 Claude라는 AI 어시스턴트입니다.
+```
+
+</Slide>
+
+<Slide>
+
+## 결과 읽기: 모델 이름은 한 곳에만
+
+- 세 회사의 세 모델이 같은 `completion()` 하나로 답했습니다
+- 이 랩의 모델 문자열은 전부 `agent/config.py` **한 곳**에 있습니다.
+  예제 어디에도 하드코딩이 없습니다
+- 이 통일이 이후 모든 것(폴백·라우팅·모델 배정)의 토대입니다
+
+</Slide>
+
+<Slide>
+
+## 3. 3사 비교: 응답·지연·비용을 나란히
+::sub[02_three_way_compare.py · "어느 모델을 쓸까"는 감이 아니라 측정의 문제]
+
+```text
+=== 비교 표 ===
+  모델                                 지연    입력tk    출력tk        비용
+  gemini/gemini-3.5-flash-lite       1.5s      24      90 $  0.000232
+  openai/gpt-5.4-nano                1.7s      30     120 $  0.000156
+  anthropic/claude-haiku-4-5         2.3s      43     124 $  0.000663
+```
+
+같은 프롬프트인데 **입력 토큰부터 다릅니다**.
+프로바이더마다 토크나이저와 내부 포장이 다르기 때문입니다.
+품질은 눈으로, 지연과 비용은 숫자로 비교합니다
+
+</Slide>
+
+<Slide>
+
+## 모델 고를 때 보는 축
+
+- **품질**: 우리 과제에서 도구 선택과 지시 준수가 얼마나 안정적인가
+- **지연**: 사용자가 기다리는 시간. 에이전트는 스텝마다 곱해집니다
+- **비용**: 단가 × 토큰. 입력 토큰 수가 프로바이더마다 다른 것도 감안
+- **가용성**: 은퇴 위험, rate limit, 지역 제한
+
+**한 축만 보고 고르면 나중에 다시 고르게 됩니다**
+
+</Slide>
+
+<Slide class="center">
+
+## Part 3. 장애를 견디는 세 겹
+
+재시도 · 폴백 · 백오프
+
+</Slide>
+
+<Slide>
+
+## 4. 폴백: 주 모델이 죽으면 이어받는다
+::sub[03_fallback.py · 존재하지 않는 모델을 1순위로 둔다]
+
+```python
+resp = completion(
+    model="openai/gpt-없는-모델",          # 반드시 실패하는 1순위
+    messages=[…],
+    fallbacks=["gemini/gemini-3.5-flash-lite"],
+)
+```
+
+```text
+LiteLLM:ERROR: … Fallback attempt failed for model openai/gpt-없는-모델:
+  litellm.BadRequestError: OpenAIException - invalid model ID
+
+=== 결과 ===
+  실제 응답한 모델: gemini-3.5-flash-lite
+  답: 폴백 성공
+```
+
+</Slide>
+
+<Slide>
+
+## 결과 읽기: 폴백은 옵션이 아니라 기본 장비
+
+- 1순위의 실패 로그가 찍히고, **같은 `completion()` 한 번 안에서**
+  폴백이 응답을 완성했습니다
+- 이 세션 끝의 사례처럼 **모델은 예고 없이 은퇴합니다**
+
+</Slide>
+
+<Slide>
+
+## 5. 재시도와 타임아웃: 순간 장애의 방어
+::sub[04_retry_timeout.py · 불가능한 타임아웃 0.001초로 에러를 재현]
+
+```text
+=== 타임아웃 재현 (timeout=0.001초) ===
+  litellm.Timeout: Connection timed out …
+
+=== 정상 설정 (timeout=30초, num_retries=2) ===
+  답: 2
+  실패하면 최대 2회까지 자동으로 다시 시도한 뒤에야 에러를 낸다
+```
+
+- `timeout`: 이 시간 안에 답이 없으면 끊는다
+- `num_retries`: 끊기면 몇 번 다시
+
+</Slide>
+
+<Slide>
+
+## 8. rate limit: 백오프로 살아남기
+::sub[07_rate_limit.py · 429를 만나면 1초 → 2초 → 4초 기다렸다 재시도]
+
+```text
+=== 연속 15회 빠른 호출 (한도를 만나러 간다) ===
+  1회 성공 … 15회 성공
+
+=== 정리 ===
+  한도는 장애가 아니라 일상이다. 백오프는 에이전트 루프의 기본 장비다.
+```
+
+이번 실측은 유료 티어라 한도에 닿지 않았고, 백오프 코드는 할 일 없이
+통과했습니다. 무료 티어에서는 `429! 1초 백오프 후 재시도` 줄이 등장합니다.
+**걸리든 안 걸리든 코드는 같아야 한다**는 것이 요점입니다
+
+</Slide>
+
+<Slide class="center">
+
+## 세 겹은 서로 다른 장애를 맡는다
+
+**재시도**(순간 장애) · **폴백**(모델 장애) · **백오프**(한도)
+
+하나로 다 막으려 하지 않습니다
+
+</Slide>
+
+<Slide>
+
+## 장애 종류별 처방
+
+| 증상 | 원인 | 처방 |
+| --- | --- | --- |
+| 간헐적 타임아웃·연결 끊김 | 순간 네트워크 장애 | `num_retries` |
+| 404, invalid model ID | 모델 은퇴·오타 | `fallbacks` |
+| 429 Too Many Requests | 한도 초과 | 지수 백오프 |
+| ContextWindowExceeded | 입력이 한도 초과 | 재시도해도 소용없음. 컨텍스트를 줄인다 |
+
+**마지막 줄이 중요합니다.** 재시도로 못 고치는 에러도 있습니다
+
+</Slide>
+
+<Slide class="center">
+
+## Part 4. 돈과 속도
+
+캐시와 장부
+
+</Slide>
+
+<Slide>
+
+## 6. 캐싱: 같은 질문 두 번째는 공짜·즉시
+::sub[05_cache.py · 인메모리 캐시를 켜고 같은 요청을 두 번]
+
+```python
+litellm.cache = Cache(type="local")       # 프로세스 안 인메모리 캐시
+r1 = completion(model=model, messages=messages, caching=True)
+r2 = completion(model=model, messages=messages, caching=True)   # 캐시에서
+```
+
+```text
+=== 1회차 (API까지 다녀옴) ===   2.09초
+=== 2회차 (같은 요청) ===   0.002초
+=== 비교 ===   2.09초 → 0.002초. 같은 답인가: True
+```
+
+</Slide>
+
+<Slide>
+
+## 결과 읽기: 1,000배 빠르고 비용은 0
+
+- FAQ·반복 질의가 많은 서비스의 기본 손잡이입니다
+- 단, **같은 요청이어야 합니다**. messages가 1바이트라도 다르면 미스
+- 신선도가 중요한 질문에는 쓰지 않습니다
+
+</Slide>
+
+<Slide>
+
+## 7. 비용 콜백: 호출마다 장부에 쌓인다
+::sub[06_cost_callback.py · 호출부에는 한 줄도 손대지 않는다]
+
+```python
+def track_cost(kwargs, completion_response, start_time, end_time):
+    ledger["calls"] += 1
+    ledger["cost"] += kwargs.get("response_cost") or 0.0
+
+litellm.success_callback = [track_cost]
+```
+
+```text
+  호출: '1+1은?' / '오사카는 어느 나라?' / '라멘 한 그릇 평균 가격은?'
+
+=== 장부 ===
+  호출 3건, 누적 비용 $0.000870
+```
+
+</Slide>
+
+<Slide>
+
+## 결과 읽기: 이 자리가 budget guard의 자리
+
+- 호출부에는 비용 코드가 **한 줄도 없습니다**
+- 콜백 하나 등록하면 모든 completion의 비용이 장부로 흘러듭니다
+- **7세션의 budget guard가 정확히 이 자리에서 누적 비용을 지켜봅니다**
+
+</Slide>
+
+<Slide class="center">
+
+## Part 5. 라우팅과 메타데이터
+
+별명 뒤에 배포 여러 개, 그리고 실행 전에 읽는 숫자
+
+</Slide>
+
+<Slide>
+
+## 9. 라우터: 별명 하나 뒤에 배포 여러 개
+::sub[08_router.py · 실모델 여러 개를 travel-llm 하나로 묶는다]
+
+```python
+deployments = [
+    {"model_name": "travel-llm", "litellm_params": {"model": m}}
+    for m in available_models()
+]
+router = Router(model_list=deployments, routing_strategy="simple-shuffle")
+resp = router.completion(model="travel-llm", messages=[…])
+```
+
+</Slide>
+
+<Slide>
+
+## 요청 6건이 3사에 흩어진다
+
+```text
+=== 배포 3개에 요청 6건 분산 ===
+  요청 1 → 처리한 모델: claude-haiku-4-5-20251001
+  요청 2 → 처리한 모델: gpt-5.4-nano-2026-03-17
+  요청 3 → 처리한 모델: gpt-5.4-nano-2026-03-17
+  요청 4 → 처리한 모델: claude-haiku-4-5-20251001
+  요청 5 → 처리한 모델: claude-haiku-4-5-20251001
+  요청 6 → 처리한 모델: gemini-3.5-flash-lite
+```
+
+호출부는 `travel-llm`이라는 별명 하나만 압니다.
+**Day 3 `coding-agent`의 난이도별 모델 배정이 이 구조 위에 섭니다**
+
+</Slide>
+
+<Slide>
+
+## 10. 모델 메타데이터: 한도와 단가를 코드로 읽는다
+::sub[09_model_info.py · 키 없이 돈다]
+
+```text
+=== 이 랩이 쓰는 모델들 ===
+  모델                                입력한도     출력한도   입력$/1M   출력$/1M
+  gemini/gemini-3.5-flash-lite      1,048,576    65,536      0.30      2.50
+  openai/gpt-5.4-nano                 272,000   128,000      0.20      1.25
+  anthropic/claude-haiku-4-5          200,000    64,000      1.00      5.00
+  gemini/gemini-embedding-001           2,048         0      0.15      0.00
+```
+
+"이 입력이 들어가는가"와 "이 호출은 얼마인가"를 **실행 전에** 코드가 판단합니다.
+2세션의 한도 초과 예제가 입력한도 열을,
+7세션의 사전 비용 추정이 단가 열을 읽습니다
+
+</Slide>
+
+<Slide>
+
+## 11. 임베딩: 같은 인터페이스의 다른 출구
+::sub[10_embedding.py · completion은 문장을, embedding은 숫자 벡터를]
+
+```text
+=== 벡터의 모양 ===
+  문장 1개 → 3072차원 벡터
+  앞 6개 값: [0.0116, -0.004, 0.0088, -0.0772, -0.0033, -0.0068]
+
+=== 코사인 유사도 ===
+  '국물 요리' vs '탕이나 찌개' = 0.843  (의미가 가깝다)
+  '국물 요리' vs '주가 상승'   = 0.599  (멀다)
+```
+
+단어가 하나도 겹치지 않는 "든든한 국물 요리"와 "뜨끈한 탕이나 찌개"가
+0.843으로 가깝게 잡혔습니다.
+**이 벡터 위에 Day 2 `food-rag-agent`의 의미 검색이 섭니다**
+
+</Slide>
+
+<Slide>
+
+## completion과 embedding의 자리
+
+| | completion | embedding |
+| --- | --- | --- |
+| 입력 | messages 배열 | 문자열 |
+| 출력 | 문장 또는 tool_calls | 고정 길이 숫자 벡터 |
+| 쓰는 곳 | 판단·생성 | 의미 비교·검색 |
+| 비용 | 입력 + 출력 토큰 | 입력 토큰만 |
+
+같은 `litellm` 인터페이스의 **다른 출구**입니다.
+키 관리도, 폴백도, 비용 콜백도 그대로 적용됩니다
+
+</Slide>
+
+<Slide class="center">
+
+## Part 6. 사례
+
+모델 교체가 실제로 일어났다
+
+</Slide>
+
+<Slide>
+
+## 2026-08-14, 하루에 두 번
+
+- 이 랩의 Gemini 기본 모델은 원래 `gemini-2.5-flash`였는데,
+  신규 발급 키에서 404가 나는 것이 확인되어 `gemini-3.5-flash-lite`로 교체.
+  단가는 동일하고, hotfix `v1.0.1`로 나갔습니다
+- 같은 날 OpenAI 쪽도 정렬했습니다. `gpt-5-mini`는 아직 돌지만 세 세대 뒤라
+  같은 은퇴 리스크가 있어 `gpt-5.4-nano`로 바꿨습니다. hotfix `v1.0.2`
+- Anthropic은 Claude 5 패밀리에 아직 haiku가 없어 `claude-haiku-4-5`가 현행
+
+</Slide>
+
+<Slide>
+
+## 고친 파일은 한 곳
+
+- 두 번 모두 고친 파일은 `agent/config.py` **한 곳**입니다.
+  예제 51종과 에이전트 본체는 한 줄도 바뀌지 않았습니다
+- 교체 전 검증도 이 세션의 도구로 했습니다.
+  후보 모델을 실제 1회 호출로 확인하고, 단가표 등재 여부를 `get_model_info`로
+  조회한 뒤, 에이전트를 끝까지 돌려 도구 호출 품질을 비교
+- **프로바이더 장애와 모델 은퇴는 예외 상황이 아니라 일상입니다**
+
+</Slide>
+
+<Slide>
+
+## 이 세션이 남기는 것
+
+- 공식 SDK 세 벌 대신 통합 레이어 한 벌. **그 이득과 대가를 알고 쓴다**
+- 프로바이더 교체는 문자열 한 줄, 모델 이름은 `agent/config.py` 한 곳
+- 장애의 종류마다 다른 방어: 재시도(순간), 폴백(모델), 백오프(한도)
+- 비용은 콜백으로 집계하고, 한도·단가는 실행 전에 코드로 읽는다
+
+</Slide>
+
+<Slide class="center">
+
+## 다음 세션
+
+**Tool calling 심화** · `examples/03_tools/` 10종 → **v0.2**
+
+2세션에서 비어 있던 `tool_calls` 자리가 채워집니다
+
+</Slide>
