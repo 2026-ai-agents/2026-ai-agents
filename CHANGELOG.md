@@ -24,6 +24,10 @@ git 태그(`vX.Y.Z`)로, 사이트 버전은 `site/package.json`으로 관리한
   `demos/handloop.py`를 교안의 "LangGraph란 무엇인가" 절에 나란히 배치.
   실행 결과와 각본 LLM 테스트 포함. v1.0.1은 trace 데모의 thread_id 누락
   hotfix
+- **Day 1 세션 슬라이드 7종**: `day-01-session-02`\~`-08` 덱을 세션 교안과
+  1:1로 신설, 모두 330장. 각 덱은 교안의 예제 실행 결과·mermaid·코드 포인트를
+  발표 흐름으로 재구성하고, 강의 문서의 `slides` 프론트매터로 연결했다.
+  분량은 세션 시간 기준 분당 1.5장
 
 ### 변경
 
