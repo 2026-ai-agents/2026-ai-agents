@@ -1,0 +1,458 @@
+---
+/**
+ * messages 배열이 스텝마다 부푸는 것을 만져 보는 도구 (Day 1 · 5세션 4번).
+ *
+ * 데이터는 지어낸 것이 아니다. `day-01` 저장소의 v1.0 에이전트로 "3박 4일
+ * 오사카, 예산 80만원"을 실제로 한 번 돌리면서, 매 호출에 실려 간 messages
+ * 배열을 그대로 뜨고 프로바이더가 돌려준 prompt_tokens를 받아 적었다.
+ * compact 전후의 토큰도 같은 자로 쟀다. 추출 절차는 `docs/context-growth-data.md`.
+ *
+ * 배열이 append 전용이라, 최종 배열 한 벌과 스텝별 길이만 있으면 모든
+ * 스텝을 되살릴 수 있다. 데이터가 4.7KB인 이유다.
+ */
+import data from '../data/context-growth.json';
+
+const json = JSON.stringify(data).replace(/</g, '\\u003c');
+const totalIn = data.steps.reduce((s, x) => s + x.prompt, 0);
+const cut = data.compact.beforeTokens - data.compact.afterTokens;
+---
+
+<figure class="cgrow" data-cgrow>
+  <script type="application/json" data-cgrow-json is:inline set:html={json} />
+
+  <div class="cgrow-head">
+    <strong>배열이 자라는 것을 스텝마다 보기</strong>
+    <span>
+      "{data.question}"을 v1.0 에이전트로 한 번 돌린 실측입니다. 프로바이더가
+      돌려준 입력 토큰은 {data.steps.length}번의 호출을 합쳐
+      {totalIn.toLocaleString()}개이고, 그 대부분이 <b>같은 내용의 재전송</b>입니다.
+    </span>
+  </div>
+
+  <div class="cgrow-stepper">
+    <button type="button" data-prev aria-label="이전 스텝">←</button>
+    <div class="cgrow-ticks" data-ticks></div>
+    <button type="button" data-next aria-label="다음 스텝">→</button>
+  </div>
+
+  <div class="cgrow-body">
+    <div class="cgrow-side">
+      <div class="cgrow-sidehead">
+        <span>이번 요청에 실려 가는 messages</span>
+        <b data-count></b>
+      </div>
+      <ol class="cgrow-list" data-list></ol>
+    </div>
+
+    <div class="cgrow-side">
+      <div class="cgrow-sidehead">
+        <span>호출별 입력 토큰</span>
+        <b data-tokens></b>
+      </div>
+      <canvas class="cgrow-chart" data-chart role="img"
+        aria-label="호출마다 입력 토큰이 계단처럼 커지는 막대그래프"></canvas>
+      <ul class="cgrow-legend">
+        <li><i data-key="resent"></i>직전에도 보냈던 만큼</li>
+        <li><i data-key="fresh"></i>이번에 늘어난 만큼</li>
+      </ul>
+      <p class="cgrow-read" data-read></p>
+    </div>
+  </div>
+
+  <div class="cgrow-compact">
+    <div class="cgrow-compact-head">
+      <strong>그리고 compact가 접는다</strong>
+      <button type="button" data-fold aria-pressed="false">접어 보기</button>
+    </div>
+    <div class="cgrow-bars">
+      <div class="cgrow-bar" data-bar="before">
+        <span>접기 전</span>
+        <i data-bar-fill></i>
+        <b>{data.compact.beforeCount}개 · {data.compact.beforeTokens.toLocaleString()}tk</b>
+      </div>
+      <div class="cgrow-bar" data-bar="after" data-dim>
+        <span>접은 후</span>
+        <i data-bar-fill></i>
+        <b>{data.compact.afterCount}개 · {data.compact.afterTokens.toLocaleString()}tk</b>
+      </div>
+    </div>
+    <p class="cgrow-summary" data-summary hidden>
+      <span>오래된 왕복 {data.compact.folded}개가 이 요약 하나로 바뀌었습니다.</span>
+      <q>{data.compact.summary}</q>
+    </p>
+    <p class="cgrow-note">
+      요약문은 손으로 쓴 것이 아니라 실제로 LLM에 접기를 시켜 받은 것이고,
+      전후 토큰은 둘 다 프로바이더가 세어 준 값입니다. 입력이
+      {cut.toLocaleString()}토큰 줄었지만 그만큼이 사라진 것이기도 합니다.
+      요약은 손실 압축입니다.
+    </p>
+  </div>
+
+  <figcaption class="cgrow-foot">
+    {data.measuredOn} · {data.model} · 종료 사유 <code>{data.stoppedBy}</code>.
+    배열은 덧붙이기만 하므로 각 스텝은 최종 배열의 앞부분과 정확히 같습니다.
+  </figcaption>
+</figure>
+
+<style>
+  .cgrow {
+    margin: 2rem 0;
+    padding: 1.1rem 1.1rem 0.9rem;
+    border: 1px solid var(--aas-border);
+    border-radius: 14px;
+    background: var(--aas-panel);
+    box-shadow: var(--aas-shadow);
+    font-family: var(--aas-sans);
+
+    /* 재전송분과 신규분 — dataviz 앞 두 슬롯 */
+    --cg-resent: #2a78d6;
+    --cg-fresh: #eb6834;
+    --cg-muted: #c9c9d1;
+  }
+  :root[data-theme='dark'] .cgrow {
+    --cg-resent: #3987e5; --cg-fresh: #d95926; --cg-muted: #43444f;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme]) .cgrow {
+      --cg-resent: #3987e5; --cg-fresh: #d95926; --cg-muted: #43444f;
+    }
+  }
+
+  .cgrow-head { display: flex; flex-direction: column; gap: 0.3rem; }
+  .cgrow-head strong { font-size: 1rem; color: var(--aas-text); }
+  .cgrow-head span { font-size: 0.85rem; line-height: 1.65; color: var(--aas-muted); }
+  .cgrow-head b { color: var(--aas-text); font-weight: 600; }
+
+  .cgrow-stepper { display: flex; align-items: center; gap: 0.5rem; margin: 1rem 0 0.8rem; }
+  .cgrow-stepper button {
+    flex: 0 0 auto; width: 1.9rem; height: 1.9rem; border-radius: 50%;
+    border: 1px solid var(--aas-border); background: var(--aas-bg);
+    color: var(--aas-text); cursor: pointer; font-size: 0.85rem; line-height: 1;
+  }
+  .cgrow-stepper button:hover:not(:disabled) { background: var(--aas-tint); }
+  .cgrow-stepper button:disabled { opacity: 0.35; cursor: default; }
+  .cgrow-ticks { display: flex; flex: 1 1 auto; gap: 0.25rem; flex-wrap: wrap; }
+  .cgrow-ticks :global(button) {
+    flex: 1 1 2rem; min-width: 2rem; padding: 0.24rem 0; border-radius: 6px;
+    border: 1px solid var(--aas-border); background: var(--aas-bg);
+    color: var(--aas-muted); font-family: inherit; font-size: 0.74rem; cursor: pointer;
+  }
+  .cgrow-ticks :global(button[aria-current='true']) {
+    border-color: var(--aas-accent); background: var(--aas-tint);
+    color: var(--aas-text); font-weight: 600;
+  }
+
+  .cgrow-body { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  /* 그리드 칸의 기본 min-width가 auto라, 긴 미리보기 한 줄이 칸을 밀어낸다 */
+  .cgrow-side { min-width: 0; }
+  @media (max-width: 720px) { .cgrow-body { grid-template-columns: 1fr; } }
+
+  .cgrow-sidehead {
+    display: flex; justify-content: space-between; align-items: baseline;
+    gap: 0.5rem; margin-bottom: 0.4rem;
+  }
+  .cgrow-sidehead span { font-size: 0.78rem; color: var(--aas-muted); }
+  .cgrow-sidehead b {
+    font-size: 0.78rem; color: var(--aas-text); font-variant-numeric: tabular-nums;
+  }
+
+  .cgrow-list {
+    margin: 0; padding: 0.4rem; list-style: none;
+    border: 1px solid var(--aas-border); border-radius: 9px;
+    background: var(--aas-bg); height: 300px; overflow-y: auto;
+    display: flex; flex-direction: column; gap: 0.2rem;
+  }
+  .cgrow-list :global(li) {
+    display: flex; gap: 0.4rem; align-items: baseline;
+    padding: 0.24rem 0.35rem; border-radius: 5px;
+    font-size: 0.72rem; line-height: 1.45;
+    border-left: 3px solid var(--cg-resent);
+    background: color-mix(in srgb, var(--cg-resent) 8%, transparent);
+  }
+  .cgrow-list :global(li[data-fresh]) {
+    border-left-color: var(--cg-fresh);
+    background: color-mix(in srgb, var(--cg-fresh) 14%, transparent);
+  }
+  .cgrow-list :global(li[data-folded]) {
+    border-left-color: var(--cg-muted);
+    background: none; opacity: 0.45; text-decoration: line-through;
+  }
+  .cgrow-list :global(em) {
+    font-style: normal; flex: 0 0 3.4rem; color: var(--aas-muted);
+    font-variant-numeric: tabular-nums;
+  }
+  .cgrow-list :global(span) {
+    flex: 1 1 auto; color: var(--aas-text);
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+
+  .cgrow-chart {
+    display: block; width: 100%; height: 220px;
+    border: 1px solid var(--aas-border); border-radius: 9px; background: var(--aas-bg);
+  }
+  .cgrow-legend {
+    display: flex; flex-wrap: wrap; gap: 0.3rem 0.9rem;
+    margin: 0.4rem 0 0; padding: 0; list-style: none;
+    font-size: 0.74rem; color: var(--aas-muted);
+  }
+  .cgrow-legend li { display: flex; align-items: center; gap: 0.3rem; }
+  .cgrow-legend i { width: 10px; height: 10px; border-radius: 2px; }
+  .cgrow-legend i[data-key='resent'] { background: var(--cg-resent); }
+  .cgrow-legend i[data-key='fresh'] { background: var(--cg-fresh); }
+
+  .cgrow-read {
+    margin: 0.5rem 0 0; font-size: 0.78rem; line-height: 1.6; color: var(--aas-muted);
+  }
+  .cgrow-read :global(b) { color: var(--aas-text); font-weight: 600; }
+
+  .cgrow-compact {
+    margin-top: 1.1rem; padding-top: 0.9rem; border-top: 1px solid var(--aas-border);
+  }
+  .cgrow-compact-head {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 0.6rem; margin-bottom: 0.7rem; flex-wrap: wrap;
+  }
+  .cgrow-compact-head strong { font-size: 0.9rem; color: var(--aas-text); }
+  .cgrow-compact-head button {
+    padding: 0.3rem 0.7rem; border-radius: 999px;
+    border: 1px solid var(--aas-border); background: var(--aas-bg);
+    color: var(--aas-text); font-family: inherit; font-size: 0.8rem; cursor: pointer;
+  }
+  .cgrow-compact-head button:hover { background: var(--aas-tint); }
+  .cgrow-compact-head button[aria-pressed='true'] {
+    border-color: var(--aas-accent); background: var(--aas-tint); font-weight: 600;
+  }
+
+  .cgrow-bars { display: flex; flex-direction: column; gap: 0.4rem; }
+  .cgrow-bar { display: flex; align-items: center; gap: 0.6rem; font-size: 0.78rem; }
+  .cgrow-bar > span { flex: 0 0 4rem; color: var(--aas-muted); }
+  .cgrow-bar > i {
+    height: 13px; border-radius: 0 4px 4px 0; background: var(--cg-resent);
+    transition: width 0.45s ease;
+  }
+  .cgrow-bar[data-bar='after'] > i { background: var(--cg-fresh); }
+  .cgrow-bar[data-dim] { opacity: 0.35; }
+  .cgrow-bar > b {
+    color: var(--aas-text); font-weight: 600; font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+
+  .cgrow-summary {
+    margin: 0.7rem 0 0; font-size: 0.78rem; line-height: 1.7; color: var(--aas-muted);
+  }
+  .cgrow-summary q { color: var(--aas-text); display: block; margin-top: 0.25rem; }
+
+  .cgrow-note {
+    margin: 0.7rem 0 0; font-size: 0.78rem; line-height: 1.65; color: var(--aas-muted);
+  }
+  .cgrow-foot {
+    margin: 0.9rem 0 0; padding-top: 0.7rem; border-top: 1px solid var(--aas-border);
+    font-size: 0.76rem; line-height: 1.6; color: var(--aas-muted);
+  }
+  .cgrow-foot code { font-size: 0.74rem; }
+
+  @media (max-width: 640px) { .cgrow { padding: 0.9rem 0.8rem 0.8rem; } }
+</style>
+
+<script>
+  type Msg = { role: string; tool: string | null; preview: string; chars: number };
+  type Step = { n: number; prompt: number; out: number; upto: number; tools: boolean };
+  type Data = {
+    question: string; model: string; stoppedBy: string;
+    messages: Msg[]; steps: Step[];
+    compact: {
+      keepRecent: number; folded: number; cutSnapped: boolean;
+      beforeCount: number; beforeTokens: number;
+      afterCount: number; afterTokens: number; summary: string;
+    };
+  };
+
+  const root = document.querySelector<HTMLElement>('[data-cgrow]');
+  if (root) init(root);
+
+  function init(root: HTMLElement) {
+    const raw = root.querySelector<HTMLScriptElement>('[data-cgrow-json]');
+    if (!raw?.textContent) return;
+    const data: Data = JSON.parse(raw.textContent);
+
+    const $ = <T extends HTMLElement>(s: string) => root.querySelector<T>(s)!;
+    const ticks = $('[data-ticks]');
+    const list = $('[data-list]');
+    const chart = $<HTMLCanvasElement>('[data-chart]');
+    const ctx = chart.getContext('2d')!;
+    const prev = $<HTMLButtonElement>('[data-prev]');
+    const next = $<HTMLButtonElement>('[data-next]');
+    const fold = $<HTMLButtonElement>('[data-fold]');
+    const summary = $('[data-summary]');
+
+    let cur = 0;          // 보고 있는 스텝의 index
+    let folded = false;   // compact를 적용해 봤는가
+
+    data.steps.forEach((s, i) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.textContent = String(s.n);
+      b.setAttribute('aria-current', 'false');
+      b.addEventListener('click', () => go(i));
+      ticks.append(b);
+    });
+
+    prev.addEventListener('click', () => go(cur - 1));
+    next.addEventListener('click', () => go(cur + 1));
+    fold.addEventListener('click', () => {
+      folded = !folded;
+      fold.setAttribute('aria-pressed', String(folded));
+      fold.textContent = folded ? '펼치기' : '접어 보기';
+      summary.hidden = !folded;
+      root.querySelector('[data-bar="before"]')!.toggleAttribute('data-dim', folded);
+      root.querySelector('[data-bar="after"]')!.toggleAttribute('data-dim', !folded);
+      if (folded) go(data.steps.length - 1);
+      else draw();
+      drawBars();
+    });
+
+    new ResizeObserver(() => { draw(); drawBars(); }).observe(root);
+    new MutationObserver(() => draw()).observe(document.documentElement, {
+      attributes: true, attributeFilter: ['data-theme'],
+    });
+
+    go(0);
+    drawBars();
+
+    function go(i: number) {
+      cur = Math.max(0, Math.min(data.steps.length - 1, i));
+      if (folded && cur !== data.steps.length - 1) {
+        folded = false;
+        fold.setAttribute('aria-pressed', 'false');
+        fold.textContent = '접어 보기';
+        summary.hidden = true;
+        root.querySelector('[data-bar="before"]')!.toggleAttribute('data-dim', false);
+        root.querySelector('[data-bar="after"]')!.toggleAttribute('data-dim', true);
+        drawBars();
+      }
+      [...ticks.children].forEach((el, k) =>
+        el.setAttribute('aria-current', String(k === cur)));
+      prev.disabled = cur === 0;
+      next.disabled = cur === data.steps.length - 1;
+      renderList();
+      renderRead();
+      draw();
+    }
+
+    function renderList() {
+      const step = data.steps[cur];
+      const before = cur === 0 ? 0 : data.steps[cur - 1].upto;
+      // compact를 적용하면 system과 최근 몇 개만 남고 가운데가 접힌다
+      const keepFrom = data.compact.beforeCount - data.compact.keepRecent;
+      list.replaceChildren();
+      for (let i = 0; i < step.upto; i++) {
+        const m = data.messages[i];
+        const li = document.createElement('li');
+        if (folded && i > 0 && i < keepFrom) li.setAttribute('data-folded', '');
+        else if (i >= before) li.setAttribute('data-fresh', '');
+        li.innerHTML =
+          `<em>${m.role}</em><span>${escapeHtml(m.preview) || '…'}</span>`;
+        list.append(li);
+      }
+      if (folded) {
+        const li = document.createElement('li');
+        li.setAttribute('data-fresh', '');
+        li.innerHTML = `<em>user</em><span>[지금까지의 요약] ${escapeHtml(data.compact.summary.slice(0, 90))}…</span>`;
+        list.insertBefore(li, list.children[1] ?? null);
+      }
+      $('[data-count]').textContent = folded
+        ? `${data.compact.afterCount}개 (접은 뒤)`
+        : `${step.upto}개 · 그중 ${before}개는 재전송`;
+    }
+
+    function renderRead() {
+      const step = data.steps[cur];
+      const before = cur === 0 ? null : data.steps[cur - 1];
+      $('[data-tokens]').textContent = `${step.prompt.toLocaleString()}tk`;
+      const read = $('[data-read]');
+      if (!before) {
+        read.innerHTML =
+          `첫 호출입니다. system과 질문만으로 <b>${step.prompt.toLocaleString()}토큰</b>이고, ` +
+          `여기에 도구 스키마가 이미 실려 있습니다.`;
+      } else if (!step.tools && before.tools) {
+        read.innerHTML =
+          `메시지가 ${step.upto - before.upto}개 <b>늘었는데 입력은 ${(before.prompt - step.prompt).toLocaleString()}토큰 줄었습니다</b>. ` +
+          `한도에 걸린 뒤의 마무리 호출이라 <b>도구 스키마를 싣지 않기</b> 때문입니다. ` +
+          `매 스텝 다시 가던 그 목록이 그만큼 무거웠다는 뜻입니다.`;
+      } else {
+        read.innerHTML =
+          `직전 호출에서 보낸 <b>${before.prompt.toLocaleString()}토큰이 그대로 다시</b> 갔고, ` +
+          `새로 붙은 것은 ${step.upto - before.upto}개 메시지뿐입니다. ` +
+          `이번 청구는 ${step.prompt.toLocaleString()}토큰입니다.`;
+      }
+    }
+
+    function draw() {
+      const cs = getComputedStyle(root);
+      const resent = cs.getPropertyValue('--cg-resent').trim();
+      const fresh = cs.getPropertyValue('--cg-fresh').trim();
+      const muted = cs.getPropertyValue('--aas-muted').trim();
+      const border = cs.getPropertyValue('--aas-border').trim();
+
+      const dpr = Math.min(devicePixelRatio || 1, 2);
+      const r = chart.getBoundingClientRect();
+      chart.width = Math.round(r.width * dpr);
+      chart.height = Math.round(r.height * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      const w = r.width;
+      const h = r.height;
+      ctx.clearRect(0, 0, w, h);
+      if (!w) return;
+
+      const padL = 8;
+      const padB = 20;
+      const padT = 10;
+      const max = Math.max(...data.steps.map((s) => s.prompt)) * 1.08;
+      const n = data.steps.length;
+      const slot = (w - padL * 2) / n;
+      const bw = Math.min(slot * 0.62, 30);
+
+      ctx.font = '10px Pretendard, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+
+      data.steps.forEach((s, i) => {
+        const x = padL + slot * i + slot / 2;
+        const bh = ((h - padT - padB) * s.prompt) / max;
+        const y = h - padB - bh;
+
+        // 이 호출에서 '다시 간' 부분과 '새로 붙은' 부분을 나눠 칠한다
+        const reused = i === 0 ? 0 : Math.min(data.steps[i - 1].prompt, s.prompt);
+        const rh = ((h - padT - padB) * reused) / max;
+        ctx.globalAlpha = i === cur ? 1 : 0.28;
+        ctx.fillStyle = fresh;
+        ctx.fillRect(x - bw / 2, y, bw, bh);
+        ctx.fillStyle = resent;
+        ctx.fillRect(x - bw / 2, h - padB - rh, bw, rh);
+        ctx.globalAlpha = 1;
+
+        ctx.fillStyle = i === cur ? cs.getPropertyValue('--aas-text').trim() : muted;
+        ctx.fillText(String(s.n), x, h - padB + 13);
+      });
+
+      ctx.strokeStyle = border;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(padL, h - padB + 0.5);
+      ctx.lineTo(w - padL, h - padB + 0.5);
+      ctx.stroke();
+    }
+
+    function drawBars() {
+      const c = data.compact;
+      const max = Math.max(c.beforeTokens, c.afterTokens);
+      const fills = root.querySelectorAll<HTMLElement>('[data-bar-fill]');
+      const width = (v: number) => `${Math.max(6, (v / max) * 62)}%`;
+      fills[0].style.width = width(c.beforeTokens);
+      fills[1].style.width = width(c.afterTokens);
+    }
+
+    function escapeHtml(s: string) {
+      return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+  }
+</script>

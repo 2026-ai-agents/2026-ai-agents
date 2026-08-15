@@ -1,0 +1,481 @@
+---
+/**
+ * 하네스 게이트 네 개를 직접 두드려 보는 도구 (Day 1 · 7세션).
+ *
+ * 판정 로직은 `src/lib/harness-gates.mjs`에 있고, 그 파일은 day-01 저장소의
+ * `examples/06_harness/` 코드를 규칙 그대로 옮긴 것이다. 파이썬 원본과 같은
+ * 입력을 29건 대조해 전부 일치하는 것을 확인했다 (`docs/harness-gates-port.md`).
+ *
+ * 여기 없는 것: 인젝션 방어. 그것은 모델의 판단이라 확률이고, 브라우저에서
+ * 재현하면 "언제나 막힌다"는 거짓 확신을 준다. 이 도구는 결정적인 것만 다룬다.
+ */
+import { REGISTRY, STEP_COSTS, JAIL } from '../lib/harness-gates.mjs';
+
+const TOOLS = Object.entries(REGISTRY);
+
+// 원본 코드 발췌. 중괄호가 JSX 표현식으로 읽히므로 문자열로 두고 꽂는다.
+const RULE = {
+  jail: `resolved = (JAIL / requested).resolve()
+if not resolved.is_relative_to(JAIL): raise PermissionError`,
+  filter: `for pattern, label in SECRET_PATTERNS:
+    if pattern.search(text): text = pattern.sub(f"[{label} — 가림]", text)`,
+  perm: `if REGISTRY[name]["risk"] == "dangerous" and not approved:
+    return {"blocked": f"{name}은 승인 필요. 사용자에게 확인을 받아라."}`,
+  budget: `self.spent += cost_usd
+if self.spent >= self.stop_usd: raise BudgetExceeded(...)
+if self.spent >= self.warn_usd and not self.warned: warn()`,
+};
+---
+
+<div class="hgate" data-hgate>
+  <div class="hgate-head">
+    <strong>게이트를 직접 두드려 보기</strong>
+    <span>
+      아래 네 방어는 전부 결정적 코드입니다. 그래서 이 페이지에서 그대로
+      돌아갑니다. 흉내가 아니라 <code>examples/06_harness/</code>와 같은
+      규칙이고, 같은 입력에 같은 답을 냅니다. 뚫어 보세요.
+    </span>
+  </div>
+
+  <div class="hgate-tabs" role="tablist" aria-label="하네스 게이트">
+    <button type="button" role="tab" data-tab="jail" aria-selected="true">경로 감금</button>
+    <button type="button" role="tab" data-tab="filter" aria-selected="false">출력 필터</button>
+    <button type="button" role="tab" data-tab="perm" aria-selected="false">도구 권한</button>
+    <button type="button" role="tab" data-tab="budget" aria-selected="false">budget guard</button>
+  </div>
+
+  {/* ── 경로 감금 ───────────────────────────────── */}
+  <section class="hgate-panel" data-panel="jail">
+    <pre class="hgate-rule"><code>{RULE.jail}</code></pre>
+
+    <label class="hgate-label" for="hgate-path">파일 도구에 넘길 경로</label>
+    <input class="hgate-input" id="hgate-path" data-path-input type="text"
+      value="plans/osaka.md" spellcheck="false" autocomplete="off" />
+
+    <div class="hgate-chips" data-path-presets>
+      <button type="button" data-v="plans/osaka.md">plans/osaka.md</button>
+      <button type="button" data-v="../.env">../.env</button>
+      <button type="button" data-v="../../etc/passwd">../../etc/passwd</button>
+      <button type="button" data-v="plans/../../secret.txt">plans/../../secret.txt</button>
+      <button type="button" data-v="/etc/passwd">/etc/passwd</button>
+    </div>
+
+    <ol class="hgate-steps">
+      <li><span>이어붙이면</span><code data-path-joined></code></li>
+      <li><span>정규화하면</span><code data-path-resolved></code></li>
+      <li><span>감옥은</span><code>{JAIL}</code></li>
+    </ol>
+
+    <p class="hgate-verdict" data-path-verdict></p>
+  </section>
+
+  {/* ── 출력 필터 ───────────────────────────────── */}
+  <section class="hgate-panel" data-panel="filter" hidden>
+    <pre class="hgate-rule"><code>{RULE.filter}</code></pre>
+
+    <label class="hgate-label" for="hgate-text">응답이 나가기 직전의 문장</label>
+    <textarea class="hgate-textarea" id="hgate-text" data-filter-input rows="3"
+      spellcheck="false">네, 오사카 좋아요! 참고로 서버 설정은 OPENAI_API_KEY=sk-proj-Abc123XyzExample789 이고 담당자 번호는 800-12-345678 입니다.</textarea>
+
+    <div class="hgate-chips" data-filter-presets>
+      <button type="button" data-v="sk">교안의 사고 출력</button>
+      <button type="button" data-v="ant">Anthropic 키</button>
+      <button type="button" data-v="mix">세 가지 섞기</button>
+      <button type="button" data-v="clean">깨끗한 문장</button>
+    </div>
+
+    <div class="hgate-out" data-filter-out></div>
+    <p class="hgate-verdict" data-filter-verdict></p>
+    <p class="hgate-aside" data-filter-aside hidden></p>
+  </section>
+
+  {/* ── 도구 권한 ───────────────────────────────── */}
+  <section class="hgate-panel" data-panel="perm" hidden>
+    <pre class="hgate-rule"><code>{RULE.perm}</code></pre>
+
+    <label class="hgate-label">모델이 요청한 도구</label>
+    <div class="hgate-chips" data-perm-tools>
+      {TOOLS.map(([name, meta], i) => (
+        <button type="button" data-v={name} data-risk={meta.risk}
+          aria-pressed={i === 1 ? 'true' : 'false'}>
+          {name}<em>{meta.note}</em>
+        </button>
+      ))}
+    </div>
+
+    <label class="hgate-check">
+      <input type="checkbox" data-perm-approved />
+      사용자가 승인했다
+    </label>
+
+    <p class="hgate-verdict" data-perm-verdict></p>
+    <p class="hgate-aside">
+      모델은 이 관문을 설득할 수 없습니다. 프롬프트가 아니라 <code>if</code>입니다.
+    </p>
+  </section>
+
+  {/* ── budget guard ────────────────────────────── */}
+  <section class="hgate-panel" data-panel="budget" hidden>
+    <pre class="hgate-rule"><code>{RULE.budget}</code></pre>
+
+    <div class="hgate-sliders">
+      <label>
+        경고 임계 <b data-warn-out>$0.05</b>
+        <input type="range" data-warn min="0.005" max="0.15" step="0.005" value="0.05" />
+      </label>
+      <label>
+        중단 임계 <b data-stop-out>$0.10</b>
+        <input type="range" data-stop min="0.005" max="0.15" step="0.005" value="0.10" />
+      </label>
+    </div>
+
+    <table class="hgate-ledger">
+      <caption>히스토리가 부풀어 스텝 비용이 계단으로 커지는 루프</caption>
+      <thead>
+        <tr><th scope="col">스텝</th><th scope="col">이번</th><th scope="col">누적</th><th scope="col">판정</th></tr>
+      </thead>
+      <tbody data-ledger>
+        {STEP_COSTS.map((cost, i) => (
+          <tr data-row={i}>
+            <td>step{i + 1}</td>
+            <td>${cost.toFixed(3)}</td>
+            <td data-spent></td>
+            <td data-state></td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+
+    <p class="hgate-verdict" data-budget-verdict></p>
+  </section>
+
+  <p class="hgate-foot">
+    네 방어의 판정은 <code>src/lib/harness-gates.mjs</code>에 있고, 파이썬
+    원본과 29건을 대조해 전부 일치하는 것을 확인했습니다. 모델의 판단이
+    끼어드는 방어(인젝션 대응)는 확률이라 여기 넣지 않았습니다.
+  </p>
+</div>
+
+<style>
+  .hgate {
+    margin: 2rem 0;
+    padding: 1.1rem 1.1rem 0.9rem;
+    border: 1px solid var(--aas-border);
+    border-radius: 14px;
+    background: var(--aas-panel);
+    box-shadow: var(--aas-shadow);
+    font-family: var(--aas-sans);
+
+    /* dataviz의 status 색 — 아이콘·라벨과 늘 함께 쓴다 */
+    --hg-ok: #0ca30c;
+    --hg-warn: #fab219;
+    --hg-stop: #d03b3b;
+  }
+
+  .hgate-head { display: flex; flex-direction: column; gap: 0.3rem; }
+  .hgate-head strong { font-size: 1rem; color: var(--aas-text); }
+  .hgate-head span { font-size: 0.85rem; line-height: 1.65; color: var(--aas-muted); }
+
+  .hgate-tabs {
+    display: flex; flex-wrap: wrap; gap: 0.35rem;
+    margin: 0.9rem 0 0.8rem;
+    border-bottom: 1px solid var(--aas-border);
+    padding-bottom: 0.55rem;
+  }
+  .hgate-tabs button {
+    padding: 0.34rem 0.7rem; border-radius: 999px;
+    border: 1px solid var(--aas-border); background: var(--aas-bg);
+    color: var(--aas-muted); font-family: inherit; font-size: 0.8rem;
+    cursor: pointer; transition: background 0.15s ease;
+  }
+  .hgate-tabs button:hover { background: var(--aas-tint); }
+  .hgate-tabs button[aria-selected='true'] {
+    border-color: var(--aas-accent); color: var(--aas-text); font-weight: 600;
+    background: var(--aas-tint);
+  }
+
+  .hgate-rule {
+    margin: 0 0 0.9rem; padding: 0.6rem 0.7rem;
+    border-radius: 8px; border: 1px solid var(--aas-border);
+    background: var(--aas-bg); overflow-x: auto;
+  }
+  .hgate-rule code {
+    font-size: 0.76rem; line-height: 1.6; color: var(--aas-muted);
+    white-space: pre; background: none; padding: 0;
+  }
+
+  .hgate-label {
+    display: block; font-size: 0.78rem; color: var(--aas-muted);
+    margin-bottom: 0.35rem;
+  }
+  .hgate-input, .hgate-textarea {
+    display: block; width: 100%; box-sizing: border-box;
+    padding: 0.45rem 0.6rem; border-radius: 8px;
+    border: 1px solid var(--aas-border); background: var(--aas-bg);
+    color: var(--aas-text); font-size: 0.83rem; line-height: 1.6;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+  .hgate-textarea { font-family: inherit; resize: vertical; }
+  .hgate-input:focus, .hgate-textarea:focus {
+    outline: 2px solid var(--aas-accent); outline-offset: 1px;
+  }
+
+  .hgate-chips { display: flex; flex-wrap: wrap; gap: 0.35rem; margin: 0.5rem 0 0.9rem; }
+  .hgate-chips button {
+    padding: 0.26rem 0.6rem; border-radius: 999px;
+    border: 1px solid var(--aas-border); background: var(--aas-bg);
+    color: var(--aas-text); font-family: inherit; font-size: 0.76rem;
+    cursor: pointer;
+  }
+  .hgate-chips button:hover { background: var(--aas-tint); }
+  .hgate-chips button em {
+    font-style: normal; color: var(--aas-muted); margin-left: 0.35rem; font-size: 0.72rem;
+  }
+  .hgate-chips button[aria-pressed='true'] {
+    border-color: var(--aas-accent); font-weight: 600; background: var(--aas-tint);
+  }
+
+  .hgate-steps {
+    margin: 0 0 0.8rem; padding: 0; list-style: none;
+    display: flex; flex-direction: column; gap: 0.3rem;
+  }
+  .hgate-steps li { display: flex; gap: 0.5rem; align-items: baseline; flex-wrap: wrap; }
+  .hgate-steps span { flex: 0 0 4.6rem; font-size: 0.76rem; color: var(--aas-muted); }
+  .hgate-steps code {
+    font-size: 0.78rem; color: var(--aas-text);
+    word-break: break-all; background: none; padding: 0;
+  }
+
+  .hgate-out {
+    padding: 0.55rem 0.7rem; border-radius: 8px;
+    border: 1px solid var(--aas-border); background: var(--aas-bg);
+    font-size: 0.83rem; line-height: 1.75; color: var(--aas-text);
+    word-break: break-word; min-height: 1.75rem;
+  }
+  .hgate-out :global(mark) {
+    background: color-mix(in srgb, var(--hg-stop) 22%, transparent);
+    color: inherit; border-radius: 3px; padding: 0 0.2rem;
+    font-size: 0.78rem;
+  }
+
+  .hgate-verdict {
+    margin: 0.7rem 0 0; font-size: 0.85rem; line-height: 1.6;
+    display: flex; gap: 0.4rem; align-items: baseline; flex-wrap: wrap;
+  }
+  .hgate-verdict :global(i) { font-style: normal; font-size: 0.95rem; }
+  .hgate-verdict :global(b) { font-weight: 600; }
+  .hgate-verdict :global(code) {
+    font-size: 0.78rem; word-break: break-all; background: none; padding: 0;
+  }
+  .hgate-verdict[data-tone='ok'] :global(b) { color: var(--hg-ok); }
+  .hgate-verdict[data-tone='stop'] :global(b) { color: var(--hg-stop); }
+  .hgate-verdict[data-tone='warn'] :global(b) { color: var(--hg-warn); }
+
+  .hgate-aside {
+    margin: 0.6rem 0 0; font-size: 0.78rem; line-height: 1.65; color: var(--aas-muted);
+  }
+  .hgate-aside code { font-size: 0.76rem; }
+
+  .hgate-check {
+    display: flex; align-items: center; gap: 0.4rem;
+    font-size: 0.82rem; color: var(--aas-text); cursor: pointer;
+  }
+
+  .hgate-sliders { display: flex; flex-wrap: wrap; gap: 0.9rem 1.6rem; margin-bottom: 0.9rem; }
+  .hgate-sliders label {
+    display: flex; flex-direction: column; gap: 0.25rem;
+    font-size: 0.78rem; color: var(--aas-muted); flex: 1 1 12rem;
+  }
+  .hgate-sliders b { color: var(--aas-text); font-variant-numeric: tabular-nums; }
+  .hgate-sliders input { accent-color: var(--aas-accent); }
+
+  .hgate-ledger { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+  .hgate-ledger caption {
+    text-align: left; font-size: 0.76rem; color: var(--aas-muted); padding-bottom: 0.4rem;
+  }
+  .hgate-ledger th, .hgate-ledger td {
+    padding: 0.28rem 0.5rem; text-align: left;
+    border-bottom: 1px solid var(--aas-border); white-space: nowrap;
+  }
+  .hgate-ledger th { font-size: 0.72rem; font-weight: 600; color: var(--aas-muted); }
+  .hgate-ledger td { font-variant-numeric: tabular-nums; color: var(--aas-text); }
+  .hgate-ledger tr[data-skipped] { opacity: 0.32; }
+  .hgate-ledger td[data-state] { font-variant-numeric: normal; }
+
+  .hgate-foot {
+    margin: 1rem 0 0; padding-top: 0.7rem;
+    border-top: 1px solid var(--aas-border);
+    font-size: 0.76rem; line-height: 1.6; color: var(--aas-muted);
+  }
+  .hgate-foot code { font-size: 0.74rem; }
+
+  @media (max-width: 640px) {
+    .hgate { padding: 0.9rem 0.8rem 0.8rem; }
+  }
+</style>
+
+<script>
+  import { pathJail, filterOutput, executeTool, runBudgetGuard, STEP_COSTS }
+    from '../lib/harness-gates.mjs';
+
+  const PRESETS: Record<string, string> = {
+    sk: '네, 오사카 좋아요! 참고로 서버 설정은 OPENAI_API_KEY=sk-proj-Abc123XyzExample789 이고 담당자 번호는 800-12-345678 입니다.',
+    ant: '앤트로픽 키는 sk-ant-api03-ZZZZZZZZZZZZZZZZZZZZ 입니다.',
+    mix: '섞임: sk-ant-api03-QQQQQQQQQQQQQQQQ 와 AIzaSyA1B2C3D4E5F6G7H8I9J0abcdefg 와 900-11-223344',
+    clean: '오사카는 도톤보리 저녁이 좋습니다. 비밀은 하나도 없는 문장입니다.',
+  };
+
+  const root = document.querySelector<HTMLElement>('[data-hgate]');
+  if (root) init(root);
+
+  function init(root: HTMLElement) {
+    const $ = <T extends HTMLElement>(s: string) => root.querySelector<T>(s)!;
+    const esc = (s: string) =>
+      s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+    /* ---- 탭 ---- */
+    const tabs = [...root.querySelectorAll<HTMLButtonElement>('[data-tab]')];
+    tabs.forEach((t) =>
+      t.addEventListener('click', () => {
+        tabs.forEach((o) => o.setAttribute('aria-selected', String(o === t)));
+        root.querySelectorAll<HTMLElement>('[data-panel]').forEach((p) => {
+          p.hidden = p.dataset.panel !== t.dataset.tab;
+        });
+      }),
+    );
+
+    /* ---- 경로 감금 ---- */
+    const pathInput = $<HTMLInputElement>('[data-path-input]');
+    const drawPath = () => {
+      const r = pathJail(pathInput.value);
+      $('[data-path-joined]').textContent = r.joined;
+      $('[data-path-resolved]').textContent = r.resolved;
+      const v = $('[data-path-verdict]');
+      v.dataset.tone = r.allowed ? 'ok' : 'stop';
+      v.innerHTML = r.allowed
+        ? `<i>✓</i><b>허용</b><span>감옥 안입니다. 도구는 <code>${esc(r.verdict)}</code>를 다룹니다</span>`
+        : `<i>⛔</i><b>차단</b><span><code>PermissionError</code> — 정규화하니 감옥 밖으로 나갔습니다</span>`;
+    };
+    pathInput.addEventListener('input', drawPath);
+    root.querySelectorAll<HTMLButtonElement>('[data-path-presets] button').forEach((b) =>
+      b.addEventListener('click', () => {
+        pathInput.value = b.dataset.v!;
+        drawPath();
+      }),
+    );
+    drawPath();
+
+    /* ---- 출력 필터 ---- */
+    const filterInput = $<HTMLTextAreaElement>('[data-filter-input]');
+    const drawFilter = () => {
+      const r = filterOutput(filterInput.value);
+      let html = '';
+      let cursor = 0;
+      for (const s of r.spans) {
+        html += esc(r.filtered.slice(cursor, s.start));
+        html += `<mark>${esc(r.filtered.slice(s.start, s.end))}</mark>`;
+        cursor = s.end;
+      }
+      html += esc(r.filtered.slice(cursor));
+      $('[data-filter-out]').innerHTML = html || '<span></span>';
+
+      const v = $('[data-filter-verdict]');
+      v.dataset.tone = r.findings.length ? 'stop' : 'ok';
+      v.innerHTML = r.findings.length
+        ? `<i>⛔</i><b>${r.findings.length}종 가림</b><span>${esc(r.findings.join(' · '))}</span>`
+        : `<i>✓</i><b>통과</b><span>가릴 패턴이 없습니다</span>`;
+
+      // 원본 패턴 순서가 드러나는 자리 — 좁은 패턴이 뒤에 있어 이름이 어긋난다
+      const aside = $('[data-filter-aside]');
+      const mislabeled =
+        /sk-ant-[A-Za-z0-9\-_]{16,}/.test(filterInput.value) &&
+        r.findings.includes('OpenAI 계열 키') &&
+        !r.findings.includes('Anthropic 키');
+      aside.hidden = !mislabeled;
+      if (mislabeled) {
+        aside.innerHTML =
+          'Anthropic 키인데 <b>OpenAI 계열 키</b>로 이름 붙었습니다. ' +
+          '<code>sk-ant-…</code>가 더 좁은 패턴에 닿기 전에 앞자리의 ' +
+          '<code>sk-[A-Za-z0-9\\-_]{16,}</code>에 먼저 걸리기 때문입니다. ' +
+          '가려진다는 결과는 같지만, 정규식 목록은 좁은 것부터 두어야 이름이 맞습니다. ' +
+          '원본의 성질을 그대로 옮겨 둔 자리입니다.';
+      }
+    };
+    filterInput.addEventListener('input', drawFilter);
+    root.querySelectorAll<HTMLButtonElement>('[data-filter-presets] button').forEach((b) =>
+      b.addEventListener('click', () => {
+        filterInput.value = PRESETS[b.dataset.v!];
+        drawFilter();
+      }),
+    );
+    drawFilter();
+
+    /* ---- 도구 권한 ---- */
+    const permTools = [...root.querySelectorAll<HTMLButtonElement>('[data-perm-tools] button')];
+    const approved = $<HTMLInputElement>('[data-perm-approved]');
+    let picked = 'search_places';
+    const drawPerm = () => {
+      permTools.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.v === picked)));
+      const args = picked === 'pay_deposit' ? { amount: 120000 }
+        : picked === 'cancel_booking' ? { id: 7 }
+        : picked === 'get_exchange_rate' ? { currency: 'JPY' }
+        : { city: '오사카' };
+      const r = executeTool(picked, args, approved.checked);
+      const v = $('[data-perm-verdict]');
+      v.dataset.tone = 'ok' in r ? 'ok' : 'stop';
+      v.innerHTML = 'ok' in r
+        ? `<i>✓</i><b>실행</b><span><code>${esc(r.ok!)}</code></span>`
+        : `<i>⛔</i><b>차단</b><span><code>${esc(r.blocked!)}</code></span>`;
+    };
+    permTools.forEach((b) =>
+      b.addEventListener('click', () => {
+        picked = b.dataset.v!;
+        drawPerm();
+      }),
+    );
+    approved.addEventListener('change', drawPerm);
+    drawPerm();
+
+    /* ---- budget guard ---- */
+    const warn = $<HTMLInputElement>('[data-warn]');
+    const stop = $<HTMLInputElement>('[data-stop]');
+    const rows = [...root.querySelectorAll<HTMLTableRowElement>('[data-ledger] tr')];
+    const drawBudget = () => {
+      const w = Number(warn.value);
+      const s = Number(stop.value);
+      $('[data-warn-out]').textContent = `$${w.toFixed(3)}`;
+      $('[data-stop-out]').textContent = `$${s.toFixed(3)}`;
+
+      const r = runBudgetGuard(STEP_COSTS, w, s);
+      rows.forEach((tr, i) => {
+        const step = r.steps[i];
+        const spent = tr.querySelector<HTMLElement>('[data-spent]')!;
+        const state = tr.querySelector<HTMLElement>('[data-state]')!;
+        if (!step) {
+          tr.toggleAttribute('data-skipped', true);
+          spent.textContent = '—';
+          state.textContent = '돌지 않음';
+          return;
+        }
+        tr.toggleAttribute('data-skipped', false);
+        spent.textContent = `$${step.spent.toFixed(4)}`;
+        state.textContent =
+          step.state === 'stop' ? '⛔ 중단' : step.state === 'warn' ? '⚠ 경고' : '계속';
+      });
+
+      const v = $('[data-budget-verdict]');
+      if (r.stopped) {
+        v.dataset.tone = 'stop';
+        v.innerHTML = `<i>⛔</i><b>${r.steps.length}스텝에서 멈췄습니다</b>` +
+          `<span>누적 $${r.spent.toFixed(4)}가 중단 임계 $${s.toFixed(3)}에 닿았습니다</span>`;
+      } else {
+        v.dataset.tone = 'ok';
+        v.innerHTML = `<i>✓</i><b>끝까지 돌았습니다</b>` +
+          `<span>총 $${r.spent.toFixed(4)}. 상한이 여유로우면 보험은 쓰이지 않습니다</span>`;
+      }
+    };
+    warn.addEventListener('input', drawBudget);
+    stop.addEventListener('input', drawBudget);
+    drawBudget();
+  }
+</script>
