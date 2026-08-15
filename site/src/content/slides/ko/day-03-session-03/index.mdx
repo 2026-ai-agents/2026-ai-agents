@@ -5,6 +5,7 @@ presenter: CodeCompose
 date: "2026-08-16"
 order: 16
 transition: none
+toc_level: 3
 toc_open: false
 ---
 
@@ -94,7 +95,7 @@ docker compose up --build
 
 <Slide>
 
-## 돌아오지 않습니다
+### 돌아오지 않습니다
 
 | | energy-agent (supervisor) | support-agent (handoff) |
 | --- | --- | --- |
@@ -110,7 +111,7 @@ docker compose up --build
 
 <Slide class="center">
 
-## 이 한 줄의 차이가
+### 이 한 줄의 차이가
 
 ## 코드와 상태와 실패 모드를 모두 바꿉니다
 
@@ -122,7 +123,7 @@ docker compose up --build
 
 <Slide>
 
-## 컨테이너 넷
+### 컨테이너 넷
 
 ```mermaid
 flowchart LR
@@ -137,7 +138,7 @@ flowchart LR
 
 <Slide class="center">
 
-## rag 컨테이너가 그대로 돌아왔습니다
+### rag 컨테이너가 그대로 돌아왔습니다
 
 다른 점은 **쓰임새**입니다.
 
@@ -156,7 +157,7 @@ food-rag-agent에서 검색은 **제품 자체**였고,
 
 <Slide>
 
-## 고객 넷이 각자 다른 문의를 들고 옵니다
+### 고객 넷이 각자 다른 문의를 들고 옵니다
 
 | 고객 | 사연 | 어디로 갈 문의인가 |
 | --- | --- | --- |
@@ -169,7 +170,7 @@ food-rag-agent에서 검색은 **제품 자체**였고,
 
 <Slide>
 
-## 네 담당
+### 네 담당
 
 - **접수(triage)**: 듣고 넘긴다. 조회 도구가 없다.
 - **요금(billing)**: 청구 조회 + 약관 검색
@@ -180,7 +181,7 @@ food-rag-agent에서 검색은 **제품 자체**였고,
 
 <Slide>
 
-## 문서 50건은 강의용으로 지어낸 것입니다
+### 문서 50건은 강의용으로 지어낸 것입니다
 
 - 중요한 것은 문장이 그럴듯한지가 아닙니다.
 - **조항 번호로 가리킬 수 있는 단위로 쪼개져 있는지**입니다.
@@ -190,7 +191,7 @@ food-rag-agent에서 검색은 **제품 자체**였고,
 
 <Slide class="center">
 
-## 조항 번호로 가리킬 수 있어야
+### 조항 번호로 가리킬 수 있어야
 
 ## 검증할 수 있습니다
 
@@ -206,7 +207,7 @@ food-rag-agent에서 검색은 **제품 자체**였고,
 
 <Slide>
 
-## 접수 상담원 하나
+### 접수 상담원 하나
 
 - 문의를 듣고 어디로 보낼지 정합니다.
 - "요금 담당으로 연결해 드리겠습니다"라고 말합니다.
@@ -216,7 +217,7 @@ food-rag-agent에서 검색은 **제품 자체**였고,
 
 <Slide>
 
-## 그래프는 노드 하나
+### 그래프는 노드 하나
 
 ```mermaid
 graph TD;
@@ -234,7 +235,7 @@ graph TD;
 
 <Slide>
 
-## 무엇을 볼 것인가
+### 무엇을 볼 것인가
 
 트레이스의 `handled_by` 한 칸입니다.
 
@@ -244,7 +245,7 @@ graph TD;
 
 <Slide>
 
-## 세 턴 내내 담당이 변하지 않습니다
+### 세 턴 내내 담당이 변하지 않습니다
 
 ```text
 [김누리] 이번 달 요금이 왜 이렇게 많이 나왔나요?
@@ -262,7 +263,7 @@ graph TD;
 
 <Slide>
 
-## v0.1 화면
+### v0.1 화면
 
 ![v0.1 화면: 두 턴 모두 접수 상담원이 받고, 트레이스에도 triage 분류만 두 번 쌓인다](../../../courses/ko/day-03-session-03/classify-only.jpg)
 
@@ -270,7 +271,7 @@ graph TD;
 
 <Slide class="center">
 
-## 분류는 판단이고
+### 분류는 판단이고
 
 ## 판단만으로는 아무도 움직이지 않습니다
 
@@ -280,7 +281,7 @@ graph TD;
 
 <Slide>
 
-## v0.2에서 붙는 것
+### v0.2에서 붙는 것
 
 - `entry` 노드: 이미 담당이 있으면 접수를 건너뜁니다.
 - 담당 셋: 요금 · 기술지원 · 해지방어
@@ -296,7 +297,7 @@ graph TD;
 
 <Slide>
 
-## 되돌아오는 화살표가 없습니다
+### 되돌아오는 화살표가 없습니다
 
 ```mermaid
 graph TD;
@@ -334,7 +335,7 @@ graph TD;
 
 <Slide class="center">
 
-## supervisor 그림과 나란히 놓고 보십시오
+### supervisor 그림과 나란히 놓고 보십시오
 
 거기서는 화살표가 전부 중앙으로 되돌아왔습니다.
 
@@ -345,7 +346,7 @@ graph TD;
 
 <Slide>
 
-## 먼저: `Command`가 무엇인가
+### 먼저: `Command`가 무엇인가
 
 - Day 2부터 지금까지 노드는 **상태 조각**을 돌려주었습니다.
 - 어디로 갈지는 **미리 그려 둔 엣지**가 정했습니다.
@@ -356,7 +357,7 @@ graph TD;
 
 <Slide class="center">
 
-## 지금까지 이동을 정한 것은 그래프였습니다
+### 지금까지 이동을 정한 것은 그래프였습니다
 
 노드는 상태 조각만 돌려주었고,
 
@@ -366,7 +367,7 @@ graph TD;
 
 <Slide>
 
-## `Command`는 그 둘을 하나로 합칩니다
+### `Command`는 그 둘을 하나로 합칩니다
 
 ```python
 # 지금까지: 상태만 돌려주고, 이동은 엣지가 정한다
@@ -383,7 +384,7 @@ def triage(state):
 
 <Slide>
 
-## 조건부 엣지와 무엇이 다른가
+### 조건부 엣지와 무엇이 다른가
 
 | | 조건부 엣지 | `Command` |
 | --- | --- | --- |
@@ -395,7 +396,7 @@ def triage(state):
 
 <Slide class="center">
 
-## handoff에 Command가 맞는 이유는
+### handoff에 Command가 맞는 이유는
 
 ## 구조가 그렇게 생겼기 때문입니다
 
@@ -408,7 +409,7 @@ def triage(state):
 
 <Slide>
 
-## 부작용 하나: 그래프만 봐서는 화살표를 못 그린다
+### 부작용 하나: 그래프만 봐서는 화살표를 못 그린다
 
 ```python
 graph.add_node("triage", triage, destinations=("billing", "tech", "retention", END))
@@ -422,7 +423,7 @@ graph.add_node("triage", triage, destinations=("billing", "tech", "retention", E
 
 <Slide class="center">
 
-## 넘긴다는 것은 세 가지가 함께 일어나는 일입니다
+### 넘긴다는 것은 세 가지가 함께 일어나는 일입니다
 
 하나만 빠져도 handoff가 되지 않습니다.
 
@@ -430,7 +431,7 @@ graph.add_node("triage", triage, destinations=("billing", "tech", "retention", E
 
 <Slide>
 
-## 세 가지가 이 구조를 만듭니다
+### 세 가지가 이 구조를 만듭니다
 
 - **① 넘기는 행위가 도구다**.
 - **② 넘어가는 것은 대화 전체다**.
@@ -440,7 +441,7 @@ graph.add_node("triage", triage, destinations=("billing", "tech", "retention", E
 
 <Slide>
 
-## ① 넘기는 행위가 도구다
+### ① 넘기는 행위가 도구다
 
 ```python
 if called in HANDOFF_TARGETS:              # 여기서 제어권이 넘어간다
@@ -459,7 +460,7 @@ if called in HANDOFF_TARGETS:              # 여기서 제어권이 넘어간다
 
 <Slide>
 
-## 인자는 이유 한 줄뿐입니다
+### 인자는 이유 한 줄뿐입니다
 
 - `transfer_to_billing(reason="요금 과다 청구 문의")`
 - 모델이 정하는 것은 **어디로, 왜**입니다.
@@ -469,7 +470,7 @@ if called in HANDOFF_TARGETS:              # 여기서 제어권이 넘어간다
 
 <Slide>
 
-## ② 넘어가는 것은 대화 전체다
+### ② 넘어가는 것은 대화 전체다
 
 - supervisor 구조에서는 하위 에이전트가 **요약만** 위로 올렸고,
   원자료는 상태에 남았습니다.
@@ -480,7 +481,7 @@ if called in HANDOFF_TARGETS:              # 여기서 제어권이 넘어간다
 
 <Slide>
 
-## ③ 담당이 체크포인터에 남는다
+### ③ 담당이 체크포인터에 남는다
 
 ```python
 def entry(state):
@@ -496,7 +497,7 @@ def entry(state):
 
 <Slide class="center">
 
-## 셋이 갖춰지면 무엇이 달라지는가
+### 셋이 갖춰지면 무엇이 달라지는가
 
 같은 세 마디 대화를 v0.1과 v0.2에 던져 봅니다.
 
@@ -504,7 +505,7 @@ def entry(state):
 
 <Slide>
 
-## 실측: 같은 대화, 두 구조
+### 실측: 같은 대화, 두 구조
 
 ```text
 === v0.1 분류만 ===
@@ -526,7 +527,7 @@ def entry(state):
 
 <Slide>
 
-## 두 마디를 보십시오
+### 두 마디를 보십시오
 
 - **두 번째 마디**에서 접수를 다시 거치지 않은 것이 **체크포인터의 몫**입니다.
 - **세 번째 마디**에서 요금 담당이 해지방어에게 **직접** 넘긴 것이
@@ -536,7 +537,7 @@ def entry(state):
 
 <Slide>
 
-## 함정: 매 턴 상태를 통째로 보내면 이양이 지워진다
+### 함정: 매 턴 상태를 통째로 보내면 이양이 지워진다
 
 - 개발 중에 실제로 겪은 것입니다.
 - 두 번째 턴에도 습관처럼 `current_agent: ""`를 함께 보냈습니다.
@@ -548,7 +549,7 @@ def entry(state):
 
 <Slide>
 
-## 이어지는 턴이 들고 오는 것
+### 이어지는 턴이 들고 오는 것
 
 ```python
 def new_turn(customer_id, customer_name, message):
@@ -565,7 +566,7 @@ handoff 구조에서는 설계의 일부입니다.
 
 <Slide>
 
-## 상태에 남길 것과 매 턴 보낼 것
+### 상태에 남길 것과 매 턴 보낼 것
 
 | | 상태에 남긴다 | 매 턴 새로 보낸다 |
 | --- | --- | --- |
@@ -588,7 +589,7 @@ handoff 구조에서는 설계의 일부입니다.
 
 <Slide class="center">
 
-## 자유롭게 두면 무슨 일이 나는가
+### 자유롭게 두면 무슨 일이 나는가
 
 v0.2를 그대로 두고 **세 종류의 문의**를 각각 3회씩 던집니다.
 
@@ -598,7 +599,7 @@ v0.2를 그대로 두고 **세 종류의 문의**를 각각 3회씩 던집니다
 
 <Slide>
 
-## 같은 문의를 3회씩 던져 세어 봤습니다
+### 같은 문의를 3회씩 던져 세어 봤습니다
 
 ```text
 === ① 규칙 없이 (v0.2) ===
@@ -619,7 +620,7 @@ v0.2를 그대로 두고 **세 종류의 문의**를 각각 3회씩 던집니다
 
 <Slide class="center">
 
-## 셋 다 답변만 봐서는 보이지 않습니다
+### 셋 다 답변만 봐서는 보이지 않습니다
 
 트레이스의 **이양 기록**을 세어야 나타납니다.
 
@@ -627,7 +628,7 @@ v0.2를 그대로 두고 **세 종류의 문의**를 각각 3회씩 던집니다
 
 <Slide>
 
-## 세 가지가 나왔습니다
+### 세 가지가 나왔습니다
 
 - **말로만 넘김**
   - 접수가 도구를 부르지 않고 "연결해 드리겠습니다"라고만 합니다.
@@ -642,7 +643,7 @@ v0.2를 그대로 두고 **세 종류의 문의**를 각각 3회씩 던집니다
 
 <Slide>
 
-## 핑퐁이 화면에 남은 모습
+### 핑퐁이 화면에 남은 모습
 
 ![v0.2 화면: 제어권이 간 길에 해지방어 → 요금 → 해지방어가 그대로 쌓여 있다](../../../courses/ko/day-03-session-03/handoff-pingpong.jpg)
 
@@ -650,7 +651,7 @@ v0.2를 그대로 두고 **세 종류의 문의**를 각각 3회씩 던집니다
 
 <Slide>
 
-## 세 문제를 세 규칙으로
+### 세 문제를 세 규칙으로
 
 | 문제 | 규칙 |
 | --- | --- |
@@ -662,7 +663,7 @@ v0.2를 그대로 두고 **세 종류의 문의**를 각각 3회씩 던집니다
 
 <Slide>
 
-## 기준 셋을 코드로
+### 기준 셋을 코드로
 
 ```python
 def _routing_plan(state, name):
@@ -686,7 +687,7 @@ energy-agent에서 배운 것과 같은 방식입니다.
 
 <Slide class="center">
 
-## 프롬프트로 타이르지 않습니다
+### 프롬프트로 타이르지 않습니다
 
 energy-agent에서 배운 것과 같은 방식입니다.
 
@@ -696,7 +697,7 @@ energy-agent에서 배운 것과 같은 방식입니다.
 
 <Slide>
 
-## `tool_choice`: 쥐어주는 것과 쓰게 하는 것은 다르다
+### `tool_choice`: 쥐어주는 것과 쓰게 하는 것은 다르다
 
 - ①의 "말로만 넘김"은 **도구를 안 준** 문제가 아닙니다.
 - **줬는데 안 쓴** 문제입니다.
@@ -706,7 +707,7 @@ energy-agent에서 배운 것과 같은 방식입니다.
 
 <Slide class="center">
 
-## 도구를 준다고 쓰는 것이 아닙니다
+### 도구를 준다고 쓰는 것이 아닙니다
 
 `tool_choice` 인자 하나가
 
@@ -716,7 +717,7 @@ energy-agent에서 배운 것과 같은 방식입니다.
 
 <Slide>
 
-## 세 값
+### 세 값
 
 | `tool_choice` | 뜻 | 여기서 |
 | --- | --- | --- |
@@ -728,7 +729,7 @@ energy-agent에서 배운 것과 같은 방식입니다.
 
 <Slide>
 
-## 강제만으로는 부족합니다
+### 강제만으로는 부족합니다
 
 - 접수에 `required`를 걸면 "말로 얼버무리기"가 **문법적으로 불가능**해집니다.
 - 다만 넘길 곳이 없는데 반드시 부르라고 하면 **아무 데나 넘기게** 됩니다.
@@ -739,7 +740,7 @@ energy-agent에서 배운 것과 같은 방식입니다.
 
 <Slide>
 
-## 넘기거나, 되묻거나
+### 넘기거나, 되묻거나
 
 ```python
 schemas = handoff_schemas(allowed) + [ASK_TOOL]          # 넘기거나, 되묻거나
@@ -750,7 +751,7 @@ completion(..., tools=schemas, tool_choice="required")   # 둘 중 하나는 반
 
 <Slide class="center">
 
-## 강제하기 전에 도망갈 문을 만들어 두는 것
+### 강제하기 전에 도망갈 문을 만들어 두는 것
 
 강제만 하면 모델은 **가장 그럴듯한 거짓말**을 고릅니다.
 
@@ -758,7 +759,7 @@ completion(..., tools=schemas, tool_choice="required")   # 둘 중 하나는 반
 
 <Slide>
 
-## 규칙이 막는 것과 여는 것
+### 규칙이 막는 것과 여는 것
 
 - **막는다**: 되돌아가는 길, 말로만 넘기기
 - **연다**: 되묻기라는 제3의 선택지
@@ -769,7 +770,7 @@ completion(..., tools=schemas, tool_choice="required")   # 둘 중 하나는 반
 
 <Slide>
 
-## 기준을 세운 뒤
+### 기준을 세운 뒤
 
 ```text
 === ② 기준을 세우고 (v0.3) ===
@@ -783,7 +784,7 @@ completion(..., tools=schemas, tool_choice="required")   # 둘 중 하나는 반
 
 <Slide class="center">
 
-## 모델이 더 똑똑해진 것이 아닙니다
+### 모델이 더 똑똑해진 것이 아닙니다
 
 되묻기는 원래 좋은 상담원이 하는 일이고,
 
@@ -793,7 +794,7 @@ completion(..., tools=schemas, tool_choice="required")   # 둘 중 하나는 반
 
 <Slide>
 
-## 직접 만져 보기: 규칙은 무엇을 닫는가
+### 직접 만져 보기: 규칙은 무엇을 닫는가
 
 <HandoffRules />
 
@@ -801,7 +802,7 @@ completion(..., tools=schemas, tool_choice="required")   # 둘 중 하나는 반
 
 <Slide>
 
-## 규칙은 고르지 않고 좁힙니다
+### 규칙은 고르지 않고 좁힙니다
 
 - "요금도 이상하고 인터넷도 안 돼요"를 접수에게 주면
   **넘길 곳이 전부 닫히고 되묻기만** 남습니다.
@@ -812,7 +813,7 @@ completion(..., tools=schemas, tool_choice="required")   # 둘 중 하나는 반
 
 <Slide class="center">
 
-## 규칙이 늘어난 만큼 자유는 줄었습니다
+### 규칙이 늘어난 만큼 자유는 줄었습니다
 
 그 대가로 얻은 것은 **경로 1종**입니다.
 
@@ -828,7 +829,7 @@ completion(..., tools=schemas, tool_choice="required")   # 둘 중 하나는 반
 
 <Slide class="center">
 
-## 도구를 나누는 것이 곧 경계입니다
+### 도구를 나누는 것이 곧 경계입니다
 
 기술지원 담당은 약관을 검색할 수 없습니다.
 
@@ -838,7 +839,7 @@ completion(..., tools=schemas, tool_choice="required")   # 둘 중 하나는 반
 
 <Slide>
 
-## 두 담당에게만 약관 검색을 줍니다
+### 두 담당에게만 약관 검색을 줍니다
 
 - **요금 담당**과 **해지방어 담당**에게 약관 검색 도구를 줍니다.
 - **기술지원 담당에게는 주지 않습니다**.
@@ -848,7 +849,7 @@ completion(..., tools=schemas, tool_choice="required")   # 둘 중 하나는 반
 
 <Slide>
 
-## 원본 한 벌 규율은 그대로입니다
+### 원본 한 벌 규율은 그대로입니다
 
 - 본문은 PostgreSQL의 `documents` 표에만 있습니다.
 - Chroma에는 벡터와 `doc_id`만 둡니다.
@@ -858,7 +859,7 @@ completion(..., tools=schemas, tool_choice="required")   # 둘 중 하나는 반
 
 <Slide>
 
-## 두 담당이 나눠 쓰는 부품
+### 두 담당이 나눠 쓰는 부품
 
 - Day 2에서 rag는 **제품 자체**였습니다.
 - 여기서는 요금·해지방어 담당이 **필요할 때 부르는 도구**입니다.
@@ -868,7 +869,7 @@ completion(..., tools=schemas, tool_choice="required")   # 둘 중 하나는 반
 
 <Slide>
 
-## 실측: 조항을 찾아 인용한다
+### 실측: 조항을 찾아 인용한다
 
 ```text
 [김누리] 데이터 초과 요금은 어떻게 계산되나요? 근거 조항도 알려주세요.
@@ -888,7 +889,7 @@ completion(..., tools=schemas, tool_choice="required")   # 둘 중 하나는 반
 
 <Slide>
 
-## 검색과 인용은 다른 일입니다
+### 검색과 인용은 다른 일입니다
 
 - **검색**: 이번 턴에 rag에서 무엇을 꺼냈는가
 - **인용**: 답변 문장이 무엇을 가리켰는가
@@ -899,7 +900,7 @@ completion(..., tools=schemas, tool_choice="required")   # 둘 중 하나는 반
 
 <Slide>
 
-## 인용마다 두 가지를 따로 봅니다
+### 인용마다 두 가지를 따로 봅니다
 
 - **존재**: 그 조항이 실제로 있는가. 없으면 지어낸 것입니다.
 - **근거**: 이번 턴에 실제로 검색한 조항인가. 아니면 기억으로 말한 것입니다.
@@ -908,7 +909,7 @@ completion(..., tools=schemas, tool_choice="required")   # 둘 중 하나는 반
 
 <Slide class="center">
 
-## 두 번째가 더 미묘합니다
+### 두 번째가 더 미묘합니다
 
 존재하는 조항을 인용했더라도 찾아보지 않고 말했다면,
 
@@ -918,7 +919,7 @@ completion(..., tools=schemas, tool_choice="required")   # 둘 중 하나는 반
 
 <Slide>
 
-## 없는 조항은 걸립니다
+### 없는 조항은 걸립니다
 
 ```text
 답변(가정): 제9조 2항과 제99조 3항에 따라 초과 요금이 산정됩니다.
@@ -929,7 +930,7 @@ completion(..., tools=schemas, tool_choice="required")   # 둘 중 하나는 반
 
 <Slide>
 
-## 검증자는 문장을 읽지 않습니다
+### 검증자는 문장을 읽지 않습니다
 
 - **번호만 봅니다**.
 - 그래서 결정적이고,
@@ -942,7 +943,7 @@ food-rag-agent의 결정적 검증자와 같은 자리, 같은 이유입니다.
 
 <Slide>
 
-## 검증까지 화면에
+### 검증까지 화면에
 
 ![v1.0 화면: 해지방어 담당의 답변과 인용한 조항 제5조 3항이 검색해 확인으로 표시된다](../../../courses/ko/day-03-session-03/citation-verified.jpg)
 
@@ -950,7 +951,7 @@ food-rag-agent의 결정적 검증자와 같은 자리, 같은 이유입니다.
 
 <Slide>
 
-## 검증이 잡는 것과 못 잡는 것
+### 검증이 잡는 것과 못 잡는 것
 
 - **잡는다**: 없는 조항 번호, 검색하지 않고 말한 번호
 - **못 잡는다**: 조항은 맞는데 **해석이 틀린 경우**
@@ -962,13 +963,13 @@ food-rag-agent의 결정적 검증자와 같은 자리, 같은 이유입니다.
 
 <Slide class="center">
 
-## 두 패턴을 언제 고르는가
+### 두 패턴을 언제 고르는가
 
 </Slide>
 
 <Slide>
 
-## 문제의 모양이 구조를 정합니다
+### 문제의 모양이 구조를 정합니다
 
 | | supervisor가 어울리는 문제 | handoff가 어울리는 문제 |
 | --- | --- | --- |
@@ -982,7 +983,7 @@ food-rag-agent의 결정적 검증자와 같은 자리, 같은 이유입니다.
 
 <Slide class="center">
 
-## 구조가 문제를 따라간 것이지
+### 구조가 문제를 따라간 것이지
 
 ## 그 반대가 아닙니다
 
@@ -994,7 +995,7 @@ support-agent는 **상담원이 바뀌는** 일입니다.
 
 <Slide class="center">
 
-## handoff의 자유는 규칙으로 좁혀야 쓸 수 있습니다
+### handoff의 자유는 규칙으로 좁혀야 쓸 수 있습니다
 
 넘길 곳이 넷이면 잘못 넘길 곳도 넷입니다.
 

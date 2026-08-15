@@ -5,6 +5,7 @@ presenter: CodeCompose
 date: "2026-08-14"
 order: 3
 transition: none
+toc_level: 3
 toc_open: false
 ---
 
@@ -49,7 +50,7 @@ Day 1 · 3. LiteLLM 통합 레이어
 
 <Slide>
 
-## 같은 일을 세 가지 문법으로
+### 같은 일을 세 가지 문법으로
 
 ```python
 # 세 회사의 공식 SDK
@@ -68,7 +69,7 @@ LiteLLM은 그 셋을 OpenAI 호환 형태 하나로 통일합니다.
 
 <Slide>
 
-## 장점: 왜 쓰는가
+### 장점: 왜 쓰는가
 
 - **교체 비용이 문자열 한 줄**: 프로바이더 교체가 코드 수정이 아니라 설정 변경
 - **셋 중 어떤 키를 채워도 같은 코드**: 이 과정의 요구사항입니다.
@@ -81,7 +82,7 @@ LiteLLM은 그 셋을 OpenAI 호환 형태 하나로 통일합니다.
 
 <Slide>
 
-## 단점: 무엇을 대가로 치르는가
+### 단점: 무엇을 대가로 치르는가
 
 - **추상화 한 겹의 비용**: 에러가 litellm 예외로 감싸여 오고, 디버깅 시
   스택이 한 층 깊어집니다.
@@ -94,7 +95,7 @@ LiteLLM은 그 셋을 OpenAI 호환 형태 하나로 통일합니다.
 
 <Slide>
 
-## 판단 기준
+### 판단 기준
 
 - 프로바이더 하나를 확정했고 그 고유 기능을 깊이 쓴다면: **공식 SDK**
 - 멀티 프로바이더, 교체 가능성, 비용·품질 비교가 필요하다면: **통합 레이어**
@@ -104,7 +105,7 @@ LiteLLM은 그 셋을 OpenAI 호환 형태 하나로 통일합니다.
 
 <Slide class="center">
 
-## 추상화를 고르는 일반 규칙
+### 추상화를 고르는 일반 규칙
 
 **갈아끼울 계획이 없으면 추상화는 비용입니다**.
 
@@ -124,7 +125,7 @@ LiteLLM은 그 셋을 OpenAI 호환 형태 하나로 통일합니다.
 
 <Slide>
 
-## 2. 프로바이더 교체는 문자열 한 줄
+### 2. 프로바이더 교체는 문자열 한 줄
 ::sub[01_provider_swap.py · 호출 코드는 한 글자도 바뀌지 않는다]
 
 - 코드
@@ -157,7 +158,7 @@ docker compose exec lab python examples/02_litellm/01_provider_swap.py
 
 <Slide>
 
-## 결과 읽기: 모델 이름은 한 곳에만
+### 결과 읽기: 모델 이름은 한 곳에만
 
 - 세 회사의 세 모델이 같은 `completion()` 하나로 답했습니다.
 - 이 랩의 모델 문자열은 전부 `agent/config.py` **한 곳**에 있습니다.
@@ -168,7 +169,7 @@ docker compose exec lab python examples/02_litellm/01_provider_swap.py
 
 <Slide>
 
-## 3. 3사 비교: 응답·지연·비용을 나란히
+### 3. 3사 비교: 응답·지연·비용을 나란히
 ::sub[02_three_way_compare.py · "어느 모델을 쓸까"는 감이 아니라 측정의 문제]
 
 - 실행
@@ -195,7 +196,7 @@ docker compose exec lab python examples/02_litellm/02_three_way_compare.py
 
 <Slide>
 
-## 모델 고를 때 보는 축
+### 모델 고를 때 보는 축
 
 - **품질**: 우리 과제에서 도구 선택과 지시 준수가 얼마나 안정적인가
 - **지연**: 사용자가 기다리는 시간. 에이전트는 스텝마다 곱해집니다.
@@ -216,7 +217,7 @@ docker compose exec lab python examples/02_litellm/02_three_way_compare.py
 
 <Slide>
 
-## 4. 폴백: 주 모델이 죽으면 이어받는다
+### 4. 폴백: 주 모델이 죽으면 이어받는다
 ::sub[03_fallback.py · 존재하지 않는 모델을 1순위로 둔다]
 
 - 코드
@@ -250,7 +251,7 @@ LiteLLM:ERROR: … Fallback attempt failed for model openai/gpt-없는-모델:
 
 <Slide>
 
-## 결과 읽기: 폴백은 옵션이 아니라 기본 장비
+### 결과 읽기: 폴백은 옵션이 아니라 기본 장비
 
 - 1순위의 실패 로그가 찍히고, **같은 `completion()` 한 번 안에서**
   폴백이 응답을 완성했습니다.
@@ -260,7 +261,7 @@ LiteLLM:ERROR: … Fallback attempt failed for model openai/gpt-없는-모델:
 
 <Slide>
 
-## 5. 재시도와 타임아웃: 순간 장애의 방어
+### 5. 재시도와 타임아웃: 순간 장애의 방어
 ::sub[04_retry_timeout.py · 불가능한 타임아웃 0.001초로 에러를 재현]
 
 - 실행
@@ -287,7 +288,7 @@ docker compose exec lab python examples/02_litellm/04_retry_timeout.py
 
 <Slide>
 
-## 8. rate limit: 백오프로 살아남기
+### 8. rate limit: 백오프로 살아남기
 ::sub[07_rate_limit.py · 429를 만나면 1초 → 2초 → 4초 기다렸다 재시도]
 
 - 실행
@@ -315,7 +316,7 @@ docker compose exec lab python examples/02_litellm/07_rate_limit.py
 
 <Slide class="center">
 
-## 세 겹은 서로 다른 장애를 맡는다
+### 세 겹은 서로 다른 장애를 맡는다
 
 **재시도**(순간 장애) · **폴백**(모델 장애) · **백오프**(한도)
 
@@ -325,7 +326,7 @@ docker compose exec lab python examples/02_litellm/07_rate_limit.py
 
 <Slide>
 
-## 장애 종류별 처방
+### 장애 종류별 처방
 
 | 증상 | 원인 | 처방 |
 | --- | --- | --- |
@@ -348,7 +349,7 @@ docker compose exec lab python examples/02_litellm/07_rate_limit.py
 
 <Slide>
 
-## 6. 캐싱: 같은 질문 두 번째는 공짜·즉시
+### 6. 캐싱: 같은 질문 두 번째는 공짜·즉시
 ::sub[05_cache.py · 인메모리 캐시를 켜고 같은 요청을 두 번]
 
 - 코드
@@ -377,7 +378,7 @@ docker compose exec lab python examples/02_litellm/05_cache.py
 
 <Slide>
 
-## 결과 읽기: 1,000배 빠르고 비용은 0
+### 결과 읽기: 1,000배 빠르고 비용은 0
 
 - FAQ·반복 질의가 많은 서비스의 기본 손잡이입니다.
 - 단, **같은 요청이어야 합니다**. messages가 1바이트라도 다르면 미스
@@ -387,7 +388,7 @@ docker compose exec lab python examples/02_litellm/05_cache.py
 
 <Slide>
 
-## 7. 비용 콜백: 호출마다 장부에 쌓인다
+### 7. 비용 콜백: 호출마다 장부에 쌓인다
 ::sub[06_cost_callback.py · 호출부에는 한 줄도 손대지 않는다]
 
 - 코드
@@ -419,7 +420,7 @@ docker compose exec lab python examples/02_litellm/06_cost_callback.py
 
 <Slide>
 
-## 결과 읽기: 이 자리가 budget guard의 자리
+### 결과 읽기: 이 자리가 budget guard의 자리
 
 - 호출부에는 비용 코드가 **한 줄도 없습니다**.
 - 콜백 하나 등록하면 모든 completion의 비용이 장부로 흘러듭니다.
@@ -437,7 +438,7 @@ docker compose exec lab python examples/02_litellm/06_cost_callback.py
 
 <Slide>
 
-## 9. 라우터: 별명 하나 뒤에 배포 여러 개
+### 9. 라우터: 별명 하나 뒤에 배포 여러 개
 ::sub[08_router.py · 실모델 여러 개를 travel-llm 하나로 묶는다]
 
 - 코드
@@ -461,7 +462,7 @@ docker compose exec lab python examples/02_litellm/08_router.py
 
 <Slide>
 
-## 요청 6건이 3사에 흩어진다
+### 요청 6건이 3사에 흩어진다
 
 ```text
 === 배포 3개에 요청 6건 분산 ===
@@ -480,7 +481,7 @@ docker compose exec lab python examples/02_litellm/08_router.py
 
 <Slide>
 
-## 10. 모델 메타데이터: 한도와 단가를 코드로 읽는다
+### 10. 모델 메타데이터: 한도와 단가를 코드로 읽는다
 ::sub[09_model_info.py · 키 없이 돈다]
 
 - 실행
@@ -508,7 +509,7 @@ docker compose exec lab python examples/02_litellm/09_model_info.py
 
 <Slide>
 
-## 11. 임베딩: 같은 인터페이스의 다른 출구
+### 11. 임베딩: 같은 인터페이스의 다른 출구
 ::sub[10_embedding.py · completion은 문장을, embedding은 숫자 벡터를]
 
 - 실행
@@ -537,7 +538,7 @@ docker compose exec lab python examples/02_litellm/10_embedding.py
 
 <Slide>
 
-## completion과 embedding의 자리
+### completion과 embedding의 자리
 
 | | completion | embedding |
 | --- | --- | --- |
@@ -561,7 +562,7 @@ docker compose exec lab python examples/02_litellm/10_embedding.py
 
 <Slide>
 
-## 2026-08-14, 하루에 두 번
+### 2026-08-14, 하루에 두 번
 
 - 이 랩의 Gemini 기본 모델은 원래 `gemini-2.5-flash`였는데,
   신규 발급 키에서 404가 나는 것이 확인되어 `gemini-3.5-flash-lite`로 교체.
@@ -574,7 +575,7 @@ docker compose exec lab python examples/02_litellm/10_embedding.py
 
 <Slide>
 
-## 고친 파일은 한 곳
+### 고친 파일은 한 곳
 
 - 두 번 모두 고친 파일은 `agent/config.py` **한 곳**입니다.
   예제 51종과 에이전트 본체는 한 줄도 바뀌지 않았습니다.
