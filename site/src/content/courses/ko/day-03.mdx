@@ -1,10 +1,10 @@
 ---
-title: "Day 3: Multi-agent, 병렬 코딩 에이전트, MCP"
-description: "Day 3 개요: 멀티 에이전트의 양대 패턴(supervisor·handoff)을 제품 하나씩으로 구현하고, 3일이 합쳐지는 병렬 코딩 에이전트와 MCP 내어주기로 닫는 6개 세션"
-summary: "에이전트 하나로 감당이 안 되는 지점에서 시작합니다. supervisor와 handoff를 제품 하나씩으로 구현한 뒤, 3일 전체가 합쳐진 정점으로 병렬 코딩 에이전트를 보고, 우리가 만든 에이전트를 MCP 서버로 내어주며 과정을 닫습니다."
+title: "Day 3: Multi-agent와 병렬 코딩 에이전트"
+description: "Day 3 개요: 멀티 에이전트의 양대 패턴(supervisor·handoff)을 제품 하나씩으로 구현하고, 3일이 합쳐지는 병렬 코딩 에이전트로 닫는 5개 세션"
+summary: "에이전트 하나로 감당이 안 되는 지점에서 시작합니다. supervisor와 handoff를 제품 하나씩으로 구현한 뒤, 3일 전체가 합쳐진 정점으로 병렬 코딩 에이전트를 보며 과정을 닫습니다."
 date: 2026-08-14
 category: day-3
-tags: ["supervisor", "handoff", "코딩 에이전트", "MCP", "비용 게이트"]
+tags: ["supervisor", "handoff", "코딩 에이전트", "병렬 실행", "비용 게이트"]
 level: 3
 order: "1900"
 ---
@@ -25,8 +25,7 @@ Day 2까지는 **에이전트 하나가 저장소 하나**였습니다. Day 3부
 | [2. energy-agent](/course/day-03-session-02/) | `energy-agent` | [[supervisor]]: 중앙이 조율한다 | app · ui · db |
 | [3. support-agent](/course/day-03-session-03/) | `support-agent` | [[handoff]]: 제어권이 넘어간다 | app · ui · db · rag |
 | [4. coding-agent](/course/day-03-session-04/) | `coding-agent` | 병렬 실행과 비용 게이트, 3일의 종합 | app · ui + 산출물 compose |
-| 5. MCP 활용 시연 (준비 중) | `food-rag-agent` | [[mcp\|MCP]]: 도구를 내어주기 | app + FastMCP |
-| 6. 마무리와 회고 (준비 중) | — | 3일 전체 회고 | — |
+| 5. 마무리와 회고 (준비 중) | — | 3일 전체 회고 | — |
 
 ## 개념의 이어달리기
 
@@ -37,14 +36,13 @@ Day 2가 결핍으로 이어졌다면, Day 3은 **한 패턴의 한계가 다음
 flowchart LR
     A["energy-agent<br/>supervisor<br/>(중앙이 조율)"] -->|"매 왕복이 중앙을 거친다"| B["support-agent<br/>handoff<br/>(제어권 이양)"]
     B -->|"역할이 고정되어 있다"| C["coding-agent<br/>병렬 실행<br/>(계획이 역할을 만든다)"]
-    C -->|"우리 스택 안에서만 돈다"| D["MCP<br/>내어주기<br/>(폰의 Claude까지)"]
 ```
 
 supervisor는 하나의 요청을 여러 전문 작업으로 쪼개 합치는 데 강하지만, 모든
 왕복이 중앙을 거칩니다. handoff는 담당이 옮겨가는 대화에 어울리지만, 역할이
 사람 손으로 미리 정해져 있습니다. coding-agent에서는 planner가 태스크를
-그때그때 만들어 병렬로 던지고, 마지막 MCP 시연은 우리가 만든 에이전트를
-바깥 세계에 내어주며 과정을 닫습니다.
+그때그때 만들어 병렬로 던집니다. 역할이 설계 시점이 아니라 실행 시점에
+정해지는 것이 마지막 단계의 차이입니다.
 
 ## 릴리즈 사다리 요약
 
