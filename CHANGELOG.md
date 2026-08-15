@@ -24,6 +24,20 @@ git 태그(`vX.Y.Z`)로, 사이트 버전은 `site/package.json`으로 관리한
   `demos/handloop.py`를 교안의 "LangGraph란 무엇인가" 절에 나란히 배치.
   실행 결과와 각본 LLM 테스트 포함. v1.0.1은 trace 데모의 thread_id 누락
   hotfix
+- **booking-agent 저장소 개설**: 손님/사장 두 입장의 식당 예약 웹 제품.
+  v0.1(메모리 휘발) → v0.2(pg checkpointer) → v0.3(쓰기 직전 interrupt) →
+  v1.0(사장 대시보드·어시스턴트·읽기 전용 SQL 도구·time-travel), 태그
+  전부 테스트 통과, v1.0.1 포함 GitHub Releases 5건
+- **booking-agent 현장 피드백 반영(v1.1.0)**: 재로그인 시 checkpointer에서
+  대화 복원(대기 중 확인 카드 포함), 내 예약 클릭으로 상담 재개, 전화번호
+  정규화. 교안에 실측 화면과 함께 추가
+- **booking-agent 더 단단하게(v1.2.0)**: db에 named volume이 붙어
+  down/up에도 예약·대화가 생존(초기화는 down -v로만), 손님·사장 화면 모두
+  새로고침을 넘어 로그인 유지. 손님은 id, 사장은 발급 토큰을 쓰고
+  비밀번호는 URL에 싣지 않는다
+- **Day 2 3세션 교안**: booking-agent 교안 `day-02-session-03`. 재시작
+  기억상실과 생존의 대조 실측, 확인 카드·사장 대시보드·SQL 방어·time-travel
+  실측과 스크린샷 5장 동봉. 세션 인덱스의 "준비 중" 해제
 - **Day 1 세션 슬라이드 7종**: `day-01-session-02`\~`-08` 덱을 세션 교안과
   1:1로 신설, 모두 330장. 각 덱은 교안의 예제 실행 결과·mermaid·코드 포인트를
   발표 흐름으로 재구성하고, 강의 문서의 `slides` 프론트매터로 연결했다.

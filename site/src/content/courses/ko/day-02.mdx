@@ -22,7 +22,7 @@ v1.0 확인"의 같은 리듬으로 진행됩니다.
 | --- | --- | --- | --- |
 | [1. Day 2 도입](/course/day-02-session-01/) | — | 제품과 사다리의 리듬, 4개 에이전트 조망 | — |
 | [2. diet-agent](/course/day-02-session-02/) | [diet-agent](https://github.com/2026-ai-agents/diet-agent) | [[langgraph\|LangGraph]] 기본기 | app · ui · db |
-| 3. booking-agent (준비 중) | `booking-agent` | 영속성([[checkpointer]])과 승인([[interrupt]]) | app · ui · db |
+| [3. booking-agent](/course/day-02-session-03/) | [booking-agent](https://github.com/2026-ai-agents/booking-agent) | 영속성([[checkpointer]])과 승인([[interrupt]]) | app · ui · admin · db |
 | 4. secretary-agent (준비 중) | `secretary-agent` | 장기 메모리([[store]]) | app · ui · db |
 | 5. food-rag-agent (준비 중) | `food-rag-agent` | [[agentic-rag\|Agentic RAG]]: 선별과 검증 | app · ui · db · rag |
 
@@ -56,6 +56,9 @@ secretary-agent까지의 데이터는 시드 수준입니다. food-rag-agent가 
 
 - **reducer 누락** (2세션): 대화가 끊기는 정도가 아니라, 도구가 끼면 고아
   tool 메시지로 한 턴 안에서도 API가 거부되는 사고
-- **상태 오염** (3세션): booking-agent의 상태 덤프를 읽으며 추적
+- **재시작 기억상실** (3세션): v0.1의 프로세스 메모리가 restart 한 방에
+  백지가 되는 사고. 같은 시연이 v0.2에서 생존으로 뒤집힌다
+- **SELECT 위장 쓰기** (3세션): 검사문을 통과하는 setval()을 pg의
+  READ ONLY 트랜잭션이 막아내는 것까지 실측
 - **검증 생략 환각** (5세션): 검증자를 끈 food-rag-agent가 없는 음식을
   추천하는 사고
