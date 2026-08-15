@@ -88,6 +88,8 @@ flowchart LR
 ## 1. 데코레이터 하나
 ::sub[01_mcp_server.py · 평범한 함수 2개를 MCP 서버에 싣는다]
 
+- 코드
+
 ```python
 mcp = FastMCP("travel-tools")
 
@@ -104,6 +106,8 @@ if __name__ == "__main__":
     else:
         mcp.run()  # stdio: 클라이언트가 이 프로세스를 직접 띄웠을 때의 전송
 ```
+
+- 실행
 
 ```bash
 docker compose exec lab python examples/07_mcp/01_mcp_server.py
@@ -157,6 +161,8 @@ docker compose exec lab python examples/07_mcp/01_mcp_server.py
 ## 2. 클라이언트
 ::sub[02_list_tools.py · 키 없이 돌고, 서버를 미리 띄울 필요도 없다]
 
+- 코드
+
 ```python
 async with stdio_client(SERVER) as (read, write):
     async with ClientSession(read, write) as session:
@@ -165,6 +171,8 @@ async with stdio_client(SERVER) as (read, write):
         result = await session.call_tool(                    # 원격 실행
             "get_exchange_rate", {"currency": "JPY"})
 ```
+
+- 실행
 
 ```bash
 docker compose exec lab python examples/07_mcp/02_list_tools.py
@@ -213,6 +221,8 @@ docker compose exec lab python examples/07_mcp/02_list_tools.py
 ## 3. 변환 함수 하나
 ::sub[03_mcp_to_agent.py · 루프는 도구가 어디서 왔는지 모른다]
 
+- 코드
+
 ```python
 def to_litellm_schema(tool) -> dict:
     """MCP 도구 명세 → litellm 도구 명세. 필드가 그대로 1:1로 옮겨진다."""
@@ -226,6 +236,8 @@ tools = [to_litellm_schema(t) for t in (await session.list_tools()).tools]
 resp = completion(model=model, messages=messages, tools=tools)   # 4세션 그대로
 result = await session.call_tool(call.function.name, args)       # 실행만 원격
 ```
+
+- 실행
 
 ```bash
 docker compose exec lab python examples/07_mcp/03_mcp_to_agent.py
@@ -274,6 +286,8 @@ MCP의 도구 명세와 4세션의 도구 명세는 사실상 같은 물건이�
 ## 4. HTTP 전송
 ::sub[04_http_client.py · 2번과 똑같은 일을 익숙한 그림으로]
 
+- 코드
+
 ```python
 URL = "http://127.0.0.1:8000/mcp"
 
@@ -282,6 +296,8 @@ async with streamablehttp_client(URL) as (read, write, _):
         await session.initialize()
         tools = (await session.list_tools()).tools          # 이하 02와 동일
 ```
+
+- 실행
 
 ```bash
 # 터미널 1: 서버를 상주로 띄운다 (로그가 여기 찍힌다)

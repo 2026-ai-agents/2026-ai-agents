@@ -126,6 +126,8 @@ LiteLLM은 그 셋을 OpenAI 호환 형태 하나로 통일합니다
 ## 2. 프로바이더 교체는 문자열 한 줄
 ::sub[01_provider_swap.py · 호출 코드는 한 글자도 바뀌지 않는다]
 
+- 코드
+
 ```python
 for model in available_models():          # 키가 채워진 프로바이더들
     answer = completion(
@@ -133,9 +135,13 @@ for model in available_models():          # 키가 채워진 프로바이더들
     ).choices[0].message.content
 ```
 
+- 실행
+
 ```bash
 docker compose exec lab python examples/02_litellm/01_provider_swap.py
 ```
+
+- 결과
 
 ```text
 === gemini/gemini-3.5-flash-lite ===
@@ -164,9 +170,13 @@ docker compose exec lab python examples/02_litellm/01_provider_swap.py
 ## 3. 3사 비교: 응답·지연·비용을 나란히
 ::sub[02_three_way_compare.py · "어느 모델을 쓸까"는 감이 아니라 측정의 문제]
 
+- 실행
+
 ```bash
 docker compose exec lab python examples/02_litellm/02_three_way_compare.py
 ```
+
+- 결과
 
 ```text
 === 비교 표 ===
@@ -208,6 +218,8 @@ docker compose exec lab python examples/02_litellm/02_three_way_compare.py
 ## 4. 폴백: 주 모델이 죽으면 이어받는다
 ::sub[03_fallback.py · 존재하지 않는 모델을 1순위로 둔다]
 
+- 코드
+
 ```python
 resp = completion(
     model="openai/gpt-없는-모델",          # 반드시 실패하는 1순위
@@ -216,9 +228,13 @@ resp = completion(
 )
 ```
 
+- 실행
+
 ```bash
 docker compose exec lab python examples/02_litellm/03_fallback.py
 ```
+
+- 결과
 
 ```text
 LiteLLM:ERROR: … Fallback attempt failed for model openai/gpt-없는-모델:
@@ -246,9 +262,13 @@ LiteLLM:ERROR: … Fallback attempt failed for model openai/gpt-없는-모델:
 ## 5. 재시도와 타임아웃: 순간 장애의 방어
 ::sub[04_retry_timeout.py · 불가능한 타임아웃 0.001초로 에러를 재현]
 
+- 실행
+
 ```bash
 docker compose exec lab python examples/02_litellm/04_retry_timeout.py
 ```
+
+- 결과
 
 ```text
 === 타임아웃 재현 (timeout=0.001초) ===
@@ -269,9 +289,13 @@ docker compose exec lab python examples/02_litellm/04_retry_timeout.py
 ## 8. rate limit: 백오프로 살아남기
 ::sub[07_rate_limit.py · 429를 만나면 1초 → 2초 → 4초 기다렸다 재시도]
 
+- 실행
+
 ```bash
 docker compose exec lab python examples/02_litellm/07_rate_limit.py
 ```
+
+- 결과
 
 ```text
 === 연속 15회 빠른 호출 (한도를 만나러 간다) ===
@@ -325,15 +349,21 @@ docker compose exec lab python examples/02_litellm/07_rate_limit.py
 ## 6. 캐싱: 같은 질문 두 번째는 공짜·즉시
 ::sub[05_cache.py · 인메모리 캐시를 켜고 같은 요청을 두 번]
 
+- 코드
+
 ```python
 litellm.cache = Cache(type="local")       # 프로세스 안 인메모리 캐시
 r1 = completion(model=model, messages=messages, caching=True)
 r2 = completion(model=model, messages=messages, caching=True)   # 캐시에서
 ```
 
+- 실행
+
 ```bash
 docker compose exec lab python examples/02_litellm/05_cache.py
 ```
+
+- 결과
 
 ```text
 === 1회차 (API까지 다녀옴) ===   2.09초
@@ -358,6 +388,8 @@ docker compose exec lab python examples/02_litellm/05_cache.py
 ## 7. 비용 콜백: 호출마다 장부에 쌓인다
 ::sub[06_cost_callback.py · 호출부에는 한 줄도 손대지 않는다]
 
+- 코드
+
 ```python
 def track_cost(kwargs, completion_response, start_time, end_time):
     ledger["calls"] += 1
@@ -366,9 +398,13 @@ def track_cost(kwargs, completion_response, start_time, end_time):
 litellm.success_callback = [track_cost]
 ```
 
+- 실행
+
 ```bash
 docker compose exec lab python examples/02_litellm/06_cost_callback.py
 ```
+
+- 결과
 
 ```text
   호출: '1+1은?' / '오사카는 어느 나라?' / '라멘 한 그릇 평균 가격은?'
@@ -402,6 +438,8 @@ docker compose exec lab python examples/02_litellm/06_cost_callback.py
 ## 9. 라우터: 별명 하나 뒤에 배포 여러 개
 ::sub[08_router.py · 실모델 여러 개를 travel-llm 하나로 묶는다]
 
+- 코드
+
 ```python
 deployments = [
     {"model_name": "travel-llm", "litellm_params": {"model": m}}
@@ -410,6 +448,8 @@ deployments = [
 router = Router(model_list=deployments, routing_strategy="simple-shuffle")
 resp = router.completion(model="travel-llm", messages=[…])
 ```
+
+- 실행
 
 ```bash
 docker compose exec lab python examples/02_litellm/08_router.py
@@ -441,9 +481,13 @@ docker compose exec lab python examples/02_litellm/08_router.py
 ## 10. 모델 메타데이터: 한도와 단가를 코드로 읽는다
 ::sub[09_model_info.py · 키 없이 돈다]
 
+- 실행
+
 ```bash
 docker compose exec lab python examples/02_litellm/09_model_info.py
 ```
+
+- 결과
 
 ```text
 === 이 랩이 쓰는 모델들 ===
@@ -465,9 +509,13 @@ docker compose exec lab python examples/02_litellm/09_model_info.py
 ## 11. 임베딩: 같은 인터페이스의 다른 출구
 ::sub[10_embedding.py · completion은 문장을, embedding은 숫자 벡터를]
 
+- 실행
+
 ```bash
 docker compose exec lab python examples/02_litellm/10_embedding.py
 ```
+
+- 결과
 
 ```text
 === 벡터의 모양 ===

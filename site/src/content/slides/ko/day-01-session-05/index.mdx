@@ -66,8 +66,6 @@ flowchart TD
 
 그 이상이 아닙니다
 
-
-
 </Slide>
 
 <Slide>
@@ -391,9 +389,13 @@ step 2: {"people": 1, "nights": 3, "style": "절약"}
 ## 2. 같은 질문, 세 가지 한도
 ::sub[02_max_steps.py · 한도가 도구 사용량과 근거의 두께를 어떻게 바꾸나]
 
+- 실행
+
 ```bash
 docker compose exec lab python examples/04_react/02_max_steps.py
 ```
+
+- 결과
 
 ```text
 === max_steps = 1 ===
@@ -597,9 +599,13 @@ ReAct의 비용 구조
 ## 4. 스텝별 입력 토큰
 ::sub[04_context_growth.py · 스텝마다 얼마가 실려 가는가]
 
+- 실행
+
 ```bash
 docker compose exec lab python examples/04_react/04_context_growth.py
 ```
+
+- 결과
 
 ```text
 === 스텝별 입력(컨텍스트) 토큰 ===

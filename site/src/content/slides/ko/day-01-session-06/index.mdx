@@ -115,6 +115,8 @@ flowchart LR
 ## 1. 세 단계로 나눈다
 ::sub[01_plan_execute.py]
 
+- 코드
+
 ```python
 # ① 계획: 도구 호출 목록을 JSON으로 한 번에 뽑는다
 plan = json.loads(completion(…, response_format={"type": "json_object"}).…)["steps"]
@@ -123,6 +125,8 @@ observations = [run(step) for step in plan]
 # ③ 종합: 결과를 모아 한 번에 답을 만든다
 final = completion(…, content=f"요청: {question}\n도구 결과: {observations}…")
 ```
+
+- 실행
 
 ```bash
 docker compose exec lab python examples/05_loops/01_plan_execute.py
@@ -221,11 +225,15 @@ completion(…, response_format={"type": "json_object"})
 ## 2. 실패 경로를 확실히 밟는다
 ::sub[02_replan.py · 목DB에 없는 도시(나라)를 묻는다]
 
+- 코드
+
 ```python
 if attempt > 1:
     extra = (f"주의: 직전 계획의 {failed!r} 검색이 빈 결과였다. "
              f"검색 가능한 도시: 오사카, 교토")
 ```
+
+- 실행
 
 ```bash
 docker compose exec lab python examples/05_loops/02_replan.py
@@ -323,6 +331,8 @@ Reflexion은 "잘했는지 누가 판단할까"입니다
 ## 3. 채점자를 따로 둔다
 ::sub[03_reflexion.py · 가족 단톡방 후기 3문장을 쓰고 채점한다]
 
+- 코드
+
 ```python
 RUBRIC = """다음 기준으로 채점하라 (각 0~10, JSON으로만 답):
 - specific: 구체적 장소·음식 이름이 들어갔는가
@@ -334,6 +344,8 @@ score = evaluate(draft)             # 평가자 (temperature 0)
 if total >= 24: break               # 통과 기준
 feedback = score["feedback"]        # 미달이면 피드백을 들고 재시도
 ```
+
+- 실행
 
 ```bash
 docker compose exec lab python examples/05_loops/03_reflexion.py
@@ -461,9 +473,13 @@ docker compose exec lab python examples/05_loops/04_eval_rubric.py
 ## 5. 결과 자리를 변수로 비워 둔다
 ::sub[05_rewoo.py]
 
+- 실행
+
 ```bash
 docker compose exec lab python examples/05_loops/05_rewoo.py
 ```
+
+- 결과
 
 ```text
 === ① 플랜 (변수 자리가 비어 있다) ===
@@ -529,9 +545,13 @@ docker compose exec lab python examples/05_loops/05_rewoo.py
 ## 6. 루프 비용 비교
 ::sub[06_loop_cost_compare.py · 같은 과제를 미니 ReAct와 Plan-and-Execute로]
 
+- 실행
+
 ```bash
 docker compose exec lab python examples/05_loops/06_loop_cost_compare.py
 ```
+
+- 결과
 
 ```text
 === 계산서 ===

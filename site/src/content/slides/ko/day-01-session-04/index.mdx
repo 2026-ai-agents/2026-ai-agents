@@ -119,6 +119,8 @@ flowchart LR
 ## 1. 환율 도구 하나짜리 최소 구성
 ::sub[01_single_tool.py]
 
+- 코드
+
 ```python
 def get_exchange_rate(currency: str) -> dict:
     return {"currency": currency, "krw": RATES[currency]}
@@ -129,6 +131,8 @@ result = get_exchange_rate(**json.loads(call.function.arguments))  # ② 우리�
 messages.append({"role": "tool", "tool_call_id": call.id,
                  "content": json.dumps(result)})       # ③ 결과 회신
 ```
+
+- 실행
 
 ```bash
 docker compose exec lab python examples/03_tools/01_single_tool.py
@@ -179,9 +183,13 @@ messages.append({"role": "tool", "tool_call_id": call.id, …})  # ③ 우리가
 ## 2. tool call의 실체: 메시지 필드 하나
 ::sub[02_roundtrip_raw.py · 같은 왕복을 원문으로]
 
+- 실행
+
 ```bash
 docker compose exec lab python examples/03_tools/02_roundtrip_raw.py
 ```
+
+- 결과
 
 ```text
 === ① 모델이 보낸 assistant 메시지 원문 ===
@@ -331,6 +339,8 @@ flowchart TD
 ## 4. Pydantic: 스키마와 검증이 한 몸
 ::sub[03_pydantic_schema.py · 스키마 생성 부분은 키 없이 돈다]
 
+- 코드
+
 ```python
 class BudgetArgs(BaseModel):
     """여행 예산 계산 인자 — 이 docstring이 그대로 설명이 된다."""
@@ -341,6 +351,8 @@ class BudgetArgs(BaseModel):
 schema = BudgetArgs.model_json_schema()      # ① 모델에게 보여줄 스키마
 BudgetArgs.model_validate(raw_args)          # ② 도착한 인자의 검증
 ```
+
+- 실행
 
 ```bash
 docker compose exec lab python examples/03_tools/03_pydantic_schema.py
@@ -393,9 +405,13 @@ docker compose exec lab python examples/03_tools/03_pydantic_schema.py
 ## 5. 병렬 도구 호출: 독립 조회는 한 턴에
 ::sub[04_parallel_tools.py · 항공과 숙소, 서로 의존이 없는 조회 2건]
 
+- 실행
+
 ```bash
 docker compose exec lab python examples/03_tools/04_parallel_tools.py
 ```
+
+- 결과
 
 ```text
 === 한 턴에 실려 온 도구 요청: 2건 ===
@@ -430,9 +446,13 @@ docker compose exec lab python examples/03_tools/04_parallel_tools.py
 ## 6. 인자 제약: 스키마는 프롬프트보다 강하다
 ::sub[05_arg_constraints.py · 키 없이 돈다]
 
+- 실행
+
 ```bash
 docker compose exec lab python examples/03_tools/05_arg_constraints.py
 ```
+
+- 결과
 
 ```text
   "category": {
@@ -458,9 +478,13 @@ docker compose exec lab python examples/03_tools/05_arg_constraints.py
 ## 7. tool_choice: 쓸지 말지를 코드가 정한다
 ::sub[06_tool_choice.py · 도구가 전혀 필요 없는 인사말에 세 값을 시험]
 
+- 실행
+
 ```bash
 docker compose exec lab python examples/03_tools/06_tool_choice.py
 ```
+
+- 결과
 
 ```text
 === tool_choice = auto (기본) ===      인사말에 대한 반응: 그냥 답변
@@ -500,15 +524,21 @@ docker compose exec lab python examples/03_tools/06_tool_choice.py
 ## 8. 에러 되먹임: 실패를 알려주면 복구한다
 ::sub[07_tool_error.py · 도구는 THB(태국 바트)를 모른다]
 
+- 코드
+
 ```python
 except ValueError as e:
     result = json.dumps({"error": str(e)}, ensure_ascii=False)
 messages.append({"role": "tool", "tool_call_id": call.id, "content": result})
 ```
 
+- 실행
+
 ```bash
 docker compose exec lab python examples/03_tools/07_tool_error.py
 ```
+
+- 결과
 
 ```text
 === [1] get_exchange_rate({'currency': 'THB'}) → 실패를 되먹임 ===
@@ -551,9 +581,13 @@ docker compose exec lab python examples/03_tools/07_tool_error.py
 ## 9. 인자 환각: 스키마는 통과해도 값은 허구일 수 있다
 ::sub[08_hallucinated_args.py · 호텔 목록을 안 알려주고 예약을 시킨다]
 
+- 실행
+
 ```bash
 docker compose exec lab python examples/03_tools/08_hallucinated_args.py
 ```
+
+- 결과
 
 ```text
 === 모델이 보낸 인자 ===
@@ -607,6 +641,8 @@ Day 2 `food-rag-agent` 검증자의 씨앗입니다
 ## 10. 구조화 출력: LLM을 타입 있는 함수처럼
 ::sub[09_structured_output.py · 실행할 생각이 없어도 스키마로 강제할 수 있다]
 
+- 코드
+
 ```python
 tool = {"type": "function", "function": {
     "name": "emit_trip_plan",
@@ -616,6 +652,8 @@ resp = completion(…, tools=[tool],
                                "function": {"name": "emit_trip_plan"}})
 plan = TripPlan.model_validate(json.loads(raw))   # 여기서부터는 파이썬 객체
 ```
+
+- 실행
 
 ```bash
 docker compose exec lab python examples/03_tools/09_structured_output.py

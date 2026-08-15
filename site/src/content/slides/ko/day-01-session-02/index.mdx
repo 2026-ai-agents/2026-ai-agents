@@ -85,6 +85,8 @@ flowchart LR
 ## 1. 최소 호출
 ::sub[01_hello_completion.py · 요청·응답 JSON 원문을 그대로 본다]
 
+- 코드
+
 ```python
 request = {
     "model": model,
@@ -93,6 +95,8 @@ request = {
 response = completion(**request)
 print(response.model_dump_json(indent=2))
 ```
+
+- 실행
 
 ```bash
 docker compose exec lab python examples/01_api/01_hello_completion.py
@@ -216,9 +220,13 @@ docker compose exec lab python examples/01_api/02_roles.py
 ## 3. 토큰: 한글이 더 비싼 이유
 ::sub[03_tokens.py · API 호출 없이 토크나이저만으로 돈다. 키 불필요]
 
+- 실행
+
 ```bash
 docker compose exec lab python examples/01_api/03_tokens.py
 ```
+
+- 결과
 
 ```text
    한국어 |   영어 | 문장
@@ -238,11 +246,15 @@ docker compose exec lab python examples/01_api/03_tokens.py
 ## 4. 컨텍스트 한도: 넘치면 잘리는 게 아니라 거부된다
 ::sub[04_context_limit.py · 한도가 가장 작은 모델에 한도의 1.5배를 보낸다]
 
+- 코드
+
 ```python
 model = min(available_models(), key=lambda m: get_model_info(m)["max_input_tokens"])
 limit = get_model_info(model)["max_input_tokens"]
 text = chunk * (int(limit * 1.5) // chunk_tokens + 1)   # 확실히 초과
 ```
+
+- 실행
 
 ```bash
 docker compose exec lab python examples/01_api/04_context_limit.py
@@ -287,9 +299,13 @@ docker compose exec lab python examples/01_api/04_context_limit.py
 ## 5. temperature: 재현성과 다양성의 손잡이
 ::sub[05_temperature.py · 같은 질문을 0과 1로 5번씩]
 
+- 실행
+
 ```bash
 docker compose exec lab python examples/01_api/05_temperature.py
 ```
+
+- 결과
 
 ```text
 (시연 모델: openai/gpt-5.4-nano)
@@ -330,9 +346,13 @@ docker compose exec lab python examples/01_api/05_temperature.py
 ## 6. 스트리밍: 답은 조각으로 온다
 ::sub[06_streaming.py · 채팅 UI가 글자를 흘리는 것의 실체]
 
+- 실행
+
 ```bash
 docker compose exec lab python examples/01_api/06_streaming.py
 ```
+
+- 결과
 
 ```text
 === 처음 5개 청크 원문 ===
@@ -353,14 +373,20 @@ docker compose exec lab python examples/01_api/06_streaming.py
 ## 7. 병렬 호출: 동시에 물으면 몇 배 빠른가
 ::sub[07_async_parallel.py · 도시 5곳을 순차로, 그리고 동시에]
 
+- 코드
+
 ```python
 tasks = [acompletion(model=model, messages=[…]) for city in cities]
 await asyncio.gather(*tasks)
 ```
 
+- 실행
+
 ```bash
 docker compose exec lab python examples/01_api/07_async_parallel.py
 ```
+
+- 결과
 
 ```text
 === 순차 호출 (5회) ===   5.2초
@@ -387,9 +413,13 @@ Day 3 `coding-agent`의 병렬 worker가 이 확장판입니다
 ## 8. 무상태: 기억은 서버가 아니라 배열에 있다
 ::sub[08_multiturn_stateless.py · 히스토리 없이, 그리고 실어서]
 
+- 실행
+
 ```bash
 docker compose exec lab python examples/01_api/08_multiturn_stateless.py
 ```
+
+- 결과
 
 ```text
 === 1턴: 자기소개 ===
@@ -507,9 +537,13 @@ compact 직후 "아까 그 함수 이름 뭐였지?"에 모델이 답하지 못�
 ## 10. JSON 강제: 부탁이 아니라 계약으로
 ::sub[09_json_mode.py · 부탁한 버전과 강제한 버전을 json.loads에 통과시킨다]
 
+- 실행
+
 ```bash
 docker compose exec lab python examples/01_api/09_json_mode.py
 ```
+
+- 결과
 
 ````text
 === 그냥 부탁만 한 경우 ===
@@ -542,6 +576,8 @@ docker compose exec lab python examples/01_api/09_json_mode.py
 ## 11. 이미지 입력: 멀티모달도 같은 구조
 ::sub[10_vision.py · 이미지를 직접 받아 base64 data URL로 싣는다]
 
+- 코드
+
 ```python
 req = urllib.request.Request(image_url, headers={"User-Agent": "day-01-lab/1.0"})
 image_b64 = base64.b64encode(urllib.request.urlopen(req).read()).decode()
@@ -551,9 +587,13 @@ content = [
 ]
 ```
 
+- 실행
+
 ```bash
 docker compose exec lab python examples/01_api/10_vision.py
 ```
+
+- 결과
 
 ```text
 === 응답 ===
@@ -578,9 +618,13 @@ docker compose exec lab python examples/01_api/10_vision.py
 ## 12. 비용 계산: 토큰 곱하기 단가
 ::sub[11_cost_calc.py · 키 없이 돈다]
 
+- 실행
+
 ```bash
 docker compose exec lab python examples/01_api/11_cost_calc.py
 ```
+
+- 결과
 
 ```text
 === 모델별 비용 (litellm 내장 단가표) ===
