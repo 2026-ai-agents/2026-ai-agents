@@ -1,6 +1,6 @@
 ---
 title: "Day 2: LangGraph 단일 에이전트 제품 4종"
-description: "Day 2 개요: diet-agent, booking-agent, secretary-agent, food-rag-agent로 그래프·영속성·장기 메모리·Agentic RAG를 하나씩"
+description: "Day 2 개요: 한 시간에 에이전트 하나, 저장소 하나. 그래프, 영속성과 승인, 장기 메모리, Agentic RAG를 하나씩 얹는 5개 세션"
 summary: "한 시간에 에이전트 하나, 저장소 하나입니다. 개념을 에이전트마다 하나씩 얹습니다. 그래프에서 영속성·승인, 장기 메모리, RAG 순서이며, 모든 저장소가 릴리즈 사다리로 진행됩니다."
 date: 2026-08-14
 category: day-2
@@ -9,90 +9,59 @@ level: 2
 order: "2900"
 ---
 
-> Day 2 개요 문서입니다. 세션별 상세 교안은 준비 중이며, 확정되는 대로 이
-> 문서에 채워집니다.  
+> Day 2 개요 문서입니다. 세션별 교안은 아래 세션 목록에서 들어갑니다.  
 > 커리큘럼 원안은 저장소의 `docs/course-plan.md`에 있습니다.
 
 Day 1의 실습 랩과 달리, **Day 2부터는 저장소 하나가 예제가 아니라 독립된
 응용프로그램**입니다. 각 세션은 "v0.1 기동 → 태그를 오르며 feature 시연 →
 v1.0 확인"의 같은 리듬으로 진행됩니다.
 
-- **분량**: 240분 (도입 10분 + 4개 세션)
+## 세션 목록
 
-## 오늘의 에이전트 4종
-
-| 저장소 | 개념 | 시간 | 컨테이너 |
+| 세션 | 저장소 | 얹는 개념 | 컨테이너 |
 | --- | --- | --- | --- |
-| `diet-agent` | [[langgraph\|LangGraph]] 기본기 | 55분 | app · ui · db |
-| `booking-agent` | 영속성과 승인 | 55분 | app · ui · db |
-| `secretary-agent` | 장기 메모리 | 55분 | app · ui · db |
-| `food-rag-agent` | [[agentic-rag\|Agentic RAG]] 식단 추천 | 65분 | app · ui · db · rag |
+| [1. Day 2 도입](/course/day-02-session-01/) | — | 제품과 사다리의 리듬, 4개 에이전트 조망 | — |
+| [2. diet-agent](/course/day-02-session-02/) | [diet-agent](https://github.com/2026-ai-agents/diet-agent) | [[langgraph\|LangGraph]] 기본기 | app · ui · db |
+| [3. booking-agent](/course/day-02-session-03/) | [booking-agent](https://github.com/2026-ai-agents/booking-agent) | 영속성([[checkpointer]])과 승인([[interrupt]]) | app · ui · admin · db |
+| [4. secretary-agent](/course/day-02-session-04/) | [secretary-agent](https://github.com/2026-ai-agents/secretary-agent) | 장기 메모리([[store]]) | app · ui · db |
+| [5. food-rag-agent](/course/day-02-session-05/) | [food-rag-agent](https://github.com/2026-ai-agents/food-rag-agent) | [[agentic-rag\|Agentic RAG]]: 선별과 검증 | app · ui · db · rag |
 
-## 1. diet-agent
-
-식단 상담 웹앱입니다. **Day 1의 수제 [[react|ReAct]]를 선언적 그래프로 다시
-세우는 것**이 이 에이전트의 전부입니다.
-
-| 릴리즈 | 상태 |
-| --- | --- |
-| v0.1 | compose 기동, UI 빈 화면, 그래프 뼈대 |
-| v0.2 | 분기 동작: 도구 호출/답변이 갈림 |
-| v0.3 | 대화 누적: 멀티턴 상담 성립 |
-| v1.0 | UI 연결 완성: 식단 상담 제품 |
-
-## 2. booking-agent
-
-레스토랑 예약 에이전트입니다. 대화로 예약을 잡되, **확정 직전에 반드시 사람의
-승인을 받습니다**. 그 장치가 [[interrupt]]입니다.
-
-| 릴리즈 | 상태 |
-| --- | --- |
-| v0.1 | 메모리 대화만: 재시작하면 다 잊음 |
-| v0.2 | 영속화: pg [[checkpointer]], 재시작 생존 |
-| v0.3 | 승인 흐름: 확정 전 interrupt |
-| v1.0 | time-travel + 예약 관리 완성 |
-
-## 3. secretary-agent
-
-개인 비서 에이전트입니다. 대화 중 알게 된 사용자의 취향·사실을 **장기 메모리에
-저장하고, 새 대화(thread)에서도 기억**합니다.
-
-| 릴리즈 | 상태 |
-| --- | --- |
-| v0.1 | 단기 기억만: 새 대화에선 백지 |
-| v0.2 | [[store]] 연결: 장기 기억 저장·조회 |
-| v0.3 | 기억 판단: 뭘 기억할지 스스로 결정 |
-| v1.0 | 기억 검색·갱신 완성 |
-
-## 4. food-rag-agent
-
-음식 DB 약 2만 건 + 위키 설명 위의 **식단 추천 에이전트**입니다. 2만 건을 세
-단계 깔때기로 좁혀 추천하고, 추천을 내보내기 전에 **검증자가 원본 데이터와
-대조**합니다. `rag` 컨테이너(Chroma)가 처음 등장합니다.
-
-| 릴리즈 | 상태 |
-| --- | --- |
-| v0.1 | 데이터 적재 + 검색 서비스만, 에이전트 없음 |
-| v0.2 | 선별 깔때기: SQL 1차 → 벡터 2차 → LLM 3차 |
-| v0.3 | 검증자: 원본 대조, 불합격 재선별 |
-| v1.0 | app 리턴 + ui 표시 완성 |
+## 개념의 이어달리기
 
 ```mermaid
-flowchart TD
-    Q("사용자 질문<br/>'다이어트 중 든든한 저녁'") --> S1("1차 · PostgreSQL<br/>칼로리·영양 조건 · 공짜")
-    S1 -->|"수백 건"| S2("2차 · Chroma 벡터<br/>의미 연관 선별 · 싸다")
-    S2 -->|"수십 건"| S3("3차 · LLM 선별<br/>최종 추천 + 이유 · 비싸다")
-    S3 -->|"추천 후보"| V("검증자<br/>원본 데이터와 대조")
-    V -->|"불합격 · 재선별"| S3
-    V -->|"통과"| APP("app 리턴")
-    APP --> UI("ui 표시<br/>추천 + 근거 + 위키 설명")
+flowchart LR
+    A["diet-agent<br/>그래프 기본기"] -->|"기억이 휘발된다"| B["booking-agent<br/>영속성 · 승인"]
+    B -->|"thread를 못 넘는다"| C["secretary-agent<br/>장기 메모리"]
+    C -->|"데이터가 작다"| D["food-rag-agent<br/>Agentic RAG"]
 ```
 
-RAG 데이터는 처음부터 만들지 않습니다. 별도 과정에서 구축한 식단 플래너의
-정제된 음식 DB에 위키 설명을 덧붙여 검색 가능하게 만든 산출물을 씁니다.
-PostgreSQL 덤프와 Chroma 벡터 인덱스는 강사가 제공합니다.
+각 에이전트의 결핍이 다음 에이전트의 출발점입니다. diet-agent의 MemorySaver는
+재시작하면 사라지고, booking-agent의 영속 기억도 thread 안에 갇히며,
+secretary-agent까지의 데이터는 시드 수준입니다. food-rag-agent가 대규모
+데이터 위의 선별·검증으로 Day 2를 닫습니다.
+
+## 릴리즈 사다리 요약
+
+| 저장소 | 릴리즈 사다리 |
+| --- | --- |
+| `diet-agent` | v0.1 뼈대 → v0.2 분기 → v0.3 누적 → v1.0 제품 |
+| `booking-agent` | v0.1 휘발 → v0.2 영속 → v0.3 승인 → v1.0 완성 |
+| `secretary-agent` | v0.1 백지 → v0.2 store → v0.3 판단 → v1.0 완성 |
+| `food-rag-agent` | v0.1 검색만 → v0.2 선별 깔때기 → v0.3 검증자 → v1.0 제품 |
 
 ## 실패 재현 시나리오
 
-- **상태 오염** (`booking-agent`): 저장된 상태 덤프를 읽으며 원인을 추적
-- **검증 생략 환각** (`food-rag-agent`): 검증자를 끈 상태에서 없는 음식이 추천되는 사고를 재현
+세션에서는 사고를 먼저 재현하고, 원인을 추적한 뒤 방어가 막아내는 것을
+확인합니다.
+
+- **reducer 누락** (2세션): 대화가 끊기는 정도가 아니라, 도구가 끼면 고아
+  tool 메시지로 한 턴 안에서도 API가 거부되는 사고
+- **재시작 기억상실** (3세션): v0.1의 프로세스 메모리가 restart 한 방에
+  백지가 되는 사고. 같은 시연이 v0.2에서 생존으로 뒤집힌다
+- **SELECT 위장 쓰기** (3세션): 검사문을 통과하는 setval()을 pg의
+  READ ONLY 트랜잭션이 막아내는 것까지 실측
+- **새 대화 백지** (4세션): 방금 잡은 일정은 조회되는데 한 메시지 전의
+  알레르기는 백지가 되는 대조. 같은 시연이 v0.2부터 생존으로 뒤집힌다
+- **무근거 생성** (5세션): 이름만 주고 수치를 물으면 LLM이 닭백숙을
+  115kcal이라 자신 있게 지어내는 사고. 원본은 56kcal이고, 검증자가
+  3건 전부 사유와 함께 차단하는 것까지 실측

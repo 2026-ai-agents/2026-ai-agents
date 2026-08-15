@@ -1,0 +1,671 @@
+---
+/**
+ * 벡터 공간 시각화 — food-rag-agent의 진짜 색인을 눈으로 보는 도구.
+ *
+ * 데이터는 지어낸 것이 아니다. `src/data/vector-space.json`은 실제로 돌아가는
+ * rag 컨테이너(Chroma)에서 음식 1000건의 768차원 벡터를 꺼내 주성분 2개로
+ * 투영한 좌표이고, 질의 6종의 top-8 점수도 768차원에서 계산한 실측이다.
+ * 추출 과정은 `docs/vector-space-data.md` 참고.
+ *
+ * 색은 dataviz 규약을 따른다: 산점도(all-pairs)는 검증된 앞 3슬롯까지만 쓰고
+ * 나머지는 "그 외"로 물러난다. 세 무리에는 직접 라벨을 얹어(연두 계열의
+ * 낮은 대비를 보완) 색만으로 구분하지 않게 한다.
+ */
+import data from '../data/vector-space.json';
+
+// `</script>`가 될 수 있는 꺾쇠만 막는다 — 본문에는 없지만 데이터가 바뀔 수 있다
+const json = JSON.stringify(data).replace(/</g, '\\u003c');
+const pct = (data.explained * 100).toFixed(1);
+---
+
+<figure class="vspace" data-vspace>
+  <script type="application/json" data-vspace-json is:inline set:html={json} />
+
+  <div class="vspace-head">
+    <strong>음식 1000건이 놓인 벡터 공간</strong>
+    <span>
+      실제 색인에서 꺼낸 {data.dims}차원 벡터입니다. 화면에 그리려고 주성분
+      2개로 눌렀고, 원래 흩어짐의 {pct}%만 남았습니다. 그런데도 비슷한 것끼리
+      뭉칩니다.
+    </span>
+  </div>
+
+  <div class="vspace-strip-block">
+    <div class="vspace-strip-top">
+      <span class="vspace-strip-name" data-strip-name>삼계탕</span>
+      <span class="vspace-strip-note" data-strip-note>이 이름과 설명이 숫자 {data.dims}개가 됩니다</span>
+    </div>
+    <canvas class="vspace-strip" data-strip aria-hidden="true"></canvas>
+    <div class="vspace-strip-scale">
+      <span>성분값 작음</span>
+      <i data-strip-ramp aria-hidden="true"></i>
+      <span>큼</span>
+    </div>
+  </div>
+
+  <div class="vspace-map">
+    <canvas class="vspace-canvas" data-map role="img"
+      aria-label="음식 1000건을 768차원 벡터에서 2차원으로 투영한 산점도. 국·탕·찌개, 빵·과자·음료, 볶음·구이·튀김 세 무리가 서로 다른 자리에 뭉쳐 있다."></canvas>
+    <div class="vspace-tip" data-tip hidden></div>
+  </div>
+
+  <ul class="vspace-legend" data-legend>
+    <li><i class="vspace-sw" data-fam="0"></i>국 · 탕 · 찌개</li>
+    <li><i class="vspace-sw" data-fam="1"></i>빵 · 과자 · 음료</li>
+    <li><i class="vspace-sw" data-fam="2"></i>볶음 · 구이 · 튀김</li>
+    <li><i class="vspace-sw" data-fam="3"></i>그 외 20개 분류</li>
+  </ul>
+
+  <div class="vspace-ask">
+    <span class="vspace-ask-label">질의를 골라 보세요</span>
+    <div class="vspace-chips" data-chips>
+      {data.queries.map((q, i) => (
+        <button type="button" data-qi={i} aria-pressed="false">&quot;{q.q}&quot;</button>
+      ))}
+      <button type="button" data-reset>지우기</button>
+    </div>
+  </div>
+
+  <div class="vspace-result" data-result hidden>
+    <table class="vspace-table">
+      <caption data-caption></caption>
+      <thead>
+        <tr><th scope="col">#</th><th scope="col">음식</th><th scope="col">분류</th>
+        <th scope="col">코사인</th><th scope="col">100g당</th></tr>
+      </thead>
+      <tbody data-rows></tbody>
+    </table>
+  </div>
+
+  <figcaption class="vspace-foot">
+    순위는 이 그림이 아니라 {data.dims}차원에서 계산합니다. 2차원 그림은
+    그림자라서, 가까워 보여도 뽑히지 않고 멀어 보여도 뽑힐 수 있습니다.
+    화면의 좌표와 점수는 모두 실제 색인에서 꺼낸 값입니다.
+  </figcaption>
+</figure>
+
+<style>
+  .vspace {
+    margin: 2rem 0;
+    padding: 1.1rem 1.1rem 0.9rem;
+    border: 1px solid var(--aas-border);
+    border-radius: 14px;
+    background: var(--aas-panel);
+    box-shadow: var(--aas-shadow);
+    font-family: var(--aas-sans);
+
+    /* dataviz 검증 통과: 산점도(all-pairs) 3슬롯 + 질의 모드 2색.
+       사이트 표면(#fdfdfd / #1a1b21) 기준으로 확인했다. */
+    --vs-fam0: #2a78d6;
+    --vs-fam1: #eb6834;
+    --vs-fam2: #1baf7a;
+    --vs-fam3: #b9b9c2;
+    --vs-hit: #eb6834;
+    --vs-mark: #4a3aa7;
+    --vs-dim: #c9c9d1;
+    --vs-grid: #ececf1;
+  }
+
+  :root[data-theme='dark'] .vspace {
+    --vs-fam0: #3987e5;
+    --vs-fam1: #d95926;
+    --vs-fam2: #199e70;
+    --vs-fam3: #5a5b66;
+    --vs-hit: #d95926;
+    --vs-mark: #9085e9;
+    --vs-dim: #43444f;
+    --vs-grid: #24252d;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme]) .vspace {
+      --vs-fam0: #3987e5;
+      --vs-fam1: #d95926;
+      --vs-fam2: #199e70;
+      --vs-fam3: #5a5b66;
+      --vs-hit: #d95926;
+      --vs-mark: #9085e9;
+      --vs-dim: #43444f;
+      --vs-grid: #24252d;
+    }
+  }
+
+  .vspace-head { display: flex; flex-direction: column; gap: 0.3rem; }
+  .vspace-head strong { font-size: 1rem; color: var(--aas-text); }
+  .vspace-head span { font-size: 0.85rem; line-height: 1.65; color: var(--aas-muted); }
+
+  /* 벡터 띠 — 768개의 숫자를 한 줄로 */
+  .vspace-strip-block { margin-top: 1rem; }
+  .vspace-strip-top {
+    display: flex; align-items: baseline; gap: 0.5rem;
+    flex-wrap: wrap; margin-bottom: 0.35rem;
+  }
+  .vspace-strip-name {
+    font-size: 0.85rem; font-weight: 600; color: var(--aas-text);
+  }
+  .vspace-strip-note { font-size: 0.78rem; color: var(--aas-muted); }
+  .vspace-strip {
+    display: block; width: 100%; height: 34px;
+    border-radius: 5px; border: 1px solid var(--aas-border);
+  }
+  .vspace-strip-scale {
+    display: flex; align-items: center; gap: 0.4rem;
+    margin-top: 0.3rem; font-size: 0.72rem; color: var(--aas-muted);
+  }
+  .vspace-strip-scale i { flex: 0 0 84px; height: 7px; border-radius: 4px; }
+
+  /* 지도 */
+  .vspace-map { position: relative; margin-top: 1rem; }
+  /* x·y 배율이 같아 그림은 늘 정사각이다. 폭을 따라가되 너무 높아지지
+     않게 막으면, 좁은 화면에서 위아래로 빈 띠가 생기지 않는다. */
+  .vspace-canvas {
+    display: block; width: 100%; height: auto;
+    aspect-ratio: 1; max-height: 440px;
+    border-radius: 10px; background: var(--aas-bg);
+    border: 1px solid var(--aas-border);
+    touch-action: pan-y;
+  }
+  .vspace-tip {
+    position: absolute; pointer-events: none; z-index: 2;
+    transform: translate(-50%, -128%);
+    padding: 0.3rem 0.5rem; border-radius: 7px;
+    background: var(--aas-text); color: var(--aas-panel);
+    font-size: 0.75rem; line-height: 1.45; white-space: nowrap;
+    box-shadow: var(--aas-shadow);
+  }
+  /* 툴팁 안쪽과 표의 행은 스크립트가 만든다. Astro의 스코프 속성이 붙지
+     않으므로 :global로 빼야 규칙이 닿는다. */
+  .vspace-tip :global(b) { font-weight: 600; }
+  .vspace-tip :global(span) { opacity: 0.72; }
+
+  .vspace-legend {
+    display: flex; flex-wrap: wrap; gap: 0.4rem 1rem;
+    margin: 0.6rem 0 0; padding: 0; list-style: none;
+    font-size: 0.78rem; color: var(--aas-muted);
+    transition: opacity 0.3s ease;
+  }
+  .vspace-legend[data-quiet] { opacity: 0.4; }
+  .vspace-legend li { display: flex; align-items: center; gap: 0.35rem; }
+  .vspace-sw { width: 11px; height: 11px; border-radius: 50%; }
+  .vspace-sw[data-fam='0'] { background: var(--vs-fam0); }
+  .vspace-sw[data-fam='1'] { background: var(--vs-fam1); }
+  .vspace-sw[data-fam='2'] { background: var(--vs-fam2); }
+  .vspace-sw[data-fam='3'] { background: var(--vs-fam3); }
+
+  /* 질의 */
+  .vspace-ask { margin-top: 1rem; }
+  .vspace-ask-label {
+    display: block; font-size: 0.78rem; color: var(--aas-muted);
+    margin-bottom: 0.4rem;
+  }
+  .vspace-chips { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+  .vspace-chips button {
+    padding: 0.32rem 0.68rem; border-radius: 999px;
+    border: 1px solid var(--aas-border); background: var(--aas-bg);
+    color: var(--aas-text); font-family: inherit; font-size: 0.8rem;
+    cursor: pointer; transition: background 0.15s ease, border-color 0.15s ease;
+  }
+  .vspace-chips button:hover { background: var(--aas-tint); }
+  .vspace-chips button[aria-pressed='true'] {
+    border-color: var(--vs-mark); background: var(--aas-tint);
+    color: var(--aas-text); font-weight: 600;
+  }
+  .vspace-chips button[data-reset] { color: var(--aas-muted); }
+
+  /* 결과 표 */
+  .vspace-result { margin-top: 0.9rem; overflow-x: auto; }
+  .vspace-table {
+    width: 100%; border-collapse: collapse;
+    font-size: 0.8rem; color: var(--aas-text);
+  }
+  .vspace-table caption {
+    text-align: left; font-size: 0.78rem; color: var(--aas-muted);
+    padding-bottom: 0.4rem;
+  }
+  .vspace-table th,
+  .vspace-table :global(td) {
+    padding: 0.3rem 0.55rem; text-align: left;
+    border-bottom: 1px solid var(--aas-border); white-space: nowrap;
+  }
+  .vspace-table th {
+    font-size: 0.72rem; font-weight: 600; color: var(--aas-muted);
+  }
+  .vspace-table :global(td:nth-child(1)) { color: var(--aas-muted); }
+  .vspace-table :global(td:nth-child(4)),
+  .vspace-table :global(td:nth-child(5)) { font-variant-numeric: tabular-nums; }
+  .vspace-table :global(tbody tr) {
+    opacity: 0; transform: translateY(3px);
+    transition: opacity 0.25s ease, transform 0.25s ease;
+  }
+  .vspace-table :global(tbody tr[data-in]) { opacity: 1; transform: none; }
+  /* 움직임을 끄기로 한 경우엔 전환 자체를 없앤다. 숨은 탭에서는 전환이
+     얼어붙어, 표가 투명한 채로 남아 읽을 수 없게 된다. */
+  .vspace-result[data-still] :global(tbody tr) { transition: none; }
+  .vspace-table :global(.vspace-over) { color: var(--aas-muted); }
+  .vspace-table :global(.vspace-over)::after { content: ' 초과'; }
+
+  .vspace-foot {
+    margin: 0.9rem 0 0; padding-top: 0.7rem;
+    border-top: 1px solid var(--aas-border);
+    font-size: 0.76rem; line-height: 1.6; color: var(--aas-muted);
+  }
+
+  @media (max-width: 640px) {
+    .vspace { padding: 0.9rem 0.8rem 0.8rem; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .vspace-table :global(tbody tr) { transition: none; }
+  }
+</style>
+
+<script>
+  type Food = [number, string, number, number | null, number, number];
+  type Query = { q: string; x: number; y: number; strip: string; hits: [number, number][] };
+  type Data = {
+    dims: number; count: number; explained: number;
+    cats: string[]; famOfCat: number[];
+    families: { key: string; label: string }[];
+    foods: Food[]; queries: Query[];
+    samples: { n: string; strip: string }[];
+  };
+
+  const PAD = 26;                  // 지도 안쪽 여백 (CSS px)
+  const R_BASE = 2.4;              // 보통 점 반지름
+  const R_HIT = 5;                 // 뽑힌 점 반지름
+  const HOVER = 14;                // 가장 가까운 점을 잡는 거리
+  const T_STRIP = 450;             // 띠가 채워지는 구간
+  const T_MARK = 800;              // 질의 점이 내려앉는 구간
+  const T_STEP = 120;              // 뽑힌 점이 하나씩 켜지는 간격
+
+  // 파랑 한 색의 순차 램프. 밝은 화면에서는 옅은 쪽이, 어두운 화면에서는
+  // 짙은 쪽이 배경으로 물러나도록 방향을 뒤집는다.
+  const RAMP_LIGHT = ['#cde2fb', '#9ec5f4', '#6da7ec', '#3987e5', '#256abf', '#184f95', '#0d366b'];
+  const RAMP_DARK = ['#0d366b', '#184f95', '#256abf', '#3987e5', '#6da7ec', '#9ec5f4', '#cde2fb'];
+
+  const root = document.querySelector<HTMLElement>('[data-vspace]');
+  if (root) init(root);
+
+  function init(root: HTMLElement) {
+    const raw = root.querySelector<HTMLScriptElement>('[data-vspace-json]');
+    if (!raw?.textContent) return;
+    const data: Data = JSON.parse(raw.textContent);
+
+    const map = root.querySelector<HTMLCanvasElement>('[data-map]')!;
+    const strip = root.querySelector<HTMLCanvasElement>('[data-strip]')!;
+    const stripName = root.querySelector<HTMLElement>('[data-strip-name]')!;
+    const stripNote = root.querySelector<HTMLElement>('[data-strip-note]')!;
+    const stripRamp = root.querySelector<HTMLElement>('[data-strip-ramp]')!;
+    const chips = root.querySelector<HTMLElement>('[data-chips]')!;
+    const legend = root.querySelector<HTMLElement>('[data-legend]')!;
+    const result = root.querySelector<HTMLElement>('[data-result]')!;
+    const caption = root.querySelector<HTMLElement>('[data-caption]')!;
+    const rows = root.querySelector<HTMLElement>('[data-rows]')!;
+    const tip = root.querySelector<HTMLElement>('[data-tip]')!;
+
+    const mapCtx = map.getContext('2d')!;
+    const stripCtx = strip.getContext('2d')!;
+    const byId = new Map(data.foods.map((f) => [f[0], f]));
+    const reduced = matchMedia('(prefers-reduced-motion: reduce)');
+
+    let colors = readColors();
+    let active: number | null = null;       // 고른 질의 index
+    let started = 0;                        // 애니메이션 시작 시각
+    let hover: Food | null = null;
+    let raf = 0;
+    let stripBytes: Uint8Array = new Uint8Array(0);
+
+    // 무리마다 이름을 직접 얹는다 — 색만으로 구분하지 않게 하는 장치다
+    const labels = data.families.map((fam, i) => {
+      const pts = data.foods.filter((f) => data.famOfCat[f[2]] === i);
+      const mx = pts.reduce((s, f) => s + f[4], 0) / pts.length;
+      const my = pts.reduce((s, f) => s + f[5], 0) / pts.length;
+      return { label: fam.label, x: mx, y: my };
+    });
+
+    buildChips();
+    setStrip(data.samples[0].n, data.samples[0].strip, `이 이름과 설명이 숫자 ${data.dims}개가 됩니다`);
+    sizeAll();
+
+    new ResizeObserver(sizeAll).observe(root);
+    new MutationObserver(() => { colors = readColors(); paintRamp(); draw(now()); })
+      .observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+    matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+      colors = readColors(); paintRamp(); draw(now());
+    });
+
+    map.addEventListener('pointermove', onMove);
+    map.addEventListener('pointerleave', () => { hover = null; tip.hidden = true; draw(now()); });
+
+    /* ---------- 그리기 ---------- */
+
+    function readColors() {
+      const cs = getComputedStyle(root);
+      const v = (n: string) => cs.getPropertyValue(n).trim();
+      return {
+        fam: [v('--vs-fam0'), v('--vs-fam1'), v('--vs-fam2'), v('--vs-fam3')],
+        hit: v('--vs-hit'),
+        mark: v('--vs-mark'),
+        dim: v('--vs-dim'),
+        grid: v('--vs-grid'),
+        text: v('--aas-text'),
+        muted: v('--aas-muted'),
+        surface: v('--aas-bg'),
+        dark: document.documentElement.dataset.theme === 'dark' ||
+          (!document.documentElement.dataset.theme &&
+            matchMedia('(prefers-color-scheme: dark)').matches),
+      };
+    }
+
+    function fit(c: HTMLCanvasElement, ctx: CanvasRenderingContext2D) {
+      const dpr = Math.min(devicePixelRatio || 1, 2);
+      const r = c.getBoundingClientRect();
+      c.width = Math.round(r.width * dpr);
+      c.height = Math.round(r.height * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      return { w: r.width, h: r.height };
+    }
+
+    function sizeAll() {
+      paintRamp();
+      drawStrip();
+      draw(now());
+    }
+
+    // x·y에 같은 배율을 쓴다. 한쪽으로 늘이면 "가깝다"가 방향마다 달라진다.
+    function project(w: number, h: number) {
+      const side = Math.min(w, h) - PAD * 2;
+      const ox = (w - side) / 2;
+      const oy = (h - side) / 2;
+      return (x: number, y: number): [number, number] => [
+        ox + ((x + 1) / 2) * side,
+        oy + (1 - (y + 1) / 2) * side,
+      ];
+    }
+
+    function draw(t: number) {
+      const { w, h } = fit(map, mapCtx);
+      const to = project(w, h);
+      const q = active === null ? null : data.queries[active];
+      const el = q ? t - started : Infinity;
+      const hitIds = new Set(q ? q.hits.map((x) => x[0]) : []);
+
+      mapCtx.clearRect(0, 0, w, h);
+
+      // 아주 옅은 격자와 테두리 — 좌표계가 있다는 것, 그리고 x·y 배율이
+      // 같아서 남는 여백이 실수가 아니라는 것을 함께 알린다
+      const [x0, y1] = to(-1, -1);
+      const [x1, y0] = to(1, 1);
+      mapCtx.strokeStyle = colors.grid;
+      mapCtx.lineWidth = 1;
+      mapCtx.beginPath();
+      mapCtx.roundRect(x0, y0, x1 - x0, y1 - y0, 8);
+      mapCtx.stroke();
+      for (let i = 1; i < 4; i++) {
+        const gx = x0 + ((x1 - x0) * i) / 4;
+        const gy = y0 + ((y1 - y0) * i) / 4;
+        mapCtx.beginPath(); mapCtx.moveTo(gx, y0); mapCtx.lineTo(gx, y1); mapCtx.stroke();
+        mapCtx.beginPath(); mapCtx.moveTo(x0, gy); mapCtx.lineTo(x1, gy); mapCtx.stroke();
+      }
+
+      // 점 1000개
+      for (const f of data.foods) {
+        if (hitIds.has(f[0])) continue;
+        const [px, py] = to(f[4], f[5]);
+        mapCtx.beginPath();
+        mapCtx.arc(px, py, R_BASE, 0, Math.PI * 2);
+        mapCtx.fillStyle = q ? colors.dim : colors.fam[data.famOfCat[f[2]]];
+        mapCtx.globalAlpha = q ? 0.55 : 0.82;
+        mapCtx.fill();
+      }
+      mapCtx.globalAlpha = 1;
+
+      // 무리 이름 (질의 중에는 물러난다)
+      mapCtx.font = '600 12px Pretendard, system-ui, -apple-system, sans-serif';
+      mapCtx.textAlign = 'center';
+      mapCtx.textBaseline = 'middle';
+      mapCtx.lineJoin = 'round';
+      for (const l of labels) {
+        const [px, py] = to(l.x, l.y);
+        mapCtx.globalAlpha = q ? 0.28 : 1;
+        mapCtx.lineWidth = 5;                 // 점 위에 얹히므로 테를 넉넉히
+        mapCtx.strokeStyle = colors.surface;
+        mapCtx.strokeText(l.label, px, py);
+        mapCtx.strokeText(l.label, px, py);   // 두 번 그어 배경을 확실히 판다
+        mapCtx.fillStyle = colors.text;
+        mapCtx.fillText(l.label, px, py);
+      }
+      mapCtx.globalAlpha = 1;
+
+      if (q) {
+        const [qx, qy] = to(q.x, q.y);
+        const markIn = clamp((el - T_STRIP) / (T_MARK - T_STRIP));
+
+        // 질의 자리에서 퍼지는 물결 — 찾는 동작을 알리는 신호다
+        if (markIn > 0 && el < T_MARK + T_STEP * q.hits.length) {
+          const pulse = ((el - T_STRIP) % 900) / 900;
+          mapCtx.beginPath();
+          mapCtx.arc(qx, qy, 8 + pulse * 90, 0, Math.PI * 2);
+          mapCtx.strokeStyle = colors.mark;
+          mapCtx.globalAlpha = (1 - pulse) * 0.28;
+          mapCtx.lineWidth = 2;
+          mapCtx.stroke();
+          mapCtx.globalAlpha = 1;
+        }
+
+        // 뽑힌 점은 순위 순서로 하나씩 켜진다 (순위는 768차원에서 났다)
+        q.hits.forEach(([id], i) => {
+          const f = byId.get(id);
+          if (!f) return;
+          const on = clamp((el - T_MARK - i * T_STEP) / 260);
+          if (on <= 0) return;
+          const [px, py] = to(f[4], f[5]);
+
+          mapCtx.beginPath();
+          mapCtx.moveTo(qx, qy);
+          mapCtx.lineTo(qx + (px - qx) * on, qy + (py - qy) * on);
+          mapCtx.strokeStyle = colors.hit;
+          mapCtx.globalAlpha = 0.4;
+          mapCtx.lineWidth = 1.5;
+          mapCtx.stroke();
+          mapCtx.globalAlpha = 1;
+
+          mapCtx.beginPath();
+          mapCtx.arc(px, py, R_HIT * on, 0, Math.PI * 2);
+          mapCtx.fillStyle = colors.hit;
+          mapCtx.fill();
+          mapCtx.lineWidth = 2;               // 표면색 링 — 겹쳐도 서로 떨어져 보인다
+          mapCtx.strokeStyle = colors.surface;
+          mapCtx.stroke();
+        });
+
+        // 질의 표식
+        if (markIn > 0) {
+          mapCtx.beginPath();
+          mapCtx.arc(qx, qy, 7 * markIn, 0, Math.PI * 2);
+          mapCtx.fillStyle = colors.mark;
+          mapCtx.fill();
+          mapCtx.lineWidth = 2.5;
+          mapCtx.strokeStyle = colors.surface;
+          mapCtx.stroke();
+        }
+      }
+
+      if (hover) {
+        const [px, py] = to(hover[4], hover[5]);
+        mapCtx.beginPath();
+        mapCtx.arc(px, py, R_HIT + 2, 0, Math.PI * 2);
+        mapCtx.strokeStyle = colors.text;
+        mapCtx.lineWidth = 1.5;
+        mapCtx.stroke();
+      }
+
+      const running = q && el < T_MARK + T_STEP * q.hits.length + 400;
+      if (running && !reduced.matches) raf = requestAnimationFrame(draw);
+      else if (raf) { cancelAnimationFrame(raf); raf = 0; }
+    }
+
+    /* ---------- 벡터 띠 ---------- */
+
+    function ramp() { return colors.dark ? RAMP_DARK : RAMP_LIGHT; }
+
+    function rgbAt(t: number): number[] {
+      const r = ramp();
+      const p = clamp(t) * (r.length - 1);
+      const i = Math.min(Math.floor(p), r.length - 2);
+      const a = hex(r[i]);
+      const b = hex(r[i + 1]);
+      const f = p - i;
+      return a.map((v, k) => Math.round(v + (b[k] - v) * f));
+    }
+
+    function paintRamp() {
+      stripRamp.style.background = `linear-gradient(90deg, ${ramp().join(',')})`;
+    }
+
+    function setStrip(name: string, b64: string, note: string) {
+      stripName.textContent = name;
+      stripNote.textContent = note;
+      const bin = atob(b64);
+      stripBytes = new Uint8Array(bin.length);
+      for (let i = 0; i < bin.length; i++) stripBytes[i] = bin.charCodeAt(i);
+      drawStrip();
+    }
+
+    // 픽셀 단위로 직접 칠한다. fillRect로 그리면 폭이 1px 아래로 떨어질 때
+    // 칸 사이에 흰 줄이 생겨, 값이 아니라 격자가 보인다.
+    function drawStrip(reveal = 1) {
+      fit(strip, stripCtx);
+      const W = strip.width;
+      const H = strip.height;
+      if (!W || !H) return;
+      stripCtx.save();
+      stripCtx.setTransform(1, 0, 0, 1, 0, 0);
+      stripCtx.clearRect(0, 0, W, H);
+
+      const n = stripBytes.length || 1;
+      const upto = Math.round(W * clamp(reveal));
+      const img = stripCtx.createImageData(W, H);
+      const col = new Uint8Array(W * 3);
+      for (let x = 0; x < upto; x++) {
+        const [r, g, b] = rgbAt(stripBytes[Math.min(n - 1, Math.floor((x / W) * n))] / 255);
+        col[x * 3] = r; col[x * 3 + 1] = g; col[x * 3 + 2] = b;
+      }
+      for (let y = 0; y < H; y++) {
+        for (let x = 0; x < upto; x++) {
+          const p = (y * W + x) * 4;
+          img.data[p] = col[x * 3];
+          img.data[p + 1] = col[x * 3 + 1];
+          img.data[p + 2] = col[x * 3 + 2];
+          img.data[p + 3] = 255;
+        }
+      }
+      stripCtx.putImageData(img, 0, 0);
+      stripCtx.restore();
+    }
+
+    /* ---------- 조작 ---------- */
+
+    function buildChips() {
+      chips.querySelectorAll<HTMLButtonElement>('[data-qi]').forEach((b) => {
+        const i = Number(b.dataset.qi);
+        b.addEventListener('click', () => select(active === i ? null : i));
+      });
+      chips.querySelector<HTMLButtonElement>('[data-reset]')
+        ?.addEventListener('click', () => select(null));
+    }
+
+    function select(i: number | null) {
+      active = i;
+      started = now();
+      chips.querySelectorAll<HTMLButtonElement>('[data-qi]').forEach((b) => {
+        b.setAttribute('aria-pressed', String(Number(b.dataset.qi) === i));
+      });
+
+      if (i === null) {
+        legend.removeAttribute('data-quiet');
+        result.hidden = true;
+        rows.replaceChildren();
+        const s = data.samples[0];
+        setStrip(s.n, s.strip, `이 이름과 설명이 숫자 ${data.dims}개가 됩니다`);
+        draw(now());
+        return;
+      }
+
+      const q = data.queries[i];
+      legend.setAttribute('data-quiet', '');
+      setStrip(`"${q.q}"`, q.strip, `질문도 같은 모델로 숫자 ${data.dims}개가 됩니다`);
+      fillRows(q);
+      result.hidden = false;
+
+      // 움직임을 줄이라고 했거나 탭이 뒤에 있으면 곧장 끝 상태로 간다.
+      // 숨은 탭에서는 전환이 얼어붙어 표가 반투명한 채로 남는다.
+      if (!animates()) { drawStrip(1); draw(started + 1e6); return; }
+      const t0 = now();
+      const fill = () => {
+        const p = (now() - t0) / T_STRIP;
+        drawStrip(p);
+        if (p < 1) requestAnimationFrame(fill);
+      };
+      fill();
+      if (raf) cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(draw);
+    }
+
+    function fillRows(q: Query) {
+      caption.textContent =
+        `"${q.q}" 와 가장 가까운 ${q.hits.length}건 — ${data.dims}차원 코사인 유사도 순`;
+      rows.replaceChildren();
+      result.toggleAttribute('data-still', !animates());
+      q.hits.forEach(([id, s], i) => {
+        const f = byId.get(id);
+        if (!f) return;
+        const tr = document.createElement('tr');
+        const kcal = f[3];
+        const over = kcal !== null && kcal > 100 && q.q.includes('100kcal');
+        tr.innerHTML =
+          `<td>${i + 1}</td><td>${f[1]}</td><td>${data.cats[f[2]]}</td>` +
+          `<td>${s.toFixed(3)}</td>` +
+          `<td${over ? ' class="vspace-over"' : ''}>${kcal === null ? '—' : kcal + 'kcal'}</td>`;
+        rows.append(tr);
+        const delay = animates() ? T_MARK + i * T_STEP : 0;
+        setTimeout(() => tr.setAttribute('data-in', ''), delay);
+      });
+    }
+
+    function onMove(e: PointerEvent) {
+      const r = map.getBoundingClientRect();
+      const to = project(r.width, r.height);
+      const mx = e.clientX - r.left;
+      const my = e.clientY - r.top;
+      let best: Food | null = null;
+      let bd = HOVER * HOVER;
+      for (const f of data.foods) {
+        const [px, py] = to(f[4], f[5]);
+        const d = (px - mx) ** 2 + (py - my) ** 2;
+        if (d < bd) { bd = d; best = f; }
+      }
+      if (best !== hover) { hover = best; draw(now()); }
+      if (!best) { tip.hidden = true; return; }
+      const [px, py] = to(best[4], best[5]);
+      const kcal = best[3];
+      tip.innerHTML =
+        `<b>${best[1]}</b> <span>${data.cats[best[2]]}</span>` +
+        (kcal === null ? '' : ` <span>· ${kcal}kcal</span>`);
+      tip.style.left = `${px}px`;
+      tip.style.top = `${py}px`;
+      tip.hidden = false;
+    }
+
+    /* ---------- 잡동사니 ---------- */
+
+    function now() { return performance.now(); }
+    function clamp(v: number) { return v < 0 ? 0 : v > 1 ? 1 : v; }
+    function animates() { return !reduced.matches && document.visibilityState === 'visible'; }
+
+    function hex(h: string): number[] {
+      const n = parseInt(h.slice(1), 16);
+      return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+    }
+  }
+</script>

@@ -14,6 +14,23 @@
 - [deployment.md](deployment.md): GitHub Pages 공개 배포 (워크플로 동작,
   저장소 설정, base 경로)
 
+## 인터랙티브 자료의 재현 기록
+
+강의 문서에 실린 인터랙티브는 전부 실측이거나 원본 코드의 이식이다. 무엇을
+어떻게 만들었는지는 각 문서에 남긴다.
+
+- [vector-space-data.md](vector-space-data.md): Day 2 5세션의 벡터 공간
+  시각화가 쓰는 `site/src/data/vector-space.json`을 실제 색인에서 뽑는 방법
+  (`scripts/extract-vector-space.py`, `scripts/pack-vector-space.py`)
+- [context-growth-data.md](context-growth-data.md): Day 1 5세션의 컨텍스트
+  팽창·compact 시각화가 쓰는 `site/src/data/context-growth.json`을 실제
+  에이전트 실행에서 뽑는 방법
+  (`scripts/extract-context-growth.py`, `scripts/extract-compact.py`)
+- [harness-gates-port.md](harness-gates-port.md): Day 1 7세션의 게이트
+  데모가 쓰는 `site/src/lib/harness-gates.mjs`가 파이썬 원본과 같은 규칙인지
+  대조하는 방법 (`scripts/harness-gates-compare.mjs`,
+  `scripts/harness-gates-reference.py`)
+
 ## 작업 계획
 
 - [course-site-plan.md](course-site-plan.md): 강의 문서를 일차 단위에서 세션
