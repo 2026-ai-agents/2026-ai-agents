@@ -132,20 +132,25 @@ compose가 4컨테이너 중 3개(app·ui·db)를 띄우고, db에 테이블 7�
 #### 코드 발췌: 로그인은 인증이 아니라 식별
 
 ```python
+def normalize_phone(raw: str) -> str:
+    """숫자만 남긴다 — 010-1111-2222와 01011112222는 같은 손님이다."""
+    return re.sub(r"\D", "", raw)
+
 @app.post("/login")
 def login(body: LoginBody):
     """이름+전화로 손님을 찾거나 만든다. 같은 전화는 언제나 같은 손님이다."""
     row = conn.execute(
         """INSERT INTO customers (name, phone) VALUES (%s, %s)
            ON CONFLICT (phone) DO UPDATE SET name = EXCLUDED.name
-           RETURNING id, name""", (body.name, body.phone)).fetchone()
+           RETURNING id, name""", (body.name, normalize_phone(body.phone))).fetchone()
     ...
     return {"customer_id": customer_id, "name": name, "thread_id": f"cust-{customer_id}"}
 ```
 
 전화번호가 곧 손님이고, 대화 thread도 손님마다 하나(`cust-<id>`)입니다.
-같은 손님이 다시 로그인하면 같은 대화가 이어집니다. 비밀번호도 토큰도
-없는 수업용 최소 구성이라는 것은 밝혀 둡니다.
+식별자는 저장 전에 정규화합니다. 하이픈을 넣든 말든 같은 손님이어야
+하기 때문입니다. 같은 손님이 다시 로그인하면 같은 대화가 이어집니다.
+비밀번호도 토큰도 없는 수업용 최소 구성이라는 것은 밝혀 둡니다.
 
 #### 그래프 실측: 출발점은 diet-agent의 완성형
 
@@ -574,6 +579,26 @@ flowchart LR
     B --> C["승인"] --> D["19:00 접수<br/>(원래 계보)"]
     B -.->|"포크"| E["보류 + 20:00"] --> F["20:00 확인 카드<br/>(평행 계보)"]
 ```
+
+#### 현장 피드백 셋: v1.1.0
+
+수업 리허설에서 실제 사용자로 써 보며 나온 요구 세 가지가 hotfix가 아닌
+minor 릴리즈로 반영됐습니다. 셋 다 이 세션의 개념과 정확히 잇닿아
+있습니다.
+
+- **재로그인 대화 복원**: 새 `GET /history` 엔드포인트가 checkpointer에서
+  thread를 읽어 화면을 다시 그립니다. 기억은 서버(pg)에 있으므로 화면은
+  복원하면 됩니다. **열어 두고 떠난 확인 카드까지** 그대로 다시 섭니다
+- **내 예약 클릭 재개**: 사이드바의 예약이 버튼이 되어, 누르면 그 예약
+  건으로 상담이 이어집니다
+- **전화번호 정규화**: 위의 로그인 발췌에 있는 normalize_phone이 이때
+  들어왔습니다
+
+![v1.1.0 재로그인 직후: 지난 대화가 복원되고 내 예약이 버튼이 된 화면](./ui-v11-restored.jpg)
+
+로그아웃했다가 하이픈 형식으로 다시 로그인한 직후의 실측 화면입니다.
+채팅창에 지난 대화가 그대로 있습니다. v0.2가 약속한 영속성이 UI에서
+보이는 순간입니다.
 
 ## 테스트도 교재다
 

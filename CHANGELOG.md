@@ -28,6 +28,9 @@ git 태그(`vX.Y.Z`)로, 사이트 버전은 `site/package.json`으로 관리한
   v0.1(메모리 휘발) → v0.2(pg checkpointer) → v0.3(쓰기 직전 interrupt) →
   v1.0(사장 대시보드·어시스턴트·읽기 전용 SQL 도구·time-travel), 태그
   전부 테스트 통과, v1.0.1 포함 GitHub Releases 5건
+- **booking-agent 현장 피드백 반영(v1.1.0)**: 재로그인 시 checkpointer에서
+  대화 복원(대기 중 확인 카드 포함), 내 예약 클릭으로 상담 재개, 전화번호
+  정규화. 교안에 실측 화면과 함께 추가
 - **Day 2 3세션 교안**: booking-agent 교안 `day-02-session-03`. 재시작
   기억상실과 생존의 대조 실측, 확인 카드·사장 대시보드·SQL 방어·time-travel
   실측과 스크린샷 5장 동봉. 세션 인덱스의 "준비 중" 해제
