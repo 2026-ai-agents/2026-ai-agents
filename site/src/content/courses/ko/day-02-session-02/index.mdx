@@ -17,7 +17,9 @@ tags: ["LangGraph", "conditional edge", "reducer", "checkpointer"]
 - **제품**: 식단을 입력하면 칼로리·영양을 분석하고 조언하는 상담 웹앱
 - **핵심 문장**: Day 1의 수제 ReAct를 선언적 그래프로 다시 세운다. 같은 동작, 다른 구조
 
-## 시스템 구조: 컨테이너 3개
+## 1. 시스템 구조: 컨테이너 3개
+
+#### 컨테이너 셋과 각자의 몫
 
 Day 1의 `lab` 하나가 제품의 세 컨테이너로 갈라집니다. 역할 규약은 Day 2\~3의
 모든 저장소에서 반복됩니다.
@@ -35,7 +37,9 @@ flowchart LR
 - `db`는 도메인 데이터(식품 영양)를 담습니다. 뒤에서는 대화 상태의
   영속화까지 맡게 됩니다 (booking-agent)
 
-상담 요청 하나가 지나는 길을 역할별로 펼치면 이렇습니다.
+#### 상담 요청 하나가 지나는 길
+
+역할별로 펼치면 이렇습니다.
 
 ```mermaid
 sequenceDiagram
@@ -59,7 +63,7 @@ sequenceDiagram
 Day 1 4세션의 왕복 그대로입니다. 달라진 것은 그 왕복이 **제품의 컨테이너들
 사이**에서 일어난다는 것뿐입니다.
 
-## 시작하기
+## 2. 시작하기
 
 ```bash
 git clone https://github.com/2026-ai-agents/diet-agent.git
@@ -72,7 +76,7 @@ docker compose up --build
 - app → `http://localhost:8000/docs` (API)
 - 테스트: `docker compose exec app pytest` (키·네트워크 불필요)
 
-## LangGraph란 무엇인가
+## 3. LangGraph란 무엇인가
 
 이 세션에서 처음 등장하는 이름이니 짚고 갑니다. [[langgraph|LangGraph]]는
 LangChain 팀이 만든 오픈소스 프레임워크로, 에이전트의 제어 흐름을 **상태를
@@ -205,7 +209,9 @@ graph TD;
 선언과 그림의 원천이 같으므로 어긋날 수가 없습니다. 코드 리뷰에서 "그래프가
 어떻게 생겼더라"를 논쟁할 필요가 없어지는 지점입니다.
 
-## 릴리즈 사다리: 그래프가 자라는 순서
+## 4. 릴리즈 사다리: 그래프가 자라는 순서
+
+#### 네 단이 무엇을 얹는가
 
 | 릴리즈 | 상태 | 테스트 |
 | --- | --- | --- |
@@ -215,7 +221,9 @@ graph TD;
 | v1.0 | UI 연결 완성: 식단 상담 제품 | 8개 |
 
 네 태그 전부에서 `git checkout → docker compose up --build → pytest`가
-통과하는 것을 확인해 두었습니다. 그래프의 성장을 나란히 놓으면 이렇습니다.
+통과하는 것을 확인해 두었습니다.
+
+#### 그래프의 성장을 나란히
 
 ```mermaid
 flowchart LR
@@ -245,7 +253,7 @@ flowchart LR
 v1.0은 그래프가 아니라 UI가 완성되는 단입니다. 그래프는 v0.3에서 이미
 끝나 있습니다.
 
-## v0.1 · 뼈대: 그래프의 네 재료
+## 5. v0.1 · 뼈대: 그래프의 네 재료
 
 #### 무엇이 서는가
 
@@ -362,7 +370,7 @@ UI는 입력창과 말풍선 틀만 있는 빈 화면입니다.
 그것이 v0.2입니다. State에 reducer가 없어 노드가 전체 목록을 다시
 돌려주고 있다는 것도 봐 두세요. v0.3의 복선입니다.
 
-## v0.2 · 분기: 루프의 if가 선언이 된다
+## 6. v0.2 · 분기: 루프의 if가 선언이 된다
 
 #### 무엇이 바뀌나
 
@@ -494,7 +502,7 @@ graph TD;
 checkpointer는 상태(State)와 컴파일 옵션의 일이라 그림에 나타나지 않고,
 v1.0은 그래프 밖(UI·API)의 완성이기 때문입니다.
 
-## v0.3 · 누적: reducer 한 줄이 멀티턴을 만든다
+## 7. v0.3 · 누적: reducer 한 줄이 멀티턴을 만든다
 
 #### 무엇이 바뀌나
 
@@ -633,7 +641,7 @@ data: {"type": "answer", "answer": "…전체 답…"}
 booking-agent의 첫 장면이고, thread를 넘는 기억은 secretary-agent의
 [[store]]가 맡습니다.
 
-## v1.0 · 제품: UI까지 연결
+## 8. v1.0 · 제품: UI까지 연결
 
 #### 무엇이 완성되나
 
@@ -698,11 +706,15 @@ git checkout v1.0 && docker compose up --build    # 제품 완성판
 부품(영속 checkpointer, [[interrupt]], store, 병렬 Send)이 루프를 다시 짜지
 않고 꽂힌다는 점입니다.
 
-## 테스트도 교재다
+## 9. 테스트도 교재다
+
+#### 대역과 진짜의 경계
 
 이 저장소의 테스트는 두 가지 원칙으로 서 있습니다. LLM은 각본 대역으로
 갈아끼우되, **도구가 때리는 db는 진짜**를 씁니다. 그래서 키 없이 돌면서도
 그래프의 경로와 데이터 접근을 함께 검증합니다.
+
+#### 분기와 db 접근을 한 문장으로 확인한다
 
 ```python
 def test_tool_branch_roundtrip(monkeypatch):
@@ -717,6 +729,8 @@ def test_tool_branch_roundtrip(monkeypatch):
     tool_msg = [m for m in result["messages"] if m.get("role") == "tool"][0]
     assert json.loads(tool_msg["content"])["foods"][0]["kcal"] == 240
 ```
+
+#### 나머지 약속들
 
 `test_same_thread_remembers`(2턴째 호출에 1턴 히스토리가 실려 가는지),
 `test_threads_are_isolated`(다른 thread는 백지로 시작하는지)가 v0.3의
