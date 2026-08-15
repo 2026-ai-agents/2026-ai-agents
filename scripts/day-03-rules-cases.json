@@ -1,0 +1,3268 @@
+{
+ "supervisor": [
+  {
+   "question": "지난달 요금이 왜 이렇게 많이 나왔나요?",
+   "findings": [],
+   "answer": "",
+   "hybrid": true
+  },
+  {
+   "question": "지난달 요금이 왜 이렇게 많이 나왔나요?",
+   "findings": [],
+   "answer": "",
+   "hybrid": false
+  },
+  {
+   "question": "지난달 요금이 왜 이렇게 많이 나왔나요?",
+   "findings": [
+    "analyst"
+   ],
+   "answer": "",
+   "hybrid": true
+  },
+  {
+   "question": "지난달 요금이 왜 이렇게 많이 나왔나요?",
+   "findings": [
+    "analyst"
+   ],
+   "answer": "",
+   "hybrid": false
+  },
+  {
+   "question": "지난달 요금이 왜 이렇게 많이 나왔나요?",
+   "findings": [
+    "analyst",
+    "visualizer"
+   ],
+   "answer": "",
+   "hybrid": true
+  },
+  {
+   "question": "지난달 요금이 왜 이렇게 많이 나왔나요?",
+   "findings": [
+    "analyst",
+    "visualizer"
+   ],
+   "answer": "",
+   "hybrid": false
+  },
+  {
+   "question": "지난달 요금이 왜 이렇게 많이 나왔나요?",
+   "findings": [
+    "analyst"
+   ],
+   "answer": "(답변)",
+   "hybrid": true
+  },
+  {
+   "question": "지난달 요금이 왜 이렇게 많이 나왔나요?",
+   "findings": [
+    "analyst"
+   ],
+   "answer": "(답변)",
+   "hybrid": false
+  },
+  {
+   "question": "지난달 요금이 왜 이렇게 많이 나왔나요?",
+   "findings": [],
+   "answer": "(답변)",
+   "hybrid": true
+  },
+  {
+   "question": "지난달 요금이 왜 이렇게 많이 나왔나요?",
+   "findings": [],
+   "answer": "(답변)",
+   "hybrid": false
+  },
+  {
+   "question": "최근 1년 추이를 그래프로 보여주세요",
+   "findings": [],
+   "answer": "",
+   "hybrid": true
+  },
+  {
+   "question": "최근 1년 추이를 그래프로 보여주세요",
+   "findings": [],
+   "answer": "",
+   "hybrid": false
+  },
+  {
+   "question": "최근 1년 추이를 그래프로 보여주세요",
+   "findings": [
+    "analyst"
+   ],
+   "answer": "",
+   "hybrid": true
+  },
+  {
+   "question": "최근 1년 추이를 그래프로 보여주세요",
+   "findings": [
+    "analyst"
+   ],
+   "answer": "",
+   "hybrid": false
+  },
+  {
+   "question": "최근 1년 추이를 그래프로 보여주세요",
+   "findings": [
+    "analyst",
+    "visualizer"
+   ],
+   "answer": "",
+   "hybrid": true
+  },
+  {
+   "question": "최근 1년 추이를 그래프로 보여주세요",
+   "findings": [
+    "analyst",
+    "visualizer"
+   ],
+   "answer": "",
+   "hybrid": false
+  },
+  {
+   "question": "최근 1년 추이를 그래프로 보여주세요",
+   "findings": [
+    "analyst"
+   ],
+   "answer": "(답변)",
+   "hybrid": true
+  },
+  {
+   "question": "최근 1년 추이를 그래프로 보여주세요",
+   "findings": [
+    "analyst"
+   ],
+   "answer": "(답변)",
+   "hybrid": false
+  },
+  {
+   "question": "최근 1년 추이를 그래프로 보여주세요",
+   "findings": [],
+   "answer": "(답변)",
+   "hybrid": true
+  },
+  {
+   "question": "최근 1년 추이를 그래프로 보여주세요",
+   "findings": [],
+   "answer": "(답변)",
+   "hybrid": false
+  },
+  {
+   "question": "제 계약전력이 몇 kW인가요?",
+   "findings": [],
+   "answer": "",
+   "hybrid": true
+  },
+  {
+   "question": "제 계약전력이 몇 kW인가요?",
+   "findings": [],
+   "answer": "",
+   "hybrid": false
+  },
+  {
+   "question": "제 계약전력이 몇 kW인가요?",
+   "findings": [
+    "analyst"
+   ],
+   "answer": "",
+   "hybrid": true
+  },
+  {
+   "question": "제 계약전력이 몇 kW인가요?",
+   "findings": [
+    "analyst"
+   ],
+   "answer": "",
+   "hybrid": false
+  },
+  {
+   "question": "제 계약전력이 몇 kW인가요?",
+   "findings": [
+    "analyst",
+    "visualizer"
+   ],
+   "answer": "",
+   "hybrid": true
+  },
+  {
+   "question": "제 계약전력이 몇 kW인가요?",
+   "findings": [
+    "analyst",
+    "visualizer"
+   ],
+   "answer": "",
+   "hybrid": false
+  },
+  {
+   "question": "제 계약전력이 몇 kW인가요?",
+   "findings": [
+    "analyst"
+   ],
+   "answer": "(답변)",
+   "hybrid": true
+  },
+  {
+   "question": "제 계약전력이 몇 kW인가요?",
+   "findings": [
+    "analyst"
+   ],
+   "answer": "(답변)",
+   "hybrid": false
+  },
+  {
+   "question": "제 계약전력이 몇 kW인가요?",
+   "findings": [],
+   "answer": "(답변)",
+   "hybrid": true
+  },
+  {
+   "question": "제 계약전력이 몇 kW인가요?",
+   "findings": [],
+   "answer": "(답변)",
+   "hybrid": false
+  },
+  {
+   "question": "요금이 좀 이상한 것 같은데 확인해 주세요",
+   "findings": [],
+   "answer": "",
+   "hybrid": true
+  },
+  {
+   "question": "요금이 좀 이상한 것 같은데 확인해 주세요",
+   "findings": [],
+   "answer": "",
+   "hybrid": false
+  },
+  {
+   "question": "요금이 좀 이상한 것 같은데 확인해 주세요",
+   "findings": [
+    "analyst"
+   ],
+   "answer": "",
+   "hybrid": true
+  },
+  {
+   "question": "요금이 좀 이상한 것 같은데 확인해 주세요",
+   "findings": [
+    "analyst"
+   ],
+   "answer": "",
+   "hybrid": false
+  },
+  {
+   "question": "요금이 좀 이상한 것 같은데 확인해 주세요",
+   "findings": [
+    "analyst",
+    "visualizer"
+   ],
+   "answer": "",
+   "hybrid": true
+  },
+  {
+   "question": "요금이 좀 이상한 것 같은데 확인해 주세요",
+   "findings": [
+    "analyst",
+    "visualizer"
+   ],
+   "answer": "",
+   "hybrid": false
+  },
+  {
+   "question": "요금이 좀 이상한 것 같은데 확인해 주세요",
+   "findings": [
+    "analyst"
+   ],
+   "answer": "(답변)",
+   "hybrid": true
+  },
+  {
+   "question": "요금이 좀 이상한 것 같은데 확인해 주세요",
+   "findings": [
+    "analyst"
+   ],
+   "answer": "(답변)",
+   "hybrid": false
+  },
+  {
+   "question": "요금이 좀 이상한 것 같은데 확인해 주세요",
+   "findings": [],
+   "answer": "(답변)",
+   "hybrid": true
+  },
+  {
+   "question": "요금이 좀 이상한 것 같은데 확인해 주세요",
+   "findings": [],
+   "answer": "(답변)",
+   "hybrid": false
+  },
+  {
+   "question": "사용량 차트 좀 뽑아줘",
+   "findings": [],
+   "answer": "",
+   "hybrid": true
+  },
+  {
+   "question": "사용량 차트 좀 뽑아줘",
+   "findings": [],
+   "answer": "",
+   "hybrid": false
+  },
+  {
+   "question": "사용량 차트 좀 뽑아줘",
+   "findings": [
+    "analyst"
+   ],
+   "answer": "",
+   "hybrid": true
+  },
+  {
+   "question": "사용량 차트 좀 뽑아줘",
+   "findings": [
+    "analyst"
+   ],
+   "answer": "",
+   "hybrid": false
+  },
+  {
+   "question": "사용량 차트 좀 뽑아줘",
+   "findings": [
+    "analyst",
+    "visualizer"
+   ],
+   "answer": "",
+   "hybrid": true
+  },
+  {
+   "question": "사용량 차트 좀 뽑아줘",
+   "findings": [
+    "analyst",
+    "visualizer"
+   ],
+   "answer": "",
+   "hybrid": false
+  },
+  {
+   "question": "사용량 차트 좀 뽑아줘",
+   "findings": [
+    "analyst"
+   ],
+   "answer": "(답변)",
+   "hybrid": true
+  },
+  {
+   "question": "사용량 차트 좀 뽑아줘",
+   "findings": [
+    "analyst"
+   ],
+   "answer": "(답변)",
+   "hybrid": false
+  },
+  {
+   "question": "사용량 차트 좀 뽑아줘",
+   "findings": [],
+   "answer": "(답변)",
+   "hybrid": true
+  },
+  {
+   "question": "사용량 차트 좀 뽑아줘",
+   "findings": [],
+   "answer": "(답변)",
+   "hybrid": false
+  },
+  {
+   "question": "이번 달 청구서 항목을 시각적으로 정리해줘",
+   "findings": [],
+   "answer": "",
+   "hybrid": true
+  },
+  {
+   "question": "이번 달 청구서 항목을 시각적으로 정리해줘",
+   "findings": [],
+   "answer": "",
+   "hybrid": false
+  },
+  {
+   "question": "이번 달 청구서 항목을 시각적으로 정리해줘",
+   "findings": [
+    "analyst"
+   ],
+   "answer": "",
+   "hybrid": true
+  },
+  {
+   "question": "이번 달 청구서 항목을 시각적으로 정리해줘",
+   "findings": [
+    "analyst"
+   ],
+   "answer": "",
+   "hybrid": false
+  },
+  {
+   "question": "이번 달 청구서 항목을 시각적으로 정리해줘",
+   "findings": [
+    "analyst",
+    "visualizer"
+   ],
+   "answer": "",
+   "hybrid": true
+  },
+  {
+   "question": "이번 달 청구서 항목을 시각적으로 정리해줘",
+   "findings": [
+    "analyst",
+    "visualizer"
+   ],
+   "answer": "",
+   "hybrid": false
+  },
+  {
+   "question": "이번 달 청구서 항목을 시각적으로 정리해줘",
+   "findings": [
+    "analyst"
+   ],
+   "answer": "(답변)",
+   "hybrid": true
+  },
+  {
+   "question": "이번 달 청구서 항목을 시각적으로 정리해줘",
+   "findings": [
+    "analyst"
+   ],
+   "answer": "(답변)",
+   "hybrid": false
+  },
+  {
+   "question": "이번 달 청구서 항목을 시각적으로 정리해줘",
+   "findings": [],
+   "answer": "(답변)",
+   "hybrid": true
+  },
+  {
+   "question": "이번 달 청구서 항목을 시각적으로 정리해줘",
+   "findings": [],
+   "answer": "(답변)",
+   "hybrid": false
+  }
+ ],
+ "handoff": [
+  {
+   "desk": "triage",
+   "message": "이번 달 요금이 왜 이렇게 많이 나왔나요?",
+   "came_from": "",
+   "turn_handoffs": 0,
+   "rules": true
+  },
+  {
+   "desk": "triage",
+   "message": "이번 달 요금이 왜 이렇게 많이 나왔나요?",
+   "came_from": "",
+   "turn_handoffs": 0,
+   "rules": false
+  },
+  {
+   "desk": "triage",
+   "message": "이번 달 요금이 왜 이렇게 많이 나왔나요?",
+   "came_from": "",
+   "turn_handoffs": 3,
+   "rules": true
+  },
+  {
+   "desk": "triage",
+   "message": "이번 달 요금이 왜 이렇게 많이 나왔나요?",
+   "came_from": "",
+   "turn_handoffs": 3,
+   "rules": false
+  },
+  {
+   "desk": "triage",
+   "message": "이번 달 요금이 왜 이렇게 많이 나왔나요?",
+   "came_from": "billing",
+   "turn_handoffs": 0,
+   "rules": true
+  },
+  {
+   "desk": "triage",
+   "message": "이번 달 요금이 왜 이렇게 많이 나왔나요?",
+   "came_from": "billing",
+   "turn_handoffs": 0,
+   "rules": false
+  },
+  {
+   "desk": "triage",
+   "message": "이번 달 요금이 왜 이렇게 많이 나왔나요?",
+   "came_from": "billing",
+   "turn_handoffs": 3,
+   "rules": true
+  },
+  {
+   "desk": "triage",
+   "message": "이번 달 요금이 왜 이렇게 많이 나왔나요?",
+   "came_from": "billing",
+   "turn_handoffs": 3,
+   "rules": false
+  },
+  {
+   "desk": "triage",
+   "message": "이번 달 요금이 왜 이렇게 많이 나왔나요?",
+   "came_from": "tech",
+   "turn_handoffs": 0,
+   "rules": true
+  },
+  {
+   "desk": "triage",
+   "message": "이번 달 요금이 왜 이렇게 많이 나왔나요?",
+   "came_from": "tech",
+   "turn_handoffs": 0,
+   "rules": false
+  },
+  {
+   "desk": "triage",
+   "message": "이번 달 요금이 왜 이렇게 많이 나왔나요?",
+   "came_from": "tech",
+   "turn_handoffs": 3,
+   "rules": true
+  },
+  {
+   "desk": "triage",
+   "message": "이번 달 요금이 왜 이렇게 많이 나왔나요?",
+   "came_from": "tech",
+   "turn_handoffs": 3,
+   "rules": false
+  },
+  {
+   "desk": "triage",
+   "message": "이번 달 요금이 왜 이렇게 많이 나왔나요?",
+   "came_from": "retention",
+   "turn_handoffs": 0,
+   "rules": true
+  },
+  {
+   "desk": "triage",
+   "message": "이번 달 요금이 왜 이렇게 많이 나왔나요?",
+   "came_from": "retention",
+   "turn_handoffs": 0,
+   "rules": false
+  },
+  {
+   "desk": "triage",
+   "message": "이번 달 요금이 왜 이렇게 많이 나왔나요?",
+   "came_from": "retention",
+   "turn_handoffs": 3,
+   "rules": true
+  },
+  {
+   "desk": "triage",
+   "message": "이번 달 요금이 왜 이렇게 많이 나왔나요?",
+   "came_from": "retention",
+   "turn_handoffs": 3,
+   "rules": false
+  },
+  {
+   "desk": "billing",
+   "message": "이번 달 요금이 왜 이렇게 많이 나왔나요?",
+   "came_from": "",
+   "turn_handoffs": 0,
+   "rules": true
+  },
+  {
+   "desk": "billing",
+   "message": "이번 달 요금이 왜 이렇게 많이 나왔나요?",
+   "came_from": "",
+   "turn_handoffs": 0,
+   "rules": false
+  },
+  {
+   "desk": "billing",
+   "message": "이번 달 요금이 왜 이렇게 많이 나왔나요?",
+   "came_from": "",
+   "turn_handoffs": 3,
+   "rules": true
+  },
+  {
+   "desk": "billing",
+   "message": "이번 달 요금이 왜 이렇게 많이 나왔나요?",
+   "came_from": "",
+   "turn_handoffs": 3,
+   "rules": false
+  },
+  {
+   "desk": "billing",
+   "message": "이번 달 요금이 왜 이렇게 많이 나왔나요?",
+   "came_from": "billing",
+   "turn_handoffs": 0,
+   "rules": true
+  },
+  {
+   "desk": "billing",
+   "message": "이번 달 요금이 왜 이렇게 많이 나왔나요?",
+   "came_from": "billing",
+   "turn_handoffs": 0,
+   "rules": false
+  },
+  {
+   "desk": "billing",
+   "message": "이번 달 요금이 왜 이렇게 많이 나왔나요?",
+   "came_from": "billing",
+   "turn_handoffs": 3,
+   "rules": true
+  },
+  {
+   "desk": "billing",
+   "message": "이번 달 요금이 왜 이렇게 많이 나왔나요?",
+   "came_from": "billing",
+   "turn_handoffs": 3,
+   "rules": false
+  },
+  {
+   "desk": "billing",
+   "message": "이번 달 요금이 왜 이렇게 많이 나왔나요?",
+   "came_from": "tech",
+   "turn_handoffs": 0,
+   "rules": true
+  },
+  {
+   "desk": "billing",
+   "message": "이번 달 요금이 왜 이렇게 많이 나왔나요?",
+   "came_from": "tech",
+   "turn_handoffs": 0,
+   "rules": false
+  },
+  {
+   "desk": "billing",
+   "message": "이번 달 요금이 왜 이렇게 많이 나왔나요?",
+   "came_from": "tech",
+   "turn_handoffs": 3,
+   "rules": true
+  },
+  {
+   "desk": "billing",
+   "message": "이번 달 요금이 왜 이렇게 많이 나왔나요?",
+   "came_from": "tech",
+   "turn_handoffs": 3,
+   "rules": false
+  },
+  {
+   "desk": "billing",
+   "message": "이번 달 요금이 왜 이렇게 많이 나왔나요?",
+   "came_from": "retention",
+   "turn_handoffs": 0,
+   "rules": true
+  },
+  {
+   "desk": "billing",
+   "message": "이번 달 요금이 왜 이렇게 많이 나왔나요?",
+   "came_from": "retention",
+   "turn_handoffs": 0,
+   "rules": false
+  },
+  {
+   "desk": "billing",
+   "message": "이번 달 요금이 왜 이렇게 많이 나왔나요?",
+   "came_from": "retention",
+   "turn_handoffs": 3,
+   "rules": true
+  },
+  {
+   "desk": "billing",
+   "message": "이번 달 요금이 왜 이렇게 많이 나왔나요?",
+   "came_from": "retention",
+   "turn_handoffs": 3,
+   "rules": false
+  },
+  {
+   "desk": "tech",
+   "message": "이번 달 요금이 왜 이렇게 많이 나왔나요?",
+   "came_from": "",
+   "turn_handoffs": 0,
+   "rules": true
+  },
+  {
+   "desk": "tech",
+   "message": "이번 달 요금이 왜 이렇게 많이 나왔나요?",
+   "came_from": "",
+   "turn_handoffs": 0,
+   "rules": false
+  },
+  {
+   "desk": "tech",
+   "message": "이번 달 요금이 왜 이렇게 많이 나왔나요?",
+   "came_from": "",
+   "turn_handoffs": 3,
+   "rules": true
+  },
+  {
+   "desk": "tech",
+   "message": "이번 달 요금이 왜 이렇게 많이 나왔나요?",
+   "came_from": "",
+   "turn_handoffs": 3,
+   "rules": false
+  },
+  {
+   "desk": "tech",
+   "message": "이번 달 요금이 왜 이렇게 많이 나왔나요?",
+   "came_from": "billing",
+   "turn_handoffs": 0,
+   "rules": true
+  },
+  {
+   "desk": "tech",
+   "message": "이번 달 요금이 왜 이렇게 많이 나왔나요?",
+   "came_from": "billing",
+   "turn_handoffs": 0,
+   "rules": false
+  },
+  {
+   "desk": "tech",
+   "message": "이번 달 요금이 왜 이렇게 많이 나왔나요?",
+   "came_from": "billing",
+   "turn_handoffs": 3,
+   "rules": true
+  },
+  {
+   "desk": "tech",
+   "message": "이번 달 요금이 왜 이렇게 많이 나왔나요?",
+   "came_from": "billing",
+   "turn_handoffs": 3,
+   "rules": false
+  },
+  {
+   "desk": "tech",
+   "message": "이번 달 요금이 왜 이렇게 많이 나왔나요?",
+   "came_from": "tech",
+   "turn_handoffs": 0,
+   "rules": true
+  },
+  {
+   "desk": "tech",
+   "message": "이번 달 요금이 왜 이렇게 많이 나왔나요?",
+   "came_from": "tech",
+   "turn_handoffs": 0,
+   "rules": false
+  },
+  {
+   "desk": "tech",
+   "message": "이번 달 요금이 왜 이렇게 많이 나왔나요?",
+   "came_from": "tech",
+   "turn_handoffs": 3,
+   "rules": true
+  },
+  {
+   "desk": "tech",
+   "message": "이번 달 요금이 왜 이렇게 많이 나왔나요?",
+   "came_from": "tech",
+   "turn_handoffs": 3,
+   "rules": false
+  },
+  {
+   "desk": "tech",
+   "message": "이번 달 요금이 왜 이렇게 많이 나왔나요?",
+   "came_from": "retention",
+   "turn_handoffs": 0,
+   "rules": true
+  },
+  {
+   "desk": "tech",
+   "message": "이번 달 요금이 왜 이렇게 많이 나왔나요?",
+   "came_from": "retention",
+   "turn_handoffs": 0,
+   "rules": false
+  },
+  {
+   "desk": "tech",
+   "message": "이번 달 요금이 왜 이렇게 많이 나왔나요?",
+   "came_from": "retention",
+   "turn_handoffs": 3,
+   "rules": true
+  },
+  {
+   "desk": "tech",
+   "message": "이번 달 요금이 왜 이렇게 많이 나왔나요?",
+   "came_from": "retention",
+   "turn_handoffs": 3,
+   "rules": false
+  },
+  {
+   "desk": "retention",
+   "message": "이번 달 요금이 왜 이렇게 많이 나왔나요?",
+   "came_from": "",
+   "turn_handoffs": 0,
+   "rules": true
+  },
+  {
+   "desk": "retention",
+   "message": "이번 달 요금이 왜 이렇게 많이 나왔나요?",
+   "came_from": "",
+   "turn_handoffs": 0,
+   "rules": false
+  },
+  {
+   "desk": "retention",
+   "message": "이번 달 요금이 왜 이렇게 많이 나왔나요?",
+   "came_from": "",
+   "turn_handoffs": 3,
+   "rules": true
+  },
+  {
+   "desk": "retention",
+   "message": "이번 달 요금이 왜 이렇게 많이 나왔나요?",
+   "came_from": "",
+   "turn_handoffs": 3,
+   "rules": false
+  },
+  {
+   "desk": "retention",
+   "message": "이번 달 요금이 왜 이렇게 많이 나왔나요?",
+   "came_from": "billing",
+   "turn_handoffs": 0,
+   "rules": true
+  },
+  {
+   "desk": "retention",
+   "message": "이번 달 요금이 왜 이렇게 많이 나왔나요?",
+   "came_from": "billing",
+   "turn_handoffs": 0,
+   "rules": false
+  },
+  {
+   "desk": "retention",
+   "message": "이번 달 요금이 왜 이렇게 많이 나왔나요?",
+   "came_from": "billing",
+   "turn_handoffs": 3,
+   "rules": true
+  },
+  {
+   "desk": "retention",
+   "message": "이번 달 요금이 왜 이렇게 많이 나왔나요?",
+   "came_from": "billing",
+   "turn_handoffs": 3,
+   "rules": false
+  },
+  {
+   "desk": "retention",
+   "message": "이번 달 요금이 왜 이렇게 많이 나왔나요?",
+   "came_from": "tech",
+   "turn_handoffs": 0,
+   "rules": true
+  },
+  {
+   "desk": "retention",
+   "message": "이번 달 요금이 왜 이렇게 많이 나왔나요?",
+   "came_from": "tech",
+   "turn_handoffs": 0,
+   "rules": false
+  },
+  {
+   "desk": "retention",
+   "message": "이번 달 요금이 왜 이렇게 많이 나왔나요?",
+   "came_from": "tech",
+   "turn_handoffs": 3,
+   "rules": true
+  },
+  {
+   "desk": "retention",
+   "message": "이번 달 요금이 왜 이렇게 많이 나왔나요?",
+   "came_from": "tech",
+   "turn_handoffs": 3,
+   "rules": false
+  },
+  {
+   "desk": "retention",
+   "message": "이번 달 요금이 왜 이렇게 많이 나왔나요?",
+   "came_from": "retention",
+   "turn_handoffs": 0,
+   "rules": true
+  },
+  {
+   "desk": "retention",
+   "message": "이번 달 요금이 왜 이렇게 많이 나왔나요?",
+   "came_from": "retention",
+   "turn_handoffs": 0,
+   "rules": false
+  },
+  {
+   "desk": "retention",
+   "message": "이번 달 요금이 왜 이렇게 많이 나왔나요?",
+   "came_from": "retention",
+   "turn_handoffs": 3,
+   "rules": true
+  },
+  {
+   "desk": "retention",
+   "message": "이번 달 요금이 왜 이렇게 많이 나왔나요?",
+   "came_from": "retention",
+   "turn_handoffs": 3,
+   "rules": false
+  },
+  {
+   "desk": "triage",
+   "message": "인터넷이 어제부터 계속 끊깁니다",
+   "came_from": "",
+   "turn_handoffs": 0,
+   "rules": true
+  },
+  {
+   "desk": "triage",
+   "message": "인터넷이 어제부터 계속 끊깁니다",
+   "came_from": "",
+   "turn_handoffs": 0,
+   "rules": false
+  },
+  {
+   "desk": "triage",
+   "message": "인터넷이 어제부터 계속 끊깁니다",
+   "came_from": "",
+   "turn_handoffs": 3,
+   "rules": true
+  },
+  {
+   "desk": "triage",
+   "message": "인터넷이 어제부터 계속 끊깁니다",
+   "came_from": "",
+   "turn_handoffs": 3,
+   "rules": false
+  },
+  {
+   "desk": "triage",
+   "message": "인터넷이 어제부터 계속 끊깁니다",
+   "came_from": "billing",
+   "turn_handoffs": 0,
+   "rules": true
+  },
+  {
+   "desk": "triage",
+   "message": "인터넷이 어제부터 계속 끊깁니다",
+   "came_from": "billing",
+   "turn_handoffs": 0,
+   "rules": false
+  },
+  {
+   "desk": "triage",
+   "message": "인터넷이 어제부터 계속 끊깁니다",
+   "came_from": "billing",
+   "turn_handoffs": 3,
+   "rules": true
+  },
+  {
+   "desk": "triage",
+   "message": "인터넷이 어제부터 계속 끊깁니다",
+   "came_from": "billing",
+   "turn_handoffs": 3,
+   "rules": false
+  },
+  {
+   "desk": "triage",
+   "message": "인터넷이 어제부터 계속 끊깁니다",
+   "came_from": "tech",
+   "turn_handoffs": 0,
+   "rules": true
+  },
+  {
+   "desk": "triage",
+   "message": "인터넷이 어제부터 계속 끊깁니다",
+   "came_from": "tech",
+   "turn_handoffs": 0,
+   "rules": false
+  },
+  {
+   "desk": "triage",
+   "message": "인터넷이 어제부터 계속 끊깁니다",
+   "came_from": "tech",
+   "turn_handoffs": 3,
+   "rules": true
+  },
+  {
+   "desk": "triage",
+   "message": "인터넷이 어제부터 계속 끊깁니다",
+   "came_from": "tech",
+   "turn_handoffs": 3,
+   "rules": false
+  },
+  {
+   "desk": "triage",
+   "message": "인터넷이 어제부터 계속 끊깁니다",
+   "came_from": "retention",
+   "turn_handoffs": 0,
+   "rules": true
+  },
+  {
+   "desk": "triage",
+   "message": "인터넷이 어제부터 계속 끊깁니다",
+   "came_from": "retention",
+   "turn_handoffs": 0,
+   "rules": false
+  },
+  {
+   "desk": "triage",
+   "message": "인터넷이 어제부터 계속 끊깁니다",
+   "came_from": "retention",
+   "turn_handoffs": 3,
+   "rules": true
+  },
+  {
+   "desk": "triage",
+   "message": "인터넷이 어제부터 계속 끊깁니다",
+   "came_from": "retention",
+   "turn_handoffs": 3,
+   "rules": false
+  },
+  {
+   "desk": "billing",
+   "message": "인터넷이 어제부터 계속 끊깁니다",
+   "came_from": "",
+   "turn_handoffs": 0,
+   "rules": true
+  },
+  {
+   "desk": "billing",
+   "message": "인터넷이 어제부터 계속 끊깁니다",
+   "came_from": "",
+   "turn_handoffs": 0,
+   "rules": false
+  },
+  {
+   "desk": "billing",
+   "message": "인터넷이 어제부터 계속 끊깁니다",
+   "came_from": "",
+   "turn_handoffs": 3,
+   "rules": true
+  },
+  {
+   "desk": "billing",
+   "message": "인터넷이 어제부터 계속 끊깁니다",
+   "came_from": "",
+   "turn_handoffs": 3,
+   "rules": false
+  },
+  {
+   "desk": "billing",
+   "message": "인터넷이 어제부터 계속 끊깁니다",
+   "came_from": "billing",
+   "turn_handoffs": 0,
+   "rules": true
+  },
+  {
+   "desk": "billing",
+   "message": "인터넷이 어제부터 계속 끊깁니다",
+   "came_from": "billing",
+   "turn_handoffs": 0,
+   "rules": false
+  },
+  {
+   "desk": "billing",
+   "message": "인터넷이 어제부터 계속 끊깁니다",
+   "came_from": "billing",
+   "turn_handoffs": 3,
+   "rules": true
+  },
+  {
+   "desk": "billing",
+   "message": "인터넷이 어제부터 계속 끊깁니다",
+   "came_from": "billing",
+   "turn_handoffs": 3,
+   "rules": false
+  },
+  {
+   "desk": "billing",
+   "message": "인터넷이 어제부터 계속 끊깁니다",
+   "came_from": "tech",
+   "turn_handoffs": 0,
+   "rules": true
+  },
+  {
+   "desk": "billing",
+   "message": "인터넷이 어제부터 계속 끊깁니다",
+   "came_from": "tech",
+   "turn_handoffs": 0,
+   "rules": false
+  },
+  {
+   "desk": "billing",
+   "message": "인터넷이 어제부터 계속 끊깁니다",
+   "came_from": "tech",
+   "turn_handoffs": 3,
+   "rules": true
+  },
+  {
+   "desk": "billing",
+   "message": "인터넷이 어제부터 계속 끊깁니다",
+   "came_from": "tech",
+   "turn_handoffs": 3,
+   "rules": false
+  },
+  {
+   "desk": "billing",
+   "message": "인터넷이 어제부터 계속 끊깁니다",
+   "came_from": "retention",
+   "turn_handoffs": 0,
+   "rules": true
+  },
+  {
+   "desk": "billing",
+   "message": "인터넷이 어제부터 계속 끊깁니다",
+   "came_from": "retention",
+   "turn_handoffs": 0,
+   "rules": false
+  },
+  {
+   "desk": "billing",
+   "message": "인터넷이 어제부터 계속 끊깁니다",
+   "came_from": "retention",
+   "turn_handoffs": 3,
+   "rules": true
+  },
+  {
+   "desk": "billing",
+   "message": "인터넷이 어제부터 계속 끊깁니다",
+   "came_from": "retention",
+   "turn_handoffs": 3,
+   "rules": false
+  },
+  {
+   "desk": "tech",
+   "message": "인터넷이 어제부터 계속 끊깁니다",
+   "came_from": "",
+   "turn_handoffs": 0,
+   "rules": true
+  },
+  {
+   "desk": "tech",
+   "message": "인터넷이 어제부터 계속 끊깁니다",
+   "came_from": "",
+   "turn_handoffs": 0,
+   "rules": false
+  },
+  {
+   "desk": "tech",
+   "message": "인터넷이 어제부터 계속 끊깁니다",
+   "came_from": "",
+   "turn_handoffs": 3,
+   "rules": true
+  },
+  {
+   "desk": "tech",
+   "message": "인터넷이 어제부터 계속 끊깁니다",
+   "came_from": "",
+   "turn_handoffs": 3,
+   "rules": false
+  },
+  {
+   "desk": "tech",
+   "message": "인터넷이 어제부터 계속 끊깁니다",
+   "came_from": "billing",
+   "turn_handoffs": 0,
+   "rules": true
+  },
+  {
+   "desk": "tech",
+   "message": "인터넷이 어제부터 계속 끊깁니다",
+   "came_from": "billing",
+   "turn_handoffs": 0,
+   "rules": false
+  },
+  {
+   "desk": "tech",
+   "message": "인터넷이 어제부터 계속 끊깁니다",
+   "came_from": "billing",
+   "turn_handoffs": 3,
+   "rules": true
+  },
+  {
+   "desk": "tech",
+   "message": "인터넷이 어제부터 계속 끊깁니다",
+   "came_from": "billing",
+   "turn_handoffs": 3,
+   "rules": false
+  },
+  {
+   "desk": "tech",
+   "message": "인터넷이 어제부터 계속 끊깁니다",
+   "came_from": "tech",
+   "turn_handoffs": 0,
+   "rules": true
+  },
+  {
+   "desk": "tech",
+   "message": "인터넷이 어제부터 계속 끊깁니다",
+   "came_from": "tech",
+   "turn_handoffs": 0,
+   "rules": false
+  },
+  {
+   "desk": "tech",
+   "message": "인터넷이 어제부터 계속 끊깁니다",
+   "came_from": "tech",
+   "turn_handoffs": 3,
+   "rules": true
+  },
+  {
+   "desk": "tech",
+   "message": "인터넷이 어제부터 계속 끊깁니다",
+   "came_from": "tech",
+   "turn_handoffs": 3,
+   "rules": false
+  },
+  {
+   "desk": "tech",
+   "message": "인터넷이 어제부터 계속 끊깁니다",
+   "came_from": "retention",
+   "turn_handoffs": 0,
+   "rules": true
+  },
+  {
+   "desk": "tech",
+   "message": "인터넷이 어제부터 계속 끊깁니다",
+   "came_from": "retention",
+   "turn_handoffs": 0,
+   "rules": false
+  },
+  {
+   "desk": "tech",
+   "message": "인터넷이 어제부터 계속 끊깁니다",
+   "came_from": "retention",
+   "turn_handoffs": 3,
+   "rules": true
+  },
+  {
+   "desk": "tech",
+   "message": "인터넷이 어제부터 계속 끊깁니다",
+   "came_from": "retention",
+   "turn_handoffs": 3,
+   "rules": false
+  },
+  {
+   "desk": "retention",
+   "message": "인터넷이 어제부터 계속 끊깁니다",
+   "came_from": "",
+   "turn_handoffs": 0,
+   "rules": true
+  },
+  {
+   "desk": "retention",
+   "message": "인터넷이 어제부터 계속 끊깁니다",
+   "came_from": "",
+   "turn_handoffs": 0,
+   "rules": false
+  },
+  {
+   "desk": "retention",
+   "message": "인터넷이 어제부터 계속 끊깁니다",
+   "came_from": "",
+   "turn_handoffs": 3,
+   "rules": true
+  },
+  {
+   "desk": "retention",
+   "message": "인터넷이 어제부터 계속 끊깁니다",
+   "came_from": "",
+   "turn_handoffs": 3,
+   "rules": false
+  },
+  {
+   "desk": "retention",
+   "message": "인터넷이 어제부터 계속 끊깁니다",
+   "came_from": "billing",
+   "turn_handoffs": 0,
+   "rules": true
+  },
+  {
+   "desk": "retention",
+   "message": "인터넷이 어제부터 계속 끊깁니다",
+   "came_from": "billing",
+   "turn_handoffs": 0,
+   "rules": false
+  },
+  {
+   "desk": "retention",
+   "message": "인터넷이 어제부터 계속 끊깁니다",
+   "came_from": "billing",
+   "turn_handoffs": 3,
+   "rules": true
+  },
+  {
+   "desk": "retention",
+   "message": "인터넷이 어제부터 계속 끊깁니다",
+   "came_from": "billing",
+   "turn_handoffs": 3,
+   "rules": false
+  },
+  {
+   "desk": "retention",
+   "message": "인터넷이 어제부터 계속 끊깁니다",
+   "came_from": "tech",
+   "turn_handoffs": 0,
+   "rules": true
+  },
+  {
+   "desk": "retention",
+   "message": "인터넷이 어제부터 계속 끊깁니다",
+   "came_from": "tech",
+   "turn_handoffs": 0,
+   "rules": false
+  },
+  {
+   "desk": "retention",
+   "message": "인터넷이 어제부터 계속 끊깁니다",
+   "came_from": "tech",
+   "turn_handoffs": 3,
+   "rules": true
+  },
+  {
+   "desk": "retention",
+   "message": "인터넷이 어제부터 계속 끊깁니다",
+   "came_from": "tech",
+   "turn_handoffs": 3,
+   "rules": false
+  },
+  {
+   "desk": "retention",
+   "message": "인터넷이 어제부터 계속 끊깁니다",
+   "came_from": "retention",
+   "turn_handoffs": 0,
+   "rules": true
+  },
+  {
+   "desk": "retention",
+   "message": "인터넷이 어제부터 계속 끊깁니다",
+   "came_from": "retention",
+   "turn_handoffs": 0,
+   "rules": false
+  },
+  {
+   "desk": "retention",
+   "message": "인터넷이 어제부터 계속 끊깁니다",
+   "came_from": "retention",
+   "turn_handoffs": 3,
+   "rules": true
+  },
+  {
+   "desk": "retention",
+   "message": "인터넷이 어제부터 계속 끊깁니다",
+   "came_from": "retention",
+   "turn_handoffs": 3,
+   "rules": false
+  },
+  {
+   "desk": "triage",
+   "message": "약정이 끝났는데 해지하려면 어떻게 하나요?",
+   "came_from": "",
+   "turn_handoffs": 0,
+   "rules": true
+  },
+  {
+   "desk": "triage",
+   "message": "약정이 끝났는데 해지하려면 어떻게 하나요?",
+   "came_from": "",
+   "turn_handoffs": 0,
+   "rules": false
+  },
+  {
+   "desk": "triage",
+   "message": "약정이 끝났는데 해지하려면 어떻게 하나요?",
+   "came_from": "",
+   "turn_handoffs": 3,
+   "rules": true
+  },
+  {
+   "desk": "triage",
+   "message": "약정이 끝났는데 해지하려면 어떻게 하나요?",
+   "came_from": "",
+   "turn_handoffs": 3,
+   "rules": false
+  },
+  {
+   "desk": "triage",
+   "message": "약정이 끝났는데 해지하려면 어떻게 하나요?",
+   "came_from": "billing",
+   "turn_handoffs": 0,
+   "rules": true
+  },
+  {
+   "desk": "triage",
+   "message": "약정이 끝났는데 해지하려면 어떻게 하나요?",
+   "came_from": "billing",
+   "turn_handoffs": 0,
+   "rules": false
+  },
+  {
+   "desk": "triage",
+   "message": "약정이 끝났는데 해지하려면 어떻게 하나요?",
+   "came_from": "billing",
+   "turn_handoffs": 3,
+   "rules": true
+  },
+  {
+   "desk": "triage",
+   "message": "약정이 끝났는데 해지하려면 어떻게 하나요?",
+   "came_from": "billing",
+   "turn_handoffs": 3,
+   "rules": false
+  },
+  {
+   "desk": "triage",
+   "message": "약정이 끝났는데 해지하려면 어떻게 하나요?",
+   "came_from": "tech",
+   "turn_handoffs": 0,
+   "rules": true
+  },
+  {
+   "desk": "triage",
+   "message": "약정이 끝났는데 해지하려면 어떻게 하나요?",
+   "came_from": "tech",
+   "turn_handoffs": 0,
+   "rules": false
+  },
+  {
+   "desk": "triage",
+   "message": "약정이 끝났는데 해지하려면 어떻게 하나요?",
+   "came_from": "tech",
+   "turn_handoffs": 3,
+   "rules": true
+  },
+  {
+   "desk": "triage",
+   "message": "약정이 끝났는데 해지하려면 어떻게 하나요?",
+   "came_from": "tech",
+   "turn_handoffs": 3,
+   "rules": false
+  },
+  {
+   "desk": "triage",
+   "message": "약정이 끝났는데 해지하려면 어떻게 하나요?",
+   "came_from": "retention",
+   "turn_handoffs": 0,
+   "rules": true
+  },
+  {
+   "desk": "triage",
+   "message": "약정이 끝났는데 해지하려면 어떻게 하나요?",
+   "came_from": "retention",
+   "turn_handoffs": 0,
+   "rules": false
+  },
+  {
+   "desk": "triage",
+   "message": "약정이 끝났는데 해지하려면 어떻게 하나요?",
+   "came_from": "retention",
+   "turn_handoffs": 3,
+   "rules": true
+  },
+  {
+   "desk": "triage",
+   "message": "약정이 끝났는데 해지하려면 어떻게 하나요?",
+   "came_from": "retention",
+   "turn_handoffs": 3,
+   "rules": false
+  },
+  {
+   "desk": "billing",
+   "message": "약정이 끝났는데 해지하려면 어떻게 하나요?",
+   "came_from": "",
+   "turn_handoffs": 0,
+   "rules": true
+  },
+  {
+   "desk": "billing",
+   "message": "약정이 끝났는데 해지하려면 어떻게 하나요?",
+   "came_from": "",
+   "turn_handoffs": 0,
+   "rules": false
+  },
+  {
+   "desk": "billing",
+   "message": "약정이 끝났는데 해지하려면 어떻게 하나요?",
+   "came_from": "",
+   "turn_handoffs": 3,
+   "rules": true
+  },
+  {
+   "desk": "billing",
+   "message": "약정이 끝났는데 해지하려면 어떻게 하나요?",
+   "came_from": "",
+   "turn_handoffs": 3,
+   "rules": false
+  },
+  {
+   "desk": "billing",
+   "message": "약정이 끝났는데 해지하려면 어떻게 하나요?",
+   "came_from": "billing",
+   "turn_handoffs": 0,
+   "rules": true
+  },
+  {
+   "desk": "billing",
+   "message": "약정이 끝났는데 해지하려면 어떻게 하나요?",
+   "came_from": "billing",
+   "turn_handoffs": 0,
+   "rules": false
+  },
+  {
+   "desk": "billing",
+   "message": "약정이 끝났는데 해지하려면 어떻게 하나요?",
+   "came_from": "billing",
+   "turn_handoffs": 3,
+   "rules": true
+  },
+  {
+   "desk": "billing",
+   "message": "약정이 끝났는데 해지하려면 어떻게 하나요?",
+   "came_from": "billing",
+   "turn_handoffs": 3,
+   "rules": false
+  },
+  {
+   "desk": "billing",
+   "message": "약정이 끝났는데 해지하려면 어떻게 하나요?",
+   "came_from": "tech",
+   "turn_handoffs": 0,
+   "rules": true
+  },
+  {
+   "desk": "billing",
+   "message": "약정이 끝났는데 해지하려면 어떻게 하나요?",
+   "came_from": "tech",
+   "turn_handoffs": 0,
+   "rules": false
+  },
+  {
+   "desk": "billing",
+   "message": "약정이 끝났는데 해지하려면 어떻게 하나요?",
+   "came_from": "tech",
+   "turn_handoffs": 3,
+   "rules": true
+  },
+  {
+   "desk": "billing",
+   "message": "약정이 끝났는데 해지하려면 어떻게 하나요?",
+   "came_from": "tech",
+   "turn_handoffs": 3,
+   "rules": false
+  },
+  {
+   "desk": "billing",
+   "message": "약정이 끝났는데 해지하려면 어떻게 하나요?",
+   "came_from": "retention",
+   "turn_handoffs": 0,
+   "rules": true
+  },
+  {
+   "desk": "billing",
+   "message": "약정이 끝났는데 해지하려면 어떻게 하나요?",
+   "came_from": "retention",
+   "turn_handoffs": 0,
+   "rules": false
+  },
+  {
+   "desk": "billing",
+   "message": "약정이 끝났는데 해지하려면 어떻게 하나요?",
+   "came_from": "retention",
+   "turn_handoffs": 3,
+   "rules": true
+  },
+  {
+   "desk": "billing",
+   "message": "약정이 끝났는데 해지하려면 어떻게 하나요?",
+   "came_from": "retention",
+   "turn_handoffs": 3,
+   "rules": false
+  },
+  {
+   "desk": "tech",
+   "message": "약정이 끝났는데 해지하려면 어떻게 하나요?",
+   "came_from": "",
+   "turn_handoffs": 0,
+   "rules": true
+  },
+  {
+   "desk": "tech",
+   "message": "약정이 끝났는데 해지하려면 어떻게 하나요?",
+   "came_from": "",
+   "turn_handoffs": 0,
+   "rules": false
+  },
+  {
+   "desk": "tech",
+   "message": "약정이 끝났는데 해지하려면 어떻게 하나요?",
+   "came_from": "",
+   "turn_handoffs": 3,
+   "rules": true
+  },
+  {
+   "desk": "tech",
+   "message": "약정이 끝났는데 해지하려면 어떻게 하나요?",
+   "came_from": "",
+   "turn_handoffs": 3,
+   "rules": false
+  },
+  {
+   "desk": "tech",
+   "message": "약정이 끝났는데 해지하려면 어떻게 하나요?",
+   "came_from": "billing",
+   "turn_handoffs": 0,
+   "rules": true
+  },
+  {
+   "desk": "tech",
+   "message": "약정이 끝났는데 해지하려면 어떻게 하나요?",
+   "came_from": "billing",
+   "turn_handoffs": 0,
+   "rules": false
+  },
+  {
+   "desk": "tech",
+   "message": "약정이 끝났는데 해지하려면 어떻게 하나요?",
+   "came_from": "billing",
+   "turn_handoffs": 3,
+   "rules": true
+  },
+  {
+   "desk": "tech",
+   "message": "약정이 끝났는데 해지하려면 어떻게 하나요?",
+   "came_from": "billing",
+   "turn_handoffs": 3,
+   "rules": false
+  },
+  {
+   "desk": "tech",
+   "message": "약정이 끝났는데 해지하려면 어떻게 하나요?",
+   "came_from": "tech",
+   "turn_handoffs": 0,
+   "rules": true
+  },
+  {
+   "desk": "tech",
+   "message": "약정이 끝났는데 해지하려면 어떻게 하나요?",
+   "came_from": "tech",
+   "turn_handoffs": 0,
+   "rules": false
+  },
+  {
+   "desk": "tech",
+   "message": "약정이 끝났는데 해지하려면 어떻게 하나요?",
+   "came_from": "tech",
+   "turn_handoffs": 3,
+   "rules": true
+  },
+  {
+   "desk": "tech",
+   "message": "약정이 끝났는데 해지하려면 어떻게 하나요?",
+   "came_from": "tech",
+   "turn_handoffs": 3,
+   "rules": false
+  },
+  {
+   "desk": "tech",
+   "message": "약정이 끝났는데 해지하려면 어떻게 하나요?",
+   "came_from": "retention",
+   "turn_handoffs": 0,
+   "rules": true
+  },
+  {
+   "desk": "tech",
+   "message": "약정이 끝났는데 해지하려면 어떻게 하나요?",
+   "came_from": "retention",
+   "turn_handoffs": 0,
+   "rules": false
+  },
+  {
+   "desk": "tech",
+   "message": "약정이 끝났는데 해지하려면 어떻게 하나요?",
+   "came_from": "retention",
+   "turn_handoffs": 3,
+   "rules": true
+  },
+  {
+   "desk": "tech",
+   "message": "약정이 끝났는데 해지하려면 어떻게 하나요?",
+   "came_from": "retention",
+   "turn_handoffs": 3,
+   "rules": false
+  },
+  {
+   "desk": "retention",
+   "message": "약정이 끝났는데 해지하려면 어떻게 하나요?",
+   "came_from": "",
+   "turn_handoffs": 0,
+   "rules": true
+  },
+  {
+   "desk": "retention",
+   "message": "약정이 끝났는데 해지하려면 어떻게 하나요?",
+   "came_from": "",
+   "turn_handoffs": 0,
+   "rules": false
+  },
+  {
+   "desk": "retention",
+   "message": "약정이 끝났는데 해지하려면 어떻게 하나요?",
+   "came_from": "",
+   "turn_handoffs": 3,
+   "rules": true
+  },
+  {
+   "desk": "retention",
+   "message": "약정이 끝났는데 해지하려면 어떻게 하나요?",
+   "came_from": "",
+   "turn_handoffs": 3,
+   "rules": false
+  },
+  {
+   "desk": "retention",
+   "message": "약정이 끝났는데 해지하려면 어떻게 하나요?",
+   "came_from": "billing",
+   "turn_handoffs": 0,
+   "rules": true
+  },
+  {
+   "desk": "retention",
+   "message": "약정이 끝났는데 해지하려면 어떻게 하나요?",
+   "came_from": "billing",
+   "turn_handoffs": 0,
+   "rules": false
+  },
+  {
+   "desk": "retention",
+   "message": "약정이 끝났는데 해지하려면 어떻게 하나요?",
+   "came_from": "billing",
+   "turn_handoffs": 3,
+   "rules": true
+  },
+  {
+   "desk": "retention",
+   "message": "약정이 끝났는데 해지하려면 어떻게 하나요?",
+   "came_from": "billing",
+   "turn_handoffs": 3,
+   "rules": false
+  },
+  {
+   "desk": "retention",
+   "message": "약정이 끝났는데 해지하려면 어떻게 하나요?",
+   "came_from": "tech",
+   "turn_handoffs": 0,
+   "rules": true
+  },
+  {
+   "desk": "retention",
+   "message": "약정이 끝났는데 해지하려면 어떻게 하나요?",
+   "came_from": "tech",
+   "turn_handoffs": 0,
+   "rules": false
+  },
+  {
+   "desk": "retention",
+   "message": "약정이 끝났는데 해지하려면 어떻게 하나요?",
+   "came_from": "tech",
+   "turn_handoffs": 3,
+   "rules": true
+  },
+  {
+   "desk": "retention",
+   "message": "약정이 끝났는데 해지하려면 어떻게 하나요?",
+   "came_from": "tech",
+   "turn_handoffs": 3,
+   "rules": false
+  },
+  {
+   "desk": "retention",
+   "message": "약정이 끝났는데 해지하려면 어떻게 하나요?",
+   "came_from": "retention",
+   "turn_handoffs": 0,
+   "rules": true
+  },
+  {
+   "desk": "retention",
+   "message": "약정이 끝났는데 해지하려면 어떻게 하나요?",
+   "came_from": "retention",
+   "turn_handoffs": 0,
+   "rules": false
+  },
+  {
+   "desk": "retention",
+   "message": "약정이 끝났는데 해지하려면 어떻게 하나요?",
+   "came_from": "retention",
+   "turn_handoffs": 3,
+   "rules": true
+  },
+  {
+   "desk": "retention",
+   "message": "약정이 끝났는데 해지하려면 어떻게 하나요?",
+   "came_from": "retention",
+   "turn_handoffs": 3,
+   "rules": false
+  },
+  {
+   "desk": "triage",
+   "message": "요금도 이상하고 인터넷도 안 돼요",
+   "came_from": "",
+   "turn_handoffs": 0,
+   "rules": true
+  },
+  {
+   "desk": "triage",
+   "message": "요금도 이상하고 인터넷도 안 돼요",
+   "came_from": "",
+   "turn_handoffs": 0,
+   "rules": false
+  },
+  {
+   "desk": "triage",
+   "message": "요금도 이상하고 인터넷도 안 돼요",
+   "came_from": "",
+   "turn_handoffs": 3,
+   "rules": true
+  },
+  {
+   "desk": "triage",
+   "message": "요금도 이상하고 인터넷도 안 돼요",
+   "came_from": "",
+   "turn_handoffs": 3,
+   "rules": false
+  },
+  {
+   "desk": "triage",
+   "message": "요금도 이상하고 인터넷도 안 돼요",
+   "came_from": "billing",
+   "turn_handoffs": 0,
+   "rules": true
+  },
+  {
+   "desk": "triage",
+   "message": "요금도 이상하고 인터넷도 안 돼요",
+   "came_from": "billing",
+   "turn_handoffs": 0,
+   "rules": false
+  },
+  {
+   "desk": "triage",
+   "message": "요금도 이상하고 인터넷도 안 돼요",
+   "came_from": "billing",
+   "turn_handoffs": 3,
+   "rules": true
+  },
+  {
+   "desk": "triage",
+   "message": "요금도 이상하고 인터넷도 안 돼요",
+   "came_from": "billing",
+   "turn_handoffs": 3,
+   "rules": false
+  },
+  {
+   "desk": "triage",
+   "message": "요금도 이상하고 인터넷도 안 돼요",
+   "came_from": "tech",
+   "turn_handoffs": 0,
+   "rules": true
+  },
+  {
+   "desk": "triage",
+   "message": "요금도 이상하고 인터넷도 안 돼요",
+   "came_from": "tech",
+   "turn_handoffs": 0,
+   "rules": false
+  },
+  {
+   "desk": "triage",
+   "message": "요금도 이상하고 인터넷도 안 돼요",
+   "came_from": "tech",
+   "turn_handoffs": 3,
+   "rules": true
+  },
+  {
+   "desk": "triage",
+   "message": "요금도 이상하고 인터넷도 안 돼요",
+   "came_from": "tech",
+   "turn_handoffs": 3,
+   "rules": false
+  },
+  {
+   "desk": "triage",
+   "message": "요금도 이상하고 인터넷도 안 돼요",
+   "came_from": "retention",
+   "turn_handoffs": 0,
+   "rules": true
+  },
+  {
+   "desk": "triage",
+   "message": "요금도 이상하고 인터넷도 안 돼요",
+   "came_from": "retention",
+   "turn_handoffs": 0,
+   "rules": false
+  },
+  {
+   "desk": "triage",
+   "message": "요금도 이상하고 인터넷도 안 돼요",
+   "came_from": "retention",
+   "turn_handoffs": 3,
+   "rules": true
+  },
+  {
+   "desk": "triage",
+   "message": "요금도 이상하고 인터넷도 안 돼요",
+   "came_from": "retention",
+   "turn_handoffs": 3,
+   "rules": false
+  },
+  {
+   "desk": "billing",
+   "message": "요금도 이상하고 인터넷도 안 돼요",
+   "came_from": "",
+   "turn_handoffs": 0,
+   "rules": true
+  },
+  {
+   "desk": "billing",
+   "message": "요금도 이상하고 인터넷도 안 돼요",
+   "came_from": "",
+   "turn_handoffs": 0,
+   "rules": false
+  },
+  {
+   "desk": "billing",
+   "message": "요금도 이상하고 인터넷도 안 돼요",
+   "came_from": "",
+   "turn_handoffs": 3,
+   "rules": true
+  },
+  {
+   "desk": "billing",
+   "message": "요금도 이상하고 인터넷도 안 돼요",
+   "came_from": "",
+   "turn_handoffs": 3,
+   "rules": false
+  },
+  {
+   "desk": "billing",
+   "message": "요금도 이상하고 인터넷도 안 돼요",
+   "came_from": "billing",
+   "turn_handoffs": 0,
+   "rules": true
+  },
+  {
+   "desk": "billing",
+   "message": "요금도 이상하고 인터넷도 안 돼요",
+   "came_from": "billing",
+   "turn_handoffs": 0,
+   "rules": false
+  },
+  {
+   "desk": "billing",
+   "message": "요금도 이상하고 인터넷도 안 돼요",
+   "came_from": "billing",
+   "turn_handoffs": 3,
+   "rules": true
+  },
+  {
+   "desk": "billing",
+   "message": "요금도 이상하고 인터넷도 안 돼요",
+   "came_from": "billing",
+   "turn_handoffs": 3,
+   "rules": false
+  },
+  {
+   "desk": "billing",
+   "message": "요금도 이상하고 인터넷도 안 돼요",
+   "came_from": "tech",
+   "turn_handoffs": 0,
+   "rules": true
+  },
+  {
+   "desk": "billing",
+   "message": "요금도 이상하고 인터넷도 안 돼요",
+   "came_from": "tech",
+   "turn_handoffs": 0,
+   "rules": false
+  },
+  {
+   "desk": "billing",
+   "message": "요금도 이상하고 인터넷도 안 돼요",
+   "came_from": "tech",
+   "turn_handoffs": 3,
+   "rules": true
+  },
+  {
+   "desk": "billing",
+   "message": "요금도 이상하고 인터넷도 안 돼요",
+   "came_from": "tech",
+   "turn_handoffs": 3,
+   "rules": false
+  },
+  {
+   "desk": "billing",
+   "message": "요금도 이상하고 인터넷도 안 돼요",
+   "came_from": "retention",
+   "turn_handoffs": 0,
+   "rules": true
+  },
+  {
+   "desk": "billing",
+   "message": "요금도 이상하고 인터넷도 안 돼요",
+   "came_from": "retention",
+   "turn_handoffs": 0,
+   "rules": false
+  },
+  {
+   "desk": "billing",
+   "message": "요금도 이상하고 인터넷도 안 돼요",
+   "came_from": "retention",
+   "turn_handoffs": 3,
+   "rules": true
+  },
+  {
+   "desk": "billing",
+   "message": "요금도 이상하고 인터넷도 안 돼요",
+   "came_from": "retention",
+   "turn_handoffs": 3,
+   "rules": false
+  },
+  {
+   "desk": "tech",
+   "message": "요금도 이상하고 인터넷도 안 돼요",
+   "came_from": "",
+   "turn_handoffs": 0,
+   "rules": true
+  },
+  {
+   "desk": "tech",
+   "message": "요금도 이상하고 인터넷도 안 돼요",
+   "came_from": "",
+   "turn_handoffs": 0,
+   "rules": false
+  },
+  {
+   "desk": "tech",
+   "message": "요금도 이상하고 인터넷도 안 돼요",
+   "came_from": "",
+   "turn_handoffs": 3,
+   "rules": true
+  },
+  {
+   "desk": "tech",
+   "message": "요금도 이상하고 인터넷도 안 돼요",
+   "came_from": "",
+   "turn_handoffs": 3,
+   "rules": false
+  },
+  {
+   "desk": "tech",
+   "message": "요금도 이상하고 인터넷도 안 돼요",
+   "came_from": "billing",
+   "turn_handoffs": 0,
+   "rules": true
+  },
+  {
+   "desk": "tech",
+   "message": "요금도 이상하고 인터넷도 안 돼요",
+   "came_from": "billing",
+   "turn_handoffs": 0,
+   "rules": false
+  },
+  {
+   "desk": "tech",
+   "message": "요금도 이상하고 인터넷도 안 돼요",
+   "came_from": "billing",
+   "turn_handoffs": 3,
+   "rules": true
+  },
+  {
+   "desk": "tech",
+   "message": "요금도 이상하고 인터넷도 안 돼요",
+   "came_from": "billing",
+   "turn_handoffs": 3,
+   "rules": false
+  },
+  {
+   "desk": "tech",
+   "message": "요금도 이상하고 인터넷도 안 돼요",
+   "came_from": "tech",
+   "turn_handoffs": 0,
+   "rules": true
+  },
+  {
+   "desk": "tech",
+   "message": "요금도 이상하고 인터넷도 안 돼요",
+   "came_from": "tech",
+   "turn_handoffs": 0,
+   "rules": false
+  },
+  {
+   "desk": "tech",
+   "message": "요금도 이상하고 인터넷도 안 돼요",
+   "came_from": "tech",
+   "turn_handoffs": 3,
+   "rules": true
+  },
+  {
+   "desk": "tech",
+   "message": "요금도 이상하고 인터넷도 안 돼요",
+   "came_from": "tech",
+   "turn_handoffs": 3,
+   "rules": false
+  },
+  {
+   "desk": "tech",
+   "message": "요금도 이상하고 인터넷도 안 돼요",
+   "came_from": "retention",
+   "turn_handoffs": 0,
+   "rules": true
+  },
+  {
+   "desk": "tech",
+   "message": "요금도 이상하고 인터넷도 안 돼요",
+   "came_from": "retention",
+   "turn_handoffs": 0,
+   "rules": false
+  },
+  {
+   "desk": "tech",
+   "message": "요금도 이상하고 인터넷도 안 돼요",
+   "came_from": "retention",
+   "turn_handoffs": 3,
+   "rules": true
+  },
+  {
+   "desk": "tech",
+   "message": "요금도 이상하고 인터넷도 안 돼요",
+   "came_from": "retention",
+   "turn_handoffs": 3,
+   "rules": false
+  },
+  {
+   "desk": "retention",
+   "message": "요금도 이상하고 인터넷도 안 돼요",
+   "came_from": "",
+   "turn_handoffs": 0,
+   "rules": true
+  },
+  {
+   "desk": "retention",
+   "message": "요금도 이상하고 인터넷도 안 돼요",
+   "came_from": "",
+   "turn_handoffs": 0,
+   "rules": false
+  },
+  {
+   "desk": "retention",
+   "message": "요금도 이상하고 인터넷도 안 돼요",
+   "came_from": "",
+   "turn_handoffs": 3,
+   "rules": true
+  },
+  {
+   "desk": "retention",
+   "message": "요금도 이상하고 인터넷도 안 돼요",
+   "came_from": "",
+   "turn_handoffs": 3,
+   "rules": false
+  },
+  {
+   "desk": "retention",
+   "message": "요금도 이상하고 인터넷도 안 돼요",
+   "came_from": "billing",
+   "turn_handoffs": 0,
+   "rules": true
+  },
+  {
+   "desk": "retention",
+   "message": "요금도 이상하고 인터넷도 안 돼요",
+   "came_from": "billing",
+   "turn_handoffs": 0,
+   "rules": false
+  },
+  {
+   "desk": "retention",
+   "message": "요금도 이상하고 인터넷도 안 돼요",
+   "came_from": "billing",
+   "turn_handoffs": 3,
+   "rules": true
+  },
+  {
+   "desk": "retention",
+   "message": "요금도 이상하고 인터넷도 안 돼요",
+   "came_from": "billing",
+   "turn_handoffs": 3,
+   "rules": false
+  },
+  {
+   "desk": "retention",
+   "message": "요금도 이상하고 인터넷도 안 돼요",
+   "came_from": "tech",
+   "turn_handoffs": 0,
+   "rules": true
+  },
+  {
+   "desk": "retention",
+   "message": "요금도 이상하고 인터넷도 안 돼요",
+   "came_from": "tech",
+   "turn_handoffs": 0,
+   "rules": false
+  },
+  {
+   "desk": "retention",
+   "message": "요금도 이상하고 인터넷도 안 돼요",
+   "came_from": "tech",
+   "turn_handoffs": 3,
+   "rules": true
+  },
+  {
+   "desk": "retention",
+   "message": "요금도 이상하고 인터넷도 안 돼요",
+   "came_from": "tech",
+   "turn_handoffs": 3,
+   "rules": false
+  },
+  {
+   "desk": "retention",
+   "message": "요금도 이상하고 인터넷도 안 돼요",
+   "came_from": "retention",
+   "turn_handoffs": 0,
+   "rules": true
+  },
+  {
+   "desk": "retention",
+   "message": "요금도 이상하고 인터넷도 안 돼요",
+   "came_from": "retention",
+   "turn_handoffs": 0,
+   "rules": false
+  },
+  {
+   "desk": "retention",
+   "message": "요금도 이상하고 인터넷도 안 돼요",
+   "came_from": "retention",
+   "turn_handoffs": 3,
+   "rules": true
+  },
+  {
+   "desk": "retention",
+   "message": "요금도 이상하고 인터넷도 안 돼요",
+   "came_from": "retention",
+   "turn_handoffs": 3,
+   "rules": false
+  },
+  {
+   "desk": "triage",
+   "message": "저기요, 좀 답답해서 전화드렸어요",
+   "came_from": "",
+   "turn_handoffs": 0,
+   "rules": true
+  },
+  {
+   "desk": "triage",
+   "message": "저기요, 좀 답답해서 전화드렸어요",
+   "came_from": "",
+   "turn_handoffs": 0,
+   "rules": false
+  },
+  {
+   "desk": "triage",
+   "message": "저기요, 좀 답답해서 전화드렸어요",
+   "came_from": "",
+   "turn_handoffs": 3,
+   "rules": true
+  },
+  {
+   "desk": "triage",
+   "message": "저기요, 좀 답답해서 전화드렸어요",
+   "came_from": "",
+   "turn_handoffs": 3,
+   "rules": false
+  },
+  {
+   "desk": "triage",
+   "message": "저기요, 좀 답답해서 전화드렸어요",
+   "came_from": "billing",
+   "turn_handoffs": 0,
+   "rules": true
+  },
+  {
+   "desk": "triage",
+   "message": "저기요, 좀 답답해서 전화드렸어요",
+   "came_from": "billing",
+   "turn_handoffs": 0,
+   "rules": false
+  },
+  {
+   "desk": "triage",
+   "message": "저기요, 좀 답답해서 전화드렸어요",
+   "came_from": "billing",
+   "turn_handoffs": 3,
+   "rules": true
+  },
+  {
+   "desk": "triage",
+   "message": "저기요, 좀 답답해서 전화드렸어요",
+   "came_from": "billing",
+   "turn_handoffs": 3,
+   "rules": false
+  },
+  {
+   "desk": "triage",
+   "message": "저기요, 좀 답답해서 전화드렸어요",
+   "came_from": "tech",
+   "turn_handoffs": 0,
+   "rules": true
+  },
+  {
+   "desk": "triage",
+   "message": "저기요, 좀 답답해서 전화드렸어요",
+   "came_from": "tech",
+   "turn_handoffs": 0,
+   "rules": false
+  },
+  {
+   "desk": "triage",
+   "message": "저기요, 좀 답답해서 전화드렸어요",
+   "came_from": "tech",
+   "turn_handoffs": 3,
+   "rules": true
+  },
+  {
+   "desk": "triage",
+   "message": "저기요, 좀 답답해서 전화드렸어요",
+   "came_from": "tech",
+   "turn_handoffs": 3,
+   "rules": false
+  },
+  {
+   "desk": "triage",
+   "message": "저기요, 좀 답답해서 전화드렸어요",
+   "came_from": "retention",
+   "turn_handoffs": 0,
+   "rules": true
+  },
+  {
+   "desk": "triage",
+   "message": "저기요, 좀 답답해서 전화드렸어요",
+   "came_from": "retention",
+   "turn_handoffs": 0,
+   "rules": false
+  },
+  {
+   "desk": "triage",
+   "message": "저기요, 좀 답답해서 전화드렸어요",
+   "came_from": "retention",
+   "turn_handoffs": 3,
+   "rules": true
+  },
+  {
+   "desk": "triage",
+   "message": "저기요, 좀 답답해서 전화드렸어요",
+   "came_from": "retention",
+   "turn_handoffs": 3,
+   "rules": false
+  },
+  {
+   "desk": "billing",
+   "message": "저기요, 좀 답답해서 전화드렸어요",
+   "came_from": "",
+   "turn_handoffs": 0,
+   "rules": true
+  },
+  {
+   "desk": "billing",
+   "message": "저기요, 좀 답답해서 전화드렸어요",
+   "came_from": "",
+   "turn_handoffs": 0,
+   "rules": false
+  },
+  {
+   "desk": "billing",
+   "message": "저기요, 좀 답답해서 전화드렸어요",
+   "came_from": "",
+   "turn_handoffs": 3,
+   "rules": true
+  },
+  {
+   "desk": "billing",
+   "message": "저기요, 좀 답답해서 전화드렸어요",
+   "came_from": "",
+   "turn_handoffs": 3,
+   "rules": false
+  },
+  {
+   "desk": "billing",
+   "message": "저기요, 좀 답답해서 전화드렸어요",
+   "came_from": "billing",
+   "turn_handoffs": 0,
+   "rules": true
+  },
+  {
+   "desk": "billing",
+   "message": "저기요, 좀 답답해서 전화드렸어요",
+   "came_from": "billing",
+   "turn_handoffs": 0,
+   "rules": false
+  },
+  {
+   "desk": "billing",
+   "message": "저기요, 좀 답답해서 전화드렸어요",
+   "came_from": "billing",
+   "turn_handoffs": 3,
+   "rules": true
+  },
+  {
+   "desk": "billing",
+   "message": "저기요, 좀 답답해서 전화드렸어요",
+   "came_from": "billing",
+   "turn_handoffs": 3,
+   "rules": false
+  },
+  {
+   "desk": "billing",
+   "message": "저기요, 좀 답답해서 전화드렸어요",
+   "came_from": "tech",
+   "turn_handoffs": 0,
+   "rules": true
+  },
+  {
+   "desk": "billing",
+   "message": "저기요, 좀 답답해서 전화드렸어요",
+   "came_from": "tech",
+   "turn_handoffs": 0,
+   "rules": false
+  },
+  {
+   "desk": "billing",
+   "message": "저기요, 좀 답답해서 전화드렸어요",
+   "came_from": "tech",
+   "turn_handoffs": 3,
+   "rules": true
+  },
+  {
+   "desk": "billing",
+   "message": "저기요, 좀 답답해서 전화드렸어요",
+   "came_from": "tech",
+   "turn_handoffs": 3,
+   "rules": false
+  },
+  {
+   "desk": "billing",
+   "message": "저기요, 좀 답답해서 전화드렸어요",
+   "came_from": "retention",
+   "turn_handoffs": 0,
+   "rules": true
+  },
+  {
+   "desk": "billing",
+   "message": "저기요, 좀 답답해서 전화드렸어요",
+   "came_from": "retention",
+   "turn_handoffs": 0,
+   "rules": false
+  },
+  {
+   "desk": "billing",
+   "message": "저기요, 좀 답답해서 전화드렸어요",
+   "came_from": "retention",
+   "turn_handoffs": 3,
+   "rules": true
+  },
+  {
+   "desk": "billing",
+   "message": "저기요, 좀 답답해서 전화드렸어요",
+   "came_from": "retention",
+   "turn_handoffs": 3,
+   "rules": false
+  },
+  {
+   "desk": "tech",
+   "message": "저기요, 좀 답답해서 전화드렸어요",
+   "came_from": "",
+   "turn_handoffs": 0,
+   "rules": true
+  },
+  {
+   "desk": "tech",
+   "message": "저기요, 좀 답답해서 전화드렸어요",
+   "came_from": "",
+   "turn_handoffs": 0,
+   "rules": false
+  },
+  {
+   "desk": "tech",
+   "message": "저기요, 좀 답답해서 전화드렸어요",
+   "came_from": "",
+   "turn_handoffs": 3,
+   "rules": true
+  },
+  {
+   "desk": "tech",
+   "message": "저기요, 좀 답답해서 전화드렸어요",
+   "came_from": "",
+   "turn_handoffs": 3,
+   "rules": false
+  },
+  {
+   "desk": "tech",
+   "message": "저기요, 좀 답답해서 전화드렸어요",
+   "came_from": "billing",
+   "turn_handoffs": 0,
+   "rules": true
+  },
+  {
+   "desk": "tech",
+   "message": "저기요, 좀 답답해서 전화드렸어요",
+   "came_from": "billing",
+   "turn_handoffs": 0,
+   "rules": false
+  },
+  {
+   "desk": "tech",
+   "message": "저기요, 좀 답답해서 전화드렸어요",
+   "came_from": "billing",
+   "turn_handoffs": 3,
+   "rules": true
+  },
+  {
+   "desk": "tech",
+   "message": "저기요, 좀 답답해서 전화드렸어요",
+   "came_from": "billing",
+   "turn_handoffs": 3,
+   "rules": false
+  },
+  {
+   "desk": "tech",
+   "message": "저기요, 좀 답답해서 전화드렸어요",
+   "came_from": "tech",
+   "turn_handoffs": 0,
+   "rules": true
+  },
+  {
+   "desk": "tech",
+   "message": "저기요, 좀 답답해서 전화드렸어요",
+   "came_from": "tech",
+   "turn_handoffs": 0,
+   "rules": false
+  },
+  {
+   "desk": "tech",
+   "message": "저기요, 좀 답답해서 전화드렸어요",
+   "came_from": "tech",
+   "turn_handoffs": 3,
+   "rules": true
+  },
+  {
+   "desk": "tech",
+   "message": "저기요, 좀 답답해서 전화드렸어요",
+   "came_from": "tech",
+   "turn_handoffs": 3,
+   "rules": false
+  },
+  {
+   "desk": "tech",
+   "message": "저기요, 좀 답답해서 전화드렸어요",
+   "came_from": "retention",
+   "turn_handoffs": 0,
+   "rules": true
+  },
+  {
+   "desk": "tech",
+   "message": "저기요, 좀 답답해서 전화드렸어요",
+   "came_from": "retention",
+   "turn_handoffs": 0,
+   "rules": false
+  },
+  {
+   "desk": "tech",
+   "message": "저기요, 좀 답답해서 전화드렸어요",
+   "came_from": "retention",
+   "turn_handoffs": 3,
+   "rules": true
+  },
+  {
+   "desk": "tech",
+   "message": "저기요, 좀 답답해서 전화드렸어요",
+   "came_from": "retention",
+   "turn_handoffs": 3,
+   "rules": false
+  },
+  {
+   "desk": "retention",
+   "message": "저기요, 좀 답답해서 전화드렸어요",
+   "came_from": "",
+   "turn_handoffs": 0,
+   "rules": true
+  },
+  {
+   "desk": "retention",
+   "message": "저기요, 좀 답답해서 전화드렸어요",
+   "came_from": "",
+   "turn_handoffs": 0,
+   "rules": false
+  },
+  {
+   "desk": "retention",
+   "message": "저기요, 좀 답답해서 전화드렸어요",
+   "came_from": "",
+   "turn_handoffs": 3,
+   "rules": true
+  },
+  {
+   "desk": "retention",
+   "message": "저기요, 좀 답답해서 전화드렸어요",
+   "came_from": "",
+   "turn_handoffs": 3,
+   "rules": false
+  },
+  {
+   "desk": "retention",
+   "message": "저기요, 좀 답답해서 전화드렸어요",
+   "came_from": "billing",
+   "turn_handoffs": 0,
+   "rules": true
+  },
+  {
+   "desk": "retention",
+   "message": "저기요, 좀 답답해서 전화드렸어요",
+   "came_from": "billing",
+   "turn_handoffs": 0,
+   "rules": false
+  },
+  {
+   "desk": "retention",
+   "message": "저기요, 좀 답답해서 전화드렸어요",
+   "came_from": "billing",
+   "turn_handoffs": 3,
+   "rules": true
+  },
+  {
+   "desk": "retention",
+   "message": "저기요, 좀 답답해서 전화드렸어요",
+   "came_from": "billing",
+   "turn_handoffs": 3,
+   "rules": false
+  },
+  {
+   "desk": "retention",
+   "message": "저기요, 좀 답답해서 전화드렸어요",
+   "came_from": "tech",
+   "turn_handoffs": 0,
+   "rules": true
+  },
+  {
+   "desk": "retention",
+   "message": "저기요, 좀 답답해서 전화드렸어요",
+   "came_from": "tech",
+   "turn_handoffs": 0,
+   "rules": false
+  },
+  {
+   "desk": "retention",
+   "message": "저기요, 좀 답답해서 전화드렸어요",
+   "came_from": "tech",
+   "turn_handoffs": 3,
+   "rules": true
+  },
+  {
+   "desk": "retention",
+   "message": "저기요, 좀 답답해서 전화드렸어요",
+   "came_from": "tech",
+   "turn_handoffs": 3,
+   "rules": false
+  },
+  {
+   "desk": "retention",
+   "message": "저기요, 좀 답답해서 전화드렸어요",
+   "came_from": "retention",
+   "turn_handoffs": 0,
+   "rules": true
+  },
+  {
+   "desk": "retention",
+   "message": "저기요, 좀 답답해서 전화드렸어요",
+   "came_from": "retention",
+   "turn_handoffs": 0,
+   "rules": false
+  },
+  {
+   "desk": "retention",
+   "message": "저기요, 좀 답답해서 전화드렸어요",
+   "came_from": "retention",
+   "turn_handoffs": 3,
+   "rules": true
+  },
+  {
+   "desk": "retention",
+   "message": "저기요, 좀 답답해서 전화드렸어요",
+   "came_from": "retention",
+   "turn_handoffs": 3,
+   "rules": false
+  },
+  {
+   "desk": "triage",
+   "message": "해지하면 위약금이 얼마인지랑 요금도 알려주세요",
+   "came_from": "",
+   "turn_handoffs": 0,
+   "rules": true
+  },
+  {
+   "desk": "triage",
+   "message": "해지하면 위약금이 얼마인지랑 요금도 알려주세요",
+   "came_from": "",
+   "turn_handoffs": 0,
+   "rules": false
+  },
+  {
+   "desk": "triage",
+   "message": "해지하면 위약금이 얼마인지랑 요금도 알려주세요",
+   "came_from": "",
+   "turn_handoffs": 3,
+   "rules": true
+  },
+  {
+   "desk": "triage",
+   "message": "해지하면 위약금이 얼마인지랑 요금도 알려주세요",
+   "came_from": "",
+   "turn_handoffs": 3,
+   "rules": false
+  },
+  {
+   "desk": "triage",
+   "message": "해지하면 위약금이 얼마인지랑 요금도 알려주세요",
+   "came_from": "billing",
+   "turn_handoffs": 0,
+   "rules": true
+  },
+  {
+   "desk": "triage",
+   "message": "해지하면 위약금이 얼마인지랑 요금도 알려주세요",
+   "came_from": "billing",
+   "turn_handoffs": 0,
+   "rules": false
+  },
+  {
+   "desk": "triage",
+   "message": "해지하면 위약금이 얼마인지랑 요금도 알려주세요",
+   "came_from": "billing",
+   "turn_handoffs": 3,
+   "rules": true
+  },
+  {
+   "desk": "triage",
+   "message": "해지하면 위약금이 얼마인지랑 요금도 알려주세요",
+   "came_from": "billing",
+   "turn_handoffs": 3,
+   "rules": false
+  },
+  {
+   "desk": "triage",
+   "message": "해지하면 위약금이 얼마인지랑 요금도 알려주세요",
+   "came_from": "tech",
+   "turn_handoffs": 0,
+   "rules": true
+  },
+  {
+   "desk": "triage",
+   "message": "해지하면 위약금이 얼마인지랑 요금도 알려주세요",
+   "came_from": "tech",
+   "turn_handoffs": 0,
+   "rules": false
+  },
+  {
+   "desk": "triage",
+   "message": "해지하면 위약금이 얼마인지랑 요금도 알려주세요",
+   "came_from": "tech",
+   "turn_handoffs": 3,
+   "rules": true
+  },
+  {
+   "desk": "triage",
+   "message": "해지하면 위약금이 얼마인지랑 요금도 알려주세요",
+   "came_from": "tech",
+   "turn_handoffs": 3,
+   "rules": false
+  },
+  {
+   "desk": "triage",
+   "message": "해지하면 위약금이 얼마인지랑 요금도 알려주세요",
+   "came_from": "retention",
+   "turn_handoffs": 0,
+   "rules": true
+  },
+  {
+   "desk": "triage",
+   "message": "해지하면 위약금이 얼마인지랑 요금도 알려주세요",
+   "came_from": "retention",
+   "turn_handoffs": 0,
+   "rules": false
+  },
+  {
+   "desk": "triage",
+   "message": "해지하면 위약금이 얼마인지랑 요금도 알려주세요",
+   "came_from": "retention",
+   "turn_handoffs": 3,
+   "rules": true
+  },
+  {
+   "desk": "triage",
+   "message": "해지하면 위약금이 얼마인지랑 요금도 알려주세요",
+   "came_from": "retention",
+   "turn_handoffs": 3,
+   "rules": false
+  },
+  {
+   "desk": "billing",
+   "message": "해지하면 위약금이 얼마인지랑 요금도 알려주세요",
+   "came_from": "",
+   "turn_handoffs": 0,
+   "rules": true
+  },
+  {
+   "desk": "billing",
+   "message": "해지하면 위약금이 얼마인지랑 요금도 알려주세요",
+   "came_from": "",
+   "turn_handoffs": 0,
+   "rules": false
+  },
+  {
+   "desk": "billing",
+   "message": "해지하면 위약금이 얼마인지랑 요금도 알려주세요",
+   "came_from": "",
+   "turn_handoffs": 3,
+   "rules": true
+  },
+  {
+   "desk": "billing",
+   "message": "해지하면 위약금이 얼마인지랑 요금도 알려주세요",
+   "came_from": "",
+   "turn_handoffs": 3,
+   "rules": false
+  },
+  {
+   "desk": "billing",
+   "message": "해지하면 위약금이 얼마인지랑 요금도 알려주세요",
+   "came_from": "billing",
+   "turn_handoffs": 0,
+   "rules": true
+  },
+  {
+   "desk": "billing",
+   "message": "해지하면 위약금이 얼마인지랑 요금도 알려주세요",
+   "came_from": "billing",
+   "turn_handoffs": 0,
+   "rules": false
+  },
+  {
+   "desk": "billing",
+   "message": "해지하면 위약금이 얼마인지랑 요금도 알려주세요",
+   "came_from": "billing",
+   "turn_handoffs": 3,
+   "rules": true
+  },
+  {
+   "desk": "billing",
+   "message": "해지하면 위약금이 얼마인지랑 요금도 알려주세요",
+   "came_from": "billing",
+   "turn_handoffs": 3,
+   "rules": false
+  },
+  {
+   "desk": "billing",
+   "message": "해지하면 위약금이 얼마인지랑 요금도 알려주세요",
+   "came_from": "tech",
+   "turn_handoffs": 0,
+   "rules": true
+  },
+  {
+   "desk": "billing",
+   "message": "해지하면 위약금이 얼마인지랑 요금도 알려주세요",
+   "came_from": "tech",
+   "turn_handoffs": 0,
+   "rules": false
+  },
+  {
+   "desk": "billing",
+   "message": "해지하면 위약금이 얼마인지랑 요금도 알려주세요",
+   "came_from": "tech",
+   "turn_handoffs": 3,
+   "rules": true
+  },
+  {
+   "desk": "billing",
+   "message": "해지하면 위약금이 얼마인지랑 요금도 알려주세요",
+   "came_from": "tech",
+   "turn_handoffs": 3,
+   "rules": false
+  },
+  {
+   "desk": "billing",
+   "message": "해지하면 위약금이 얼마인지랑 요금도 알려주세요",
+   "came_from": "retention",
+   "turn_handoffs": 0,
+   "rules": true
+  },
+  {
+   "desk": "billing",
+   "message": "해지하면 위약금이 얼마인지랑 요금도 알려주세요",
+   "came_from": "retention",
+   "turn_handoffs": 0,
+   "rules": false
+  },
+  {
+   "desk": "billing",
+   "message": "해지하면 위약금이 얼마인지랑 요금도 알려주세요",
+   "came_from": "retention",
+   "turn_handoffs": 3,
+   "rules": true
+  },
+  {
+   "desk": "billing",
+   "message": "해지하면 위약금이 얼마인지랑 요금도 알려주세요",
+   "came_from": "retention",
+   "turn_handoffs": 3,
+   "rules": false
+  },
+  {
+   "desk": "tech",
+   "message": "해지하면 위약금이 얼마인지랑 요금도 알려주세요",
+   "came_from": "",
+   "turn_handoffs": 0,
+   "rules": true
+  },
+  {
+   "desk": "tech",
+   "message": "해지하면 위약금이 얼마인지랑 요금도 알려주세요",
+   "came_from": "",
+   "turn_handoffs": 0,
+   "rules": false
+  },
+  {
+   "desk": "tech",
+   "message": "해지하면 위약금이 얼마인지랑 요금도 알려주세요",
+   "came_from": "",
+   "turn_handoffs": 3,
+   "rules": true
+  },
+  {
+   "desk": "tech",
+   "message": "해지하면 위약금이 얼마인지랑 요금도 알려주세요",
+   "came_from": "",
+   "turn_handoffs": 3,
+   "rules": false
+  },
+  {
+   "desk": "tech",
+   "message": "해지하면 위약금이 얼마인지랑 요금도 알려주세요",
+   "came_from": "billing",
+   "turn_handoffs": 0,
+   "rules": true
+  },
+  {
+   "desk": "tech",
+   "message": "해지하면 위약금이 얼마인지랑 요금도 알려주세요",
+   "came_from": "billing",
+   "turn_handoffs": 0,
+   "rules": false
+  },
+  {
+   "desk": "tech",
+   "message": "해지하면 위약금이 얼마인지랑 요금도 알려주세요",
+   "came_from": "billing",
+   "turn_handoffs": 3,
+   "rules": true
+  },
+  {
+   "desk": "tech",
+   "message": "해지하면 위약금이 얼마인지랑 요금도 알려주세요",
+   "came_from": "billing",
+   "turn_handoffs": 3,
+   "rules": false
+  },
+  {
+   "desk": "tech",
+   "message": "해지하면 위약금이 얼마인지랑 요금도 알려주세요",
+   "came_from": "tech",
+   "turn_handoffs": 0,
+   "rules": true
+  },
+  {
+   "desk": "tech",
+   "message": "해지하면 위약금이 얼마인지랑 요금도 알려주세요",
+   "came_from": "tech",
+   "turn_handoffs": 0,
+   "rules": false
+  },
+  {
+   "desk": "tech",
+   "message": "해지하면 위약금이 얼마인지랑 요금도 알려주세요",
+   "came_from": "tech",
+   "turn_handoffs": 3,
+   "rules": true
+  },
+  {
+   "desk": "tech",
+   "message": "해지하면 위약금이 얼마인지랑 요금도 알려주세요",
+   "came_from": "tech",
+   "turn_handoffs": 3,
+   "rules": false
+  },
+  {
+   "desk": "tech",
+   "message": "해지하면 위약금이 얼마인지랑 요금도 알려주세요",
+   "came_from": "retention",
+   "turn_handoffs": 0,
+   "rules": true
+  },
+  {
+   "desk": "tech",
+   "message": "해지하면 위약금이 얼마인지랑 요금도 알려주세요",
+   "came_from": "retention",
+   "turn_handoffs": 0,
+   "rules": false
+  },
+  {
+   "desk": "tech",
+   "message": "해지하면 위약금이 얼마인지랑 요금도 알려주세요",
+   "came_from": "retention",
+   "turn_handoffs": 3,
+   "rules": true
+  },
+  {
+   "desk": "tech",
+   "message": "해지하면 위약금이 얼마인지랑 요금도 알려주세요",
+   "came_from": "retention",
+   "turn_handoffs": 3,
+   "rules": false
+  },
+  {
+   "desk": "retention",
+   "message": "해지하면 위약금이 얼마인지랑 요금도 알려주세요",
+   "came_from": "",
+   "turn_handoffs": 0,
+   "rules": true
+  },
+  {
+   "desk": "retention",
+   "message": "해지하면 위약금이 얼마인지랑 요금도 알려주세요",
+   "came_from": "",
+   "turn_handoffs": 0,
+   "rules": false
+  },
+  {
+   "desk": "retention",
+   "message": "해지하면 위약금이 얼마인지랑 요금도 알려주세요",
+   "came_from": "",
+   "turn_handoffs": 3,
+   "rules": true
+  },
+  {
+   "desk": "retention",
+   "message": "해지하면 위약금이 얼마인지랑 요금도 알려주세요",
+   "came_from": "",
+   "turn_handoffs": 3,
+   "rules": false
+  },
+  {
+   "desk": "retention",
+   "message": "해지하면 위약금이 얼마인지랑 요금도 알려주세요",
+   "came_from": "billing",
+   "turn_handoffs": 0,
+   "rules": true
+  },
+  {
+   "desk": "retention",
+   "message": "해지하면 위약금이 얼마인지랑 요금도 알려주세요",
+   "came_from": "billing",
+   "turn_handoffs": 0,
+   "rules": false
+  },
+  {
+   "desk": "retention",
+   "message": "해지하면 위약금이 얼마인지랑 요금도 알려주세요",
+   "came_from": "billing",
+   "turn_handoffs": 3,
+   "rules": true
+  },
+  {
+   "desk": "retention",
+   "message": "해지하면 위약금이 얼마인지랑 요금도 알려주세요",
+   "came_from": "billing",
+   "turn_handoffs": 3,
+   "rules": false
+  },
+  {
+   "desk": "retention",
+   "message": "해지하면 위약금이 얼마인지랑 요금도 알려주세요",
+   "came_from": "tech",
+   "turn_handoffs": 0,
+   "rules": true
+  },
+  {
+   "desk": "retention",
+   "message": "해지하면 위약금이 얼마인지랑 요금도 알려주세요",
+   "came_from": "tech",
+   "turn_handoffs": 0,
+   "rules": false
+  },
+  {
+   "desk": "retention",
+   "message": "해지하면 위약금이 얼마인지랑 요금도 알려주세요",
+   "came_from": "tech",
+   "turn_handoffs": 3,
+   "rules": true
+  },
+  {
+   "desk": "retention",
+   "message": "해지하면 위약금이 얼마인지랑 요금도 알려주세요",
+   "came_from": "tech",
+   "turn_handoffs": 3,
+   "rules": false
+  },
+  {
+   "desk": "retention",
+   "message": "해지하면 위약금이 얼마인지랑 요금도 알려주세요",
+   "came_from": "retention",
+   "turn_handoffs": 0,
+   "rules": true
+  },
+  {
+   "desk": "retention",
+   "message": "해지하면 위약금이 얼마인지랑 요금도 알려주세요",
+   "came_from": "retention",
+   "turn_handoffs": 0,
+   "rules": false
+  },
+  {
+   "desk": "retention",
+   "message": "해지하면 위약금이 얼마인지랑 요금도 알려주세요",
+   "came_from": "retention",
+   "turn_handoffs": 3,
+   "rules": true
+  },
+  {
+   "desk": "retention",
+   "message": "해지하면 위약금이 얼마인지랑 요금도 알려주세요",
+   "came_from": "retention",
+   "turn_handoffs": 3,
+   "rules": false
+  }
+ ],
+ "cost": [
+  {
+   "difficulties": [
+    "easy",
+    "easy",
+    "easy"
+   ],
+   "prompt_chars": 1200
+  },
+  {
+   "difficulties": [
+    "easy",
+    "easy",
+    "easy"
+   ],
+   "prompt_chars": 2400
+  },
+  {
+   "difficulties": [
+    "easy",
+    "easy",
+    "easy"
+   ],
+   "prompt_chars": 3600
+  },
+  {
+   "difficulties": [
+    "easy",
+    "easy",
+    "easy"
+   ],
+   "prompt_chars": 5000
+  },
+  {
+   "difficulties": [
+    "hard",
+    "easy",
+    "easy"
+   ],
+   "prompt_chars": 1200
+  },
+  {
+   "difficulties": [
+    "hard",
+    "easy",
+    "easy"
+   ],
+   "prompt_chars": 2400
+  },
+  {
+   "difficulties": [
+    "hard",
+    "easy",
+    "easy"
+   ],
+   "prompt_chars": 3600
+  },
+  {
+   "difficulties": [
+    "hard",
+    "easy",
+    "easy"
+   ],
+   "prompt_chars": 5000
+  },
+  {
+   "difficulties": [
+    "hard",
+    "hard",
+    "easy"
+   ],
+   "prompt_chars": 1200
+  },
+  {
+   "difficulties": [
+    "hard",
+    "hard",
+    "easy"
+   ],
+   "prompt_chars": 2400
+  },
+  {
+   "difficulties": [
+    "hard",
+    "hard",
+    "easy"
+   ],
+   "prompt_chars": 3600
+  },
+  {
+   "difficulties": [
+    "hard",
+    "hard",
+    "easy"
+   ],
+   "prompt_chars": 5000
+  },
+  {
+   "difficulties": [
+    "hard",
+    "hard",
+    "hard"
+   ],
+   "prompt_chars": 1200
+  },
+  {
+   "difficulties": [
+    "hard",
+    "hard",
+    "hard"
+   ],
+   "prompt_chars": 2400
+  },
+  {
+   "difficulties": [
+    "hard",
+    "hard",
+    "hard"
+   ],
+   "prompt_chars": 3600
+  },
+  {
+   "difficulties": [
+    "hard",
+    "hard",
+    "hard"
+   ],
+   "prompt_chars": 5000
+  }
+ ]
+}

@@ -5,6 +5,7 @@ presenter: CodeCompose
 date: "2026-08-14"
 order: 7
 transition: none
+toc_level: 3
 toc_open: false
 ---
 
@@ -122,7 +123,7 @@ flowchart LR
 
 <Slide>
 
-## 실험 설계
+### 실험 설계
 
 같은 질문 하나를 네 조건으로 돌립니다.
 
@@ -137,7 +138,7 @@ flowchart LR
 
 <Slide>
 
-## 1. 절제 실험
+### 1. 절제 실험
 ::sub[01_harness_onoff.py · 축제 질문 하나에 요소를 하나씩 끈다]
 
 - 실행
@@ -161,7 +162,7 @@ docker compose exec lab python examples/06_harness/01_harness_onoff.py
 
 <Slide>
 
-## 결과 읽기
+### 결과 읽기
 
 - 도구 이름·설명을 지우는 순간 선택이 틀렸습니다. `tool_0`은 날씨 자리입니다.
 - 이 과제에서는 그 요소가 성패를 갈랐습니다.
@@ -171,7 +172,7 @@ docker compose exec lab python examples/06_harness/01_harness_onoff.py
 
 <Slide class="center">
 
-## 잘 도는 에이전트와 헤매는 에이전트의 차이는
+### 잘 도는 에이전트와 헤매는 에이전트의 차이는
 
 ## 모델이 아니라 하네스에 있습니다
 
@@ -189,7 +190,7 @@ docker compose exec lab python examples/06_harness/01_harness_onoff.py
 
 <Slide>
 
-## 인젝션이란
+### 인젝션이란
 
 - 입력이나 **도구가 물어온 문서**에 지시를 심어,
   모델이 원래 지시를 어기게 만드는 공격입니다.
@@ -201,7 +202,7 @@ docker compose exec lab python examples/06_harness/01_harness_onoff.py
 
 <Slide>
 
-## 두 갈래
+### 두 갈래
 
 ```mermaid
 flowchart LR
@@ -216,7 +217,7 @@ flowchart LR
 
 <Slide>
 
-## 2. 직접 인젝션: 정면 공격
+### 2. 직접 인젝션: 정면 공격
 ::sub[02_injection_direct.py · 사용자 입력에 실린 공격 3종]
 
 - 실행
@@ -240,7 +241,7 @@ docker compose exec lab python examples/06_harness/02_injection_direct.py
 
 <Slide>
 
-## 결과 읽기: 이 방어는 확률적입니다
+### 결과 읽기: 이 방어는 확률적입니다
 
 - 이번 실측에서는 세 공격 모두 막혔습니다.
 - 그러나 이것은 **모델의 정렬(훈련)에 기댄 확률적 방어**입니다.
@@ -252,7 +253,7 @@ docker compose exec lab python examples/06_harness/02_injection_direct.py
 
 <Slide>
 
-## 3. 간접 인젝션: 공격자는 데이터 안에 있다
+### 3. 간접 인젝션: 공격자는 데이터 안에 있다
 ::sub[03_injection_indirect.py · 검색 도구가 물어온 웹 문서에 지시가 심겨 있다]
 
 - 실행
@@ -274,7 +275,7 @@ docker compose exec lab python examples/06_harness/03_injection_indirect.py
 
 <Slide>
 
-## 이번엔 무시했다, 그러나
+### 이번엔 무시했다, 그러나
 
 ```text
 === ③ 최종 답 ===
@@ -292,7 +293,7 @@ docker compose exec lab python examples/06_harness/03_injection_indirect.py
 
 <Slide class="center">
 
-## 인젝션의 핵심 위협 모델은
+### 인젝션의 핵심 위협 모델은
 
 ## 이 간접 경로입니다
 
@@ -302,7 +303,7 @@ docker compose exec lab python examples/06_harness/03_injection_indirect.py
 
 <Slide>
 
-## 4. 데이터 경계: 구조로 막는다
+### 4. 데이터 경계: 구조로 막는다
 ::sub[04_boundary_wrap.py · 같은 오염 문서를 경계 마커로 감싼다]
 
 - 코드
@@ -326,7 +327,7 @@ docker compose exec lab python examples/06_harness/04_boundary_wrap.py
 
 <Slide>
 
-## 양쪽 다 막았지만 성격이 다르다
+### 양쪽 다 막았지만 성격이 다르다
 
 ```text
 === 경계 없음 → ○ 방어 ===
@@ -344,7 +345,7 @@ docker compose exec lab python examples/06_harness/04_boundary_wrap.py
 
 <Slide>
 
-## 경계를 설계할 때 주의할 것
+### 경계를 설계할 때 주의할 것
 
 - **마커는 데이터에 나올 수 없는 문자열**이어야 합니다.
   공격자가 `<<<END_TOOL_RESULT>>>`를 문서에 심어 경계를 닫아 버릴 수 있습니다.
@@ -357,7 +358,7 @@ docker compose exec lab python examples/06_harness/04_boundary_wrap.py
 
 <Slide class="center">
 
-## 지시는 무시하되 사실은 쓴다
+### 지시는 무시하되 사실은 쓴다
 
 경계 쪽 답은 문서 내용(구로몬 시장 아침 방문)을 **데이터로는 잘 활용**했습니다.
 
@@ -376,7 +377,7 @@ v1.0 에이전트는 모든 도구 결과에 이 wrap을 자동 적용합니다.
 
 <Slide>
 
-## 5. 도구 권한: 위험한 도구엔 게이트
+### 5. 도구 권한: 위험한 도구엔 게이트
 ::sub[05_tool_permission.py · 키 없이 돈다]
 
 - 코드
@@ -409,7 +410,7 @@ docker compose exec lab python examples/06_harness/05_tool_permission.py
 
 <Slide class="center">
 
-## "결제 전에 꼭 물어봐"는 부탁이고
+### "결제 전에 꼭 물어봐"는 부탁이고
 
 ## 게이트는 물리 법칙입니다
 
@@ -421,7 +422,7 @@ Day 2 `booking-agent`의 interrupt가 이 게이트의 제품판입니다.
 
 <Slide>
 
-## 도구에 위험 등급을 붙인다
+### 도구에 위험 등급을 붙인다
 
 | 등급 | 예 | 처리 |
 | --- | --- | --- |
@@ -437,7 +438,7 @@ Day 2 `booking-agent`의 interrupt가 이 게이트의 제품판입니다.
 
 <Slide>
 
-## 6. 출력 필터: 마지막 관문의 정규식
+### 6. 출력 필터: 마지막 관문의 정규식
 ::sub[06_output_filter.py · 응답이 나가기 직전 비밀 패턴을 검사한다]
 
 - 실행
@@ -463,7 +464,7 @@ docker compose exec lab python examples/06_harness/06_output_filter.py
 
 <Slide>
 
-## 결과 읽기: 앞의 모든 방어가 뚫렸다고 가정한 선
+### 결과 읽기: 앞의 모든 방어가 뚫렸다고 가정한 선
 
 - 인젝션이 모델을 넘어뜨렸어도 **유출은 여기서 멈춥니다**.
 - 마지막 관문은 확률이 아니라 정규식, **결정적이어야 합니다**.
@@ -472,7 +473,7 @@ docker compose exec lab python examples/06_harness/06_output_filter.py
 
 <Slide>
 
-## 필터의 한계도 알고 씁니다
+### 필터의 한계도 알고 씁니다
 
 - **미탐**: 패턴에 없는 형태의 비밀은 못 잡습니다.
   그래서 필터는 마지막 겹이지 유일한 방어가 아닙니다.
@@ -484,7 +485,7 @@ docker compose exec lab python examples/06_harness/06_output_filter.py
 
 <Slide>
 
-## 7. 경로 감금: 파일 도구를 가둔다
+### 7. 경로 감금: 파일 도구를 가둔다
 ::sub[07_path_jail.py · 키 없이 돈다]
 
 - 코드
@@ -517,7 +518,7 @@ docker compose exec lab python examples/06_harness/07_path_jail.py
 
 <Slide class="center">
 
-## 두 줄의 결정적 코드가
+### 두 줄의 결정적 코드가
 
 ## 프롬프트 백 줄보다 셉니다
 
@@ -528,7 +529,7 @@ docker compose exec lab python examples/06_harness/07_path_jail.py
 
 <Slide>
 
-## 흔한 실수: 문자열로 검사하기
+### 흔한 실수: 문자열로 검사하기
 
 ```python
 if ".." in requested:        # 이걸로는 부족합니다
@@ -551,7 +552,7 @@ if ".." in requested:        # 이걸로는 부족합니다
 
 <Slide>
 
-## 8. 사전 추정: 실행 전에 상한을 계산한다
+### 8. 사전 추정: 실행 전에 상한을 계산한다
 ::sub[08_budget_estimate.py · 키 없이 돈다]
 
 - 실행
@@ -576,7 +577,7 @@ docker compose exec lab python examples/06_harness/08_budget_estimate.py
 
 <Slide>
 
-## 상한을 만드는 산수
+### 상한을 만드는 산수
 
 ```plaintext
 입력 누적 = Σ (스텝 k까지의 컨텍스트)     ← 5세션의 계단을 최악으로 가정
@@ -592,7 +593,7 @@ docker compose exec lab python examples/06_harness/08_budget_estimate.py
 
 <Slide>
 
-## 결과 읽기: 예측이 아니라 최악
+### 결과 읽기: 예측이 아니라 최악
 
 - 5세션 실측(7,400토큰)보다 훨씬 큰 숫자입니다.
 - 이것은 예측이 아니라 **"최악에 얼마까지 나가는가"** 입니다.
@@ -604,7 +605,7 @@ docker compose exec lab python examples/06_harness/08_budget_estimate.py
 
 <Slide>
 
-## 9. budget guard: 실행 중의 2단 임계
+### 9. budget guard: 실행 중의 2단 임계
 ::sub[09_budget_guard.py · 키 없이 도는 예제라 비용은 시뮬레이션]
 
 - 실행
@@ -629,7 +630,7 @@ docker compose exec lab python examples/06_harness/09_budget_guard.py
 
 <Slide>
 
-## 결과 읽기: 임계가 둘인 이유
+### 결과 읽기: 임계가 둘인 이유
 
 - **경고**는 사람이 개입할 기회입니다.
 - **중단**은 최후의 방어선입니다.
@@ -640,7 +641,7 @@ docker compose exec lab python examples/06_harness/09_budget_guard.py
 
 <Slide class="center">
 
-## 스텝 한도가 "루프의 보험"이라면
+### 스텝 한도가 "루프의 보험"이라면
 
 ## budget guard는 "지갑의 보험"입니다
 
@@ -648,7 +649,7 @@ docker compose exec lab python examples/06_harness/09_budget_guard.py
 
 <Slide>
 
-## 임계는 어떻게 정하나
+### 임계는 어떻게 정하나
 
 - **정상 실행 비용을 먼저 잽니다.** 이 랩은 풀런 1회에 $0.0026\~$0.0104
 - **경고 임계**: 정상값의 몇 배. 사람이 볼 기회를 만듭니다.
@@ -660,7 +661,7 @@ docker compose exec lab python examples/06_harness/09_budget_guard.py
 
 <Slide class="center">
 
-## 10. 직접 두드려 보기
+### 10. 직접 두드려 보기
 
 앞의 네 방어는 전부 **결정적 코드**입니다.
 
@@ -671,7 +672,7 @@ docker compose exec lab python examples/06_harness/09_budget_guard.py
 
 <Slide>
 
-## 게이트는 설득되지 않는다
+### 게이트는 설득되지 않는다
 
 <HarnessGates />
 
@@ -679,7 +680,7 @@ docker compose exec lab python examples/06_harness/09_budget_guard.py
 
 <Slide>
 
-## 읽는 것과 뚫어 보는 것은 다릅니다
+### 읽는 것과 뚫어 보는 것은 다릅니다
 
 - `plans/../../secret.txt`가 왜 막히는지는 **정규화 결과를 보면** 한 줄로 납득됩니다.
 - 중단 임계를 낮추면 루프가 **몇 스텝에서 죽는지**가 바로 보입니다.
@@ -700,7 +701,7 @@ docker compose exec lab python examples/06_harness/09_budget_guard.py
 
 <Slide>
 
-## 11. 한 줄이 한 이벤트
+### 11. 한 줄이 한 이벤트
 ::sub[10_trace_log.py · 모든 호출·도구 실행·가드 판정을 JSONL로]
 
 - 실행
@@ -723,7 +724,7 @@ docker compose exec lab python examples/06_harness/10_trace_log.py
 
 <Slide>
 
-## 결과 읽기: 기계가 다시 읽는 로그
+### 결과 읽기: 기계가 다시 읽는 로그
 
 사람이 읽는 print가 아니라 구조화 로그입니다.  
 이런 질문에 답할 수 있습니다.
@@ -738,7 +739,7 @@ docker compose exec lab python examples/06_harness/10_trace_log.py
 
 <Slide>
 
-## 트레이스에 남길 최소 필드
+### 트레이스에 남길 최소 필드
 
 - `seq`: 순서. 이벤트를 시간순으로 잇습니다.
 - `kind`: `llm_call` · `tool_call` · `guard` · `final`
@@ -760,7 +761,7 @@ docker compose exec lab python examples/06_harness/10_trace_log.py
 
 <Slide>
 
-## v1.0 코드 포인트: react.py의 결합부
+### v1.0 코드 포인트: react.py의 결합부
 
 ```python
 # 모든 observation이 경계를 지나고, 가드가 호출마다 판정한다
@@ -780,7 +781,7 @@ if guard:
 
 <Slide>
 
-## 코드에서 보는 곳
+### 코드에서 보는 곳
 
 - **경계는 마커와 규칙의 짝입니다**. `wrap`과 `BOUNDARY_RULES` 중 한쪽만
   바꾸면 방어가 무너지므로, 짝이 맞는지 자체가 유닛 테스트로 박제되어 있습니다.
@@ -791,7 +792,7 @@ if guard:
 
 <Slide>
 
-## 상한은 얼마로 잡았나
+### 상한은 얼마로 잡았나
 
 - 3세션의 수용 테스트에서 이 가드로 실측한 에이전트 풀런 비용이
   $0.0026\~$0.0104였습니다.
@@ -807,7 +808,7 @@ docker compose exec lab pytest        # 최종 테스트 33개 통과
 
 <Slide>
 
-## 완성된 에이전트의 전체 그림
+### 완성된 에이전트의 전체 그림
 
 ```mermaid
 flowchart TD
@@ -826,7 +827,7 @@ flowchart TD
 
 <Slide>
 
-## 하네스 체크리스트
+### 하네스 체크리스트
 ::sub[새 에이전트를 만들 때 이 순서로 점검합니다]
 
 - 도구 이름·설명이 충분한가 (01)
@@ -841,7 +842,7 @@ flowchart TD
 
 <Slide>
 
-## Day 2와 Day 3에서 다시 만납니다
+### Day 2와 Day 3에서 다시 만납니다
 
 - **권한 게이트** → Day 2 `booking-agent`의 interrupt
 - **생성과 검증의 분리** → Day 2 `food-rag-agent`의 검증자

@@ -1,0 +1,239 @@
+---
+/**
+ * 라우팅 기준 셋을 직접 돌려 보는 도구 (Day 3 · 3세션).
+ *
+ * 판정 로직은 `src/lib/day-03-rules.mjs`에 있고, support-agent의
+ * `_routing_plan`·`topics_in`을 규칙 그대로 옮긴 것이다. 파이썬 원본과 같은
+ * 입력 384건을 대조해 전부 일치한다 (`docs/day-03-rules-port.md`).
+ *
+ * 여기 없는 것: 이양을 실제로 할지 말지의 판단. 규칙은 **넘길 수 있는 곳을
+ * 좁힐 뿐**이고, 그중 무엇을 고를지는 모델이 정한다. 이 도구가 보여주는 것은
+ * 좁혀진 선택지까지다.
+ */
+const MESSAGES = [
+  '이번 달 요금이 왜 이렇게 많이 나왔나요?',
+  '인터넷이 어제부터 계속 끊깁니다',
+  '요금도 이상하고 인터넷도 안 돼요',
+  '저기요, 좀 답답해서 전화드렸어요',
+];
+
+const DESKS = [
+  { id: 'triage', label: '접수 상담원' },
+  { id: 'billing', label: '요금 담당' },
+  { id: 'tech', label: '기술지원 담당' },
+  { id: 'retention', label: '해지방어 담당' },
+];
+
+const CAME_FROM = [
+  { id: '', label: '없음 (처음 받았다)' },
+  { id: 'billing', label: '요금 담당이 넘겼다' },
+  { id: 'tech', label: '기술지원이 넘겼다' },
+  { id: 'retention', label: '해지방어가 넘겼다' },
+];
+---
+
+<div class="hrule" data-hrule>
+  <div class="hrule-head">
+    <strong>기준 셋이 선택지를 어떻게 좁히는지 보기</strong>
+    <span>
+      support-agent의 <code>_routing_plan</code>을 그대로 옮긴 것입니다. 규칙은
+      넘길 곳을 <strong>고르지 않고 좁힙니다</strong>. 좁혀진 목록 안에서 무엇을
+      고를지는 모델의 몫이고, 이 도구는 좁혀지는 데까지만 보여줍니다.
+    </span>
+  </div>
+
+  <div class="hrule-controls">
+    <div>
+      <label class="hrule-label" for="hrule-desk">지금 받은 담당</label>
+      <select class="hrule-select" id="hrule-desk" data-desk>
+        {DESKS.map((desk) => <option value={desk.id}>{desk.label}</option>)}
+      </select>
+    </div>
+    <div>
+      <label class="hrule-label" for="hrule-from">직전에 넘긴 곳</label>
+      <select class="hrule-select" id="hrule-from" data-from>
+        {CAME_FROM.map((from) => <option value={from.id}>{from.label}</option>)}
+      </select>
+    </div>
+  </div>
+
+  <label class="hrule-label" for="hrule-msg">고객이 방금 한 말</label>
+  <input class="hrule-input" id="hrule-msg" data-msg type="text" value={MESSAGES[0]} />
+
+  <div class="hrule-presets">
+    {MESSAGES.map((message) => (
+      <button type="button" data-preset={message}>{message}</button>
+    ))}
+  </div>
+
+  <label class="hrule-toggle">
+    <input type="checkbox" data-rules checked />
+    <span>라우팅 기준 (v0.3). 끄면 v0.2처럼 <strong>아무 데나</strong> 넘길 수 있습니다</span>
+  </label>
+
+  <div class="hrule-out">
+    <div class="hrule-topics" data-topics></div>
+    <div class="hrule-choices" data-choices></div>
+    <p class="hrule-note" data-note></p>
+  </div>
+</div>
+
+<script>
+  import { routingPlan, topicsIn, DESK_LABELS, HANDOFF_TARGETS }
+    from '../lib/day-03-rules.mjs';
+
+  const TOPIC_LABELS: Record<string, string> = {
+    billing: '요금', tech: '기술지원', retention: '해지',
+  };
+
+  const root = document.querySelector<HTMLElement>('[data-hrule]');
+  if (root) init(root);
+
+  function init(root: HTMLElement) {
+    const $ = <T extends HTMLElement>(s: string) => root.querySelector<T>(s)!;
+    const desk = $<HTMLSelectElement>('[data-desk]');
+    const from = $<HTMLSelectElement>('[data-from]');
+    const message = $<HTMLInputElement>('[data-msg]');
+    const rules = $<HTMLInputElement>('[data-rules]');
+    const topics = $<HTMLElement>('[data-topics]');
+    const choices = $<HTMLElement>('[data-choices]');
+    const note = $<HTMLParagraphElement>('[data-note]');
+    const esc = (s: string) =>
+      s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+    root.querySelectorAll<HTMLButtonElement>('[data-preset]').forEach((button) =>
+      button.addEventListener('click', () => {
+        message.value = button.dataset.preset ?? '';
+        render();
+      }));
+
+    [desk, from, rules].forEach((el) => el.addEventListener('change', render));
+    message.addEventListener('input', render);
+    render();
+
+    function render() {
+      const plan = routingPlan({
+        desk: desk.value, message: message.value,
+        cameFrom: from.value, rules: rules.checked,
+      });
+
+      const found = topicsIn(message.value);
+      topics.innerHTML = found.length
+        ? `문의 갈래 ${found.length}개 감지: ` +
+          found.map((t) => `<span class="hrule-topic">${TOPIC_LABELS[t]}</span>`).join(' ')
+        : '<span class="hrule-dim">문의 갈래를 낱말로 잡지 못했습니다</span>';
+
+      const targets = HANDOFF_TARGETS as Record<string, string>;
+      const deskLabels = DESK_LABELS as Record<string, string>;
+      const all = Object.keys(targets);
+      choices.innerHTML = all
+        .map((tool) => {
+          const target = targets[tool];
+          const open = plan.allowed.includes(tool);
+          const self = target === desk.value;
+          return `<div class="hrule-choice ${open ? 'is-open' : 'is-shut'}">
+            <span>${esc(deskLabels[target])}</span>
+            <em>${open ? '넘길 수 있다' : self ? '자기 자신' : '막혔다'}</em>
+          </div>`;
+        })
+        .join('') +
+        `<div class="hrule-choice ${plan.mustUseTool ? 'is-open' : 'is-shut'}">
+          <span>되묻기</span>
+          <em>${plan.mustUseTool ? '반드시 도구 호출' : '말로 답해도 된다'}</em>
+        </div>`;
+
+      const parts: string[] = [];
+      if (plan.note) parts.push(esc(plan.note));
+      if (plan.mustUseTool && plan.allowed.length === 0) {
+        parts.push('넘길 곳이 없으므로 <strong>되묻는 것 말고는 할 수 있는 일이 없습니다</strong>.');
+      } else if (plan.mustUseTool) {
+        parts.push('접수는 <code>tool_choice="required"</code>라 말로 얼버무릴 수 없습니다.');
+      }
+      if (!rules.checked) {
+        parts.push('기준을 껐습니다. 되돌리기도 막히지 않고, 섞인 문의도 그냥 넘어갑니다.');
+      }
+      note.innerHTML = parts.join(' ') || '규칙이 손댈 것이 없는 자리입니다.';
+    }
+  }
+</script>
+
+<style>
+  .hrule {
+    margin: 2rem 0;
+    padding: 1.1rem 1.1rem 0.9rem;
+    border: 1px solid var(--aas-border);
+    border-radius: 14px;
+    background: var(--aas-panel);
+    box-shadow: var(--aas-shadow);
+    font-family: var(--aas-sans);
+    --hr-open: #0ca30c;
+    --hr-shut: #d03b3b;
+  }
+
+  .hrule-head { display: flex; flex-direction: column; gap: 0.3rem; margin-bottom: 0.9rem; }
+  .hrule-head strong { font-size: 1rem; color: var(--aas-text); }
+  .hrule-head span { font-size: 0.85rem; line-height: 1.65; color: var(--aas-muted); }
+
+  .hrule-controls {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 0.7rem; margin-bottom: 0.8rem;
+  }
+
+  .hrule-label {
+    display: block; font-size: 0.78rem; color: var(--aas-muted);
+    margin-bottom: 0.35rem;
+  }
+  .hrule-select, .hrule-input {
+    display: block; width: 100%; box-sizing: border-box;
+    padding: 0.45rem 0.6rem; border-radius: 8px;
+    border: 1px solid var(--aas-border); background: var(--aas-bg);
+    color: var(--aas-text); font-size: 0.84rem; line-height: 1.6;
+    font-family: inherit;
+  }
+
+  .hrule-presets { display: flex; flex-wrap: wrap; gap: 0.35rem; margin: 0.55rem 0 0.8rem; }
+  .hrule-presets button {
+    padding: 0.28rem 0.6rem; border-radius: 999px;
+    border: 1px solid var(--aas-border); background: var(--aas-bg);
+    color: var(--aas-muted); font-family: inherit; font-size: 0.76rem;
+    cursor: pointer; transition: background 0.15s ease;
+  }
+  .hrule-presets button:hover { background: var(--aas-tint); }
+
+  .hrule-toggle {
+    display: flex; align-items: flex-start; gap: 0.45rem;
+    font-size: 0.8rem; color: var(--aas-muted); line-height: 1.6;
+    margin-bottom: 0.9rem;
+  }
+  .hrule-toggle input { margin-top: 0.25rem; }
+
+  .hrule-topics { font-size: 0.82rem; color: var(--aas-muted); margin-bottom: 0.6rem; }
+  .hrule-topics :global(.hrule-topic) {
+    display: inline-block; padding: 0.08rem 0.45rem; margin-right: 0.25rem;
+    border-radius: 999px; border: 1px solid var(--aas-accent);
+    color: var(--aas-text); font-size: 0.76rem;
+  }
+  .hrule-topics :global(.hrule-dim) { opacity: 0.75; }
+
+  .hrule-choices {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(9.5rem, 1fr)); gap: 0.4rem;
+  }
+  .hrule-choices :global(.hrule-choice) {
+    display: flex; flex-direction: column; gap: 0.15rem;
+    padding: 0.5rem 0.6rem; border-radius: 8px;
+    border: 1px solid var(--aas-border); background: var(--aas-bg);
+  }
+  .hrule-choices :global(.hrule-choice span) { font-size: 0.82rem; color: var(--aas-text); font-weight: 600; }
+  .hrule-choices :global(.hrule-choice em) { font-style: normal; font-size: 0.74rem; }
+  .hrule-choices :global(.hrule-choice.is-open) { border-color: var(--hr-open); }
+  .hrule-choices :global(.hrule-choice.is-open em) { color: var(--hr-open); }
+  .hrule-choices :global(.hrule-choice.is-shut) { opacity: 0.72; }
+  .hrule-choices :global(.hrule-choice.is-shut em) { color: var(--hr-shut); }
+
+  .hrule-note, .hrule-note :global(code), .hrule-note :global(strong) {
+    margin: 0.8rem 0 0; font-size: 0.8rem; line-height: 1.65; color: var(--aas-muted);
+  }
+
+  @media (max-width: 34rem) {
+    .hrule-controls { grid-template-columns: 1fr; }
+  }
+</style>

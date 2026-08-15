@@ -5,6 +5,7 @@ presenter: CodeCompose
 date: "2026-08-15"
 order: 11
 transition: none
+toc_level: 3
 toc_open: false
 ---
 
@@ -51,7 +52,7 @@ Day 2 · 3. booking-agent: 영속성과 승인
 2. 출발점: diet-agent의 도착점
 3. v0.1 · 결핍: 기억은 프로세스에 산다
 4. v0.2 · 이사: 상태의 거처가 PostgreSQL로
-5. v0.3 · 관문: 쓰기 직전, 사람이 확인한다.
+5. v0.3 · 관문: 쓰기 직전, 사람이 확인한다
 6. v1.0 · 두 입장: 손님과 사장
 
 </Slide>
@@ -66,7 +67,7 @@ Day 2 · 3. booking-agent: 영속성과 승인
 
 <Slide>
 
-## 사장 화면이 하나 더 붙습니다
+### 사장 화면이 하나 더 붙습니다
 
 ```mermaid
 flowchart LR
@@ -85,20 +86,21 @@ flowchart LR
 
 <Slide>
 
-## 두 가지가 처음입니다
+### 두 가지가 처음입니다
 
 - **`app` 안에 그래프가 둘입니다.**
-  쓰기 앞에 멈추는 손님 예약 그래프, 그리고 조회 전용인 사장 어시스턴트 그래프.
-  하나의 LangGraph 앱이 그래프 하나라는 법은 없습니다.
+  - 쓰기 앞에 멈추는 손님 예약 그래프
+  - 조회 전용인 사장 어시스턴트 그래프
+  - 하나의 LangGraph 앱이 그래프 하나라는 법은 없습니다.
 - **`db`는 이번에 일이 두 배입니다.**
-  예약 도메인 데이터에 더해, **대화 상태(checkpoint)까지** 이 안에 삽니다.
-  diet-agent가 남긴 결핍이 여기서 풀립니다.
+  - 예약 도메인 데이터에 더해, **대화 상태(checkpoint)까지** 이 안에 삽니다.
+  - diet-agent가 남긴 결핍이 여기서 풀립니다.
 
 </Slide>
 
 <Slide>
 
-## 그래프가 둘인 이유
+### 그래프가 둘인 이유
 
 - **손님 예약 그래프**: 쓰기 앞에서 멈춥니다. 되돌릴 수 없는 행위를 다룹니다.
 - **사장 어시스턴트 그래프**: 조회 전용입니다. 멈출 일이 없습니다.
@@ -109,7 +111,7 @@ flowchart LR
 
 <Slide>
 
-## 예약 한 건의 생애
+### 예약 한 건의 생애
 ::sub[상태 네 값으로 흐릅니다. 이 흐름이 세션 전체의 지도입니다]
 
 ```mermaid
@@ -125,7 +127,7 @@ stateDiagram-v2
 
 <Slide>
 
-## 이름이 같은 두 승인을 미리 갈라 둡니다
+### 이름이 같은 두 승인을 미리 갈라 둡니다
 
 | | 손님의 확인 (v0.3) | 사장의 승인 (v1.0) |
 | --- | --- | --- |
@@ -141,7 +143,7 @@ stateDiagram-v2
 
 <Slide>
 
-## 시작하기
+### 시작하기
 
 ```bash
 git clone https://github.com/2026-ai-agents/booking-agent.git
@@ -166,7 +168,7 @@ diet-agent의 도착점이 이 저장소의 출발점입니다.
 
 <Slide>
 
-## 앞 세션이 한 시간에 걸쳐 세운 것이 v0.1에 이미 있습니다
+### 앞 세션이 한 시간에 걸쳐 세운 것이 v0.1에 이미 있습니다
 
 - advisor ↔ tools 순환
 - conditional edge
@@ -179,7 +181,7 @@ diet-agent의 도착점이 이 저장소의 출발점입니다.
 
 <Slide>
 
-## 세 가지 질문
+### 세 가지 질문
 
 - 그 상태는 **어디에** 사는가 (v0.1 → v0.2)
 - 되돌릴 수 없는 행위 앞에서 **누가 확인하는가** (v0.3)
@@ -189,7 +191,7 @@ diet-agent의 도착점이 이 저장소의 출발점입니다.
 
 <Slide>
 
-## 코드 발췌: 신원은 LLM의 인자가 아니다
+### 코드 발췌: 신원은 LLM의 인자가 아니다
 
 ```python
 class BookingState(TypedDict):
@@ -209,7 +211,7 @@ def tools(state: BookingState) -> dict:
 
 <Slide class="center">
 
-## "저 3번 손님인데요"에 속지 않습니다
+### "저 3번 손님인데요"에 속지 않습니다
 
 customer_id는 로그인에서 와서 그래프 상태에 실리고,
 tools 노드가 **실행 시점에 주입**합니다.
@@ -221,7 +223,7 @@ LLM은 신원 인자를 만들 수조차 없습니다.
 
 <Slide>
 
-## 릴리즈 사다리: 상태의 거처가 자라는 순서
+### 릴리즈 사다리: 상태의 거처가 자라는 순서
 
 | 릴리즈 | 상태 | 테스트 |
 | --- | --- | --- |
@@ -236,13 +238,13 @@ LLM은 신원 인자를 만들 수조차 없습니다.
 
 ## Part 3. v0.1 · 결핍
 
-기억은 프로세스에 산다
+기억은 프로세스에 산다.
 
 </Slide>
 
 <Slide>
 
-## 무엇이 서는가
+### 무엇이 서는가
 
 - compose가 4컨테이너 중 3개(app·ui·db)를 띄웁니다.
 - db에 테이블 7개·손님 2명·기존 예약 3건이 시드됩니다.
@@ -252,7 +254,7 @@ LLM은 신원 인자를 만들 수조차 없습니다.
 
 <Slide>
 
-## 손님 로그인 화면
+### 손님 로그인 화면
 
 ![v0.1 손님 화면: 이름과 전화번호를 받는 로그인](../../../courses/ko/day-02-session-03/ui-v01-login.jpg)
 
@@ -260,7 +262,7 @@ LLM은 신원 인자를 만들 수조차 없습니다.
 
 <Slide>
 
-## 코드 발췌: 로그인은 인증이 아니라 식별
+### 코드 발췌: 로그인은 인증이 아니라 식별
 
 ```python
 def normalize_phone(raw: str) -> str:
@@ -282,7 +284,7 @@ def login(body: LoginBody):
 
 <Slide>
 
-## 전화번호가 곧 손님입니다
+### 전화번호가 곧 손님입니다
 
 - 대화 thread도 손님마다 하나(`cust-<id>`)입니다.
 - 식별자는 저장 전에 **정규화**합니다.
@@ -294,7 +296,7 @@ def login(body: LoginBody):
 
 <Slide>
 
-## 그래프 실측: 출발점은 diet-agent의 완성형
+### 그래프 실측: 출발점은 diet-agent의 완성형
 
 ```mermaid
 ---
@@ -320,7 +322,7 @@ graph TD;
 
 <Slide>
 
-## 사고 재현: 재시작 한 방이면 전부 잊는다
+### 사고 재현: 재시작 한 방이면 전부 잊는다
 ::sub[v0.1의 checkpointer는 MemorySaver, 즉 app 서버 프로세스의 메모리입니다]
 
 ```bash
@@ -338,7 +340,7 @@ docker compose exec app python demos/amnesia.py --probe  # 재시작 후 다시
 
 <Slide>
 
-## 재시작 전: 다른 프로세스에서 물어도 기억한다
+### 재시작 전: 다른 프로세스에서 물어도 기억한다
 
 ```text
 === 기억 확인: 같은 thread에 이어 묻는다 ===
@@ -354,7 +356,7 @@ docker compose exec app python demos/amnesia.py --probe  # 재시작 후 다시
 
 <Slide>
 
-## 재시작 후: 같은 thread, 같은 질문
+### 재시작 후: 같은 thread, 같은 질문
 
 ```text
 === 기억 확인: 같은 thread에 이어 묻는다 ===
@@ -368,7 +370,7 @@ docker compose exec app python demos/amnesia.py --probe  # 재시작 후 다시
 
 <Slide>
 
-## 결과 읽기: 열쇠는 있는데 금고가 사라졌다
+### 결과 읽기: 열쇠는 있는데 금고가 사라졌다
 
 - 같은 thread_id인데 답이 갈렸습니다.
 - thread_id는 **열쇠일 뿐**이고,
@@ -378,7 +380,7 @@ docker compose exec app python demos/amnesia.py --probe  # 재시작 후 다시
 
 <Slide class="center">
 
-## 예약 행은 살아남는데 대화만 죽습니다
+### 예약 행은 살아남는데 대화만 죽습니다
 
 이 비대칭을 봐 두세요.
 
@@ -397,7 +399,7 @@ docker compose exec app python demos/amnesia.py --probe  # 재시작 후 다시
 
 <Slide>
 
-## 그래프 모양은 한 글자도 안 바뀝니다
+### 그래프 모양은 한 글자도 안 바뀝니다
 
 ```python
 # v0.2: 상태의 거처가 pg로 옮겨진다. 이 세 줄이 재시작 생존의 전부다.
@@ -415,7 +417,7 @@ graph = builder.compile(checkpointer=checkpointer)
 
 <Slide>
 
-## 기억의 거처가 옮겨간다
+### 기억의 거처가 옮겨간다
 
 ```mermaid
 flowchart LR
@@ -437,7 +439,7 @@ flowchart LR
 
 <Slide>
 
-## 시연: 같은 probe가 이번엔 살아남는다
+### 시연: 같은 probe가 이번엔 살아남는다
 
 - 실행
 
@@ -466,7 +468,7 @@ v0.1에서 백지였던 바로 그 지점에서,
 
 <Slide>
 
-## 기억의 실체를 열어 본다
+### 기억의 실체를 열어 본다
 
 - 실행
 
@@ -490,7 +492,7 @@ checkpoint 테이블: checkpoint_blobs, checkpoint_migrations, checkpoint_writes
 
 <Slide>
 
-## 그래프의 눈으로 복원한 같은 데이터
+### 그래프의 눈으로 복원한 같은 데이터
 
 ```text
 === 2) graph.get_state(): 그래프의 눈으로 복원한 같은 데이터 ===
@@ -506,7 +508,7 @@ demo-amnesia thread 메시지 10개:
 
 <Slide>
 
-## 결과 읽기: 노드 단위로 쌓인다
+### 결과 읽기: 노드 단위로 쌓인다
 
 - `setup()` 한 번이 만든 테이블 4개에 thread별 checkpoint가 쌓입니다.
 - **턴마다 하나가 아니라 노드 단위로** 쌓입니다.
@@ -517,7 +519,7 @@ demo-amnesia thread 메시지 10개:
 
 <Slide>
 
-## 왜 노드 단위로 쌓는가
+### 왜 노드 단위로 쌓는가
 
 - 턴 단위로만 쌓으면 "그 턴의 중간"으로는 돌아갈 수 없습니다.
 - 노드 단위면 **confirm 직전** 같은 지점을 정확히 집을 수 있습니다.
@@ -527,7 +529,7 @@ demo-amnesia thread 메시지 10개:
 
 <Slide class="center">
 
-## 상태의 거처는 그래프 그림에 나타나지 않습니다
+### 상태의 거처는 그래프 그림에 나타나지 않습니다
 
 draw_mermaid를 다시 뽑으면 v0.1과 **바이트 단위로 같습니다**.
 
@@ -545,7 +547,7 @@ draw_mermaid를 다시 뽑으면 v0.1과 **바이트 단위로 같습니다**.
 
 <Slide>
 
-## 무엇이 바뀌나
+### 무엇이 바뀌나
 
 - `request_reservation`은 db에 행을 만드는 **되돌릴 수 없는 행위**입니다.
 - v0.3부터 advisor가 이 도구를 요청하면 tools로 직행하지 않습니다.
@@ -555,7 +557,7 @@ draw_mermaid를 다시 뽑으면 v0.1과 **바이트 단위로 같습니다**.
 
 <Slide>
 
-## 멈추고, 확인받고, 재개한다
+### 멈추고, 확인받고, 재개한다
 
 ```mermaid
 sequenceDiagram
@@ -577,7 +579,7 @@ sequenceDiagram
 
 <Slide>
 
-## 코드 발췌: confirm 노드
+### 코드 발췌: confirm 노드
 
 ```python
 WRITE_TOOLS = {"request_reservation"}   # 되돌릴 수 없는 도구 — 사람 확인을 거친다
@@ -600,7 +602,7 @@ def confirm(state: BookingState) -> dict:
 
 <Slide>
 
-## interrupt()가 하는 일
+### interrupt()가 하는 일
 
 - 페이로드를 **호출자에게 올려보내고 그 자리에서 멈춥니다**.
 - `Command(resume=결정)`가 돌아오면 **같은 줄에서 반환값으로** 이어집니다.
@@ -612,7 +614,7 @@ def confirm(state: BookingState) -> dict:
 
 <Slide>
 
-## 그래프도 실측으로: confirm이 그림에 나타난다
+### 그래프도 실측으로: confirm이 그림에 나타난다
 
 ```mermaid
 ---
@@ -641,7 +643,7 @@ confirm 노드와 점선 두 갈래(승인 → tools, 보류 → advisor)가 새
 
 <Slide>
 
-## 시연: 멈추고, 승인해야 쓴다
+### 시연: 멈추고, 승인해야 쓴다
 
 - 실행
 
@@ -669,7 +671,7 @@ docker compose exec app python demos/approve_flow.py
 
 <Slide>
 
-## 승인을 되돌려주면 그제야 씁니다
+### 승인을 되돌려주면 그제야 씁니다
 
 ```text
 === 승인을 되돌려준다: Command(resume={approved: True}) ===
@@ -684,7 +686,7 @@ docker compose exec app python demos/approve_flow.py
 
 <Slide>
 
-## 보류하면 안 씁니다
+### 보류하면 안 씁니다
 
 ```text
 === 보류를 되돌려준다: Command(resume={approved: False, reason: 7시로}) ===
@@ -706,7 +708,7 @@ docker compose exec app python demos/approve_flow.py
 
 <Slide>
 
-## 결과 읽기: 덤으로 잡힌 실수 하나
+### 결과 읽기: 덤으로 잡힌 실수 하나
 
 - 이 보류 실측에는 덤이 하나 있습니다.
 - 상담사가 "모레"를 **하루 어긋난 날짜(08-16)로 계산한 장면**이
@@ -716,7 +718,7 @@ docker compose exec app python demos/approve_flow.py
 
 <Slide class="center">
 
-## 확인 카드는 정확히 이런 실수를 잡으라고 있는 장치입니다
+### 확인 카드는 정확히 이런 실수를 잡으라고 있는 장치입니다
 
 날짜가 눈앞에 보이니, 손님은 승인 전에 고칠 수 있습니다.
 
@@ -724,7 +726,7 @@ docker compose exec app python demos/approve_flow.py
 
 <Slide>
 
-## 확인 카드 화면
+### 확인 카드 화면
 
 ![v0.3 확인 카드: 날짜·시간·테이블·인원·요청사항과 진행/보류 버튼](../../../courses/ko/day-02-session-03/ui-v03-confirm-card.jpg)
 
@@ -735,7 +737,7 @@ docker compose exec app python demos/approve_flow.py
 
 <Slide class="center">
 
-## 멈춘 상태 자체가 pg의 checkpoint입니다
+### 멈춘 상태 자체가 pg의 checkpoint입니다
 
 확인 카드를 띄워 둔 채 서버를 재시작해도 대기가 살아 있고,
 결정이 하루 뒤에 와도 그 자리에서 이어집니다.
@@ -748,24 +750,27 @@ docker compose exec app python demos/approve_flow.py
 
 ## Part 6. v1.0 · 두 입장
 
-손님과 사장은 다른 화면을 산다
+손님과 사장은 다른 화면을 산다.
 
 </Slide>
 
 <Slide>
 
-## 무엇이 완성되나
+### 무엇이 완성되나
 
-- **손님**: `my_reservations`로 조회하고 `cancel_reservation`으로 취소.
-  취소도 쓰기이므로 같은 확인 카드를 거칩니다.
-- **사장**: 별도 화면(:8502)에서 승인/거절 대시보드와 운영 상담 에이전트
-- **time-travel**: 과거 checkpoint에서의 평행 재생
+- **손님**
+  - `my_reservations`로 조회하고 `cancel_reservation`으로 취소
+  - 취소도 쓰기이므로 같은 확인 카드를 거칩니다.
+- **사장**
+  - 별도 화면(:8502)에서 승인/거절 대시보드와 운영 상담 에이전트
+- **time-travel**
+  - 과거 checkpoint에서의 평행 재생
 
 </Slide>
 
 <Slide>
 
-## 사장 대시보드
+### 사장 대시보드
 
 ![사장 대시보드: 승인 대기·확정 카운트와 예약별 승인/거절 버튼](../../../courses/ko/day-02-session-03/ui-admin-dashboard.jpg)
 
@@ -773,7 +778,7 @@ docker compose exec app python demos/approve_flow.py
 
 <Slide>
 
-## 승인 버튼의 뒤는 그래프가 아니라 UPDATE 한 문장
+### 승인 버튼의 뒤는 그래프가 아니라 UPDATE 한 문장
 
 ```python
 @app.post("/admin/decide", dependencies=[Depends(require_admin)])
@@ -789,7 +794,7 @@ def admin_decide(body: DecideBody):
 
 <Slide class="center">
 
-## `WHERE status = 'requested'`가 전이 규칙입니다
+### `WHERE status = 'requested'`가 전이 규칙입니다
 
 이미 결정된 건은 다시 못 바꾸고(409),
 
@@ -799,7 +804,7 @@ requested에서만 confirmed/declined로 갑니다.
 
 <Slide>
 
-## 한 예약의 여정: 두 입장이 만난다
+### 한 예약의 여정: 두 입장이 만난다
 
 ![손님 화면: 사이드바의 내 예약 상태 배지와, 승인 확정을 안내하는 답변](../../../courses/ko/day-02-session-03/ui-v10-confirmed.jpg)
 
@@ -810,7 +815,7 @@ requested에서만 confirmed/declined로 갑니다.
 
 <Slide>
 
-## 운영 상담: 도구 설계의 스펙트럼
+### 운영 상담: 도구 설계의 스펙트럼
 
 - **고정 도구 둘**(`list_reservations`, `reservation_stats`):
   안전하지만 정해진 질문만 답합니다.
@@ -822,7 +827,7 @@ requested에서만 confirmed/declined로 갑니다.
 
 <Slide>
 
-## 어시스턴트가 쿼리를 짜서 답합니다
+### 어시스턴트가 쿼리를 짜서 답합니다
 
 ![운영 상담: 사용한 SELECT 쿼리를 밝히며 테이블별 확정 예약 순위를 답하는 어시스턴트](../../../courses/ko/day-02-session-03/ui-admin-sql.jpg)
 
@@ -833,7 +838,7 @@ JOIN·GROUP BY 쿼리를 작성해 답하고 **사용한 쿼리까지 밝힙니�
 
 <Slide>
 
-## 코드 발췌: 세 겹 방어
+### 코드 발췌: 세 겹 방어
 
 ```python
 def run_sql(args: RunSqlArgs) -> dict:
@@ -853,7 +858,7 @@ def run_sql(args: RunSqlArgs) -> dict:
 
 <Slide>
 
-## 방어를 직접 두드린 실측
+### 방어를 직접 두드린 실측
 
 ```text
 [쓰기 시도] DELETE FROM reservations
@@ -870,7 +875,7 @@ def run_sql(args: RunSqlArgs) -> dict:
 
 <Slide class="center">
 
-## 세 번째 줄이 핵심입니다
+### 세 번째 줄이 핵심입니다
 
 `setval()`은 SELECT로 시작하지만 시퀀스를 바꾸는 **진짜 쓰기**라
 문자열 검사문을 통과합니다.
@@ -882,7 +887,7 @@ def run_sql(args: RunSqlArgs) -> dict:
 
 <Slide>
 
-## time-travel: 과거를 다시 산다
+### time-travel: 과거를 다시 산다
 ::sub[checkpointer가 노드 단위로 남긴 상태들은 목록으로 열립니다]
 
 ```bash
@@ -896,7 +901,7 @@ docker compose exec app python demos/time_travel.py
 
 <Slide>
 
-## 실행 결과: 포크와 재결정
+### 실행 결과: 포크와 재결정
 
 ```text
 [1턴] 확인 카드: [{'table_name': '홀1', 'party_size': 4, 'res_date': '2026-08-19', 'res_time': '19:00'}]
@@ -918,7 +923,7 @@ history: 8개 → 13개 — 원래 계보 위에 평행 계보가 얹혔다
 
 <Slide>
 
-## 결과 읽기: 되돌리기(undo)가 아닙니다
+### 결과 읽기: 되돌리기(undo)가 아닙니다
 
 - `get_state_history`에서 confirm 직전 스냅숏을 골라 다시 실행하니
   **같은 확인 카드가 다시 섰습니다**.
@@ -930,7 +935,7 @@ history: 8개 → 13개 — 원래 계보 위에 평행 계보가 얹혔다
 
 <Slide>
 
-## 평행 계보
+### 평행 계보
 
 ```mermaid
 flowchart LR
@@ -945,20 +950,22 @@ flowchart LR
 
 <Slide>
 
-## 현장 피드백 셋: v1.1.0
+### 현장 피드백 셋: v1.1.0
 ::sub[수업 리허설에서 실제 사용자로 써 보며 나온 요구]
 
-- **재로그인 대화 복원**: 새 `GET /history`가 checkpointer에서 thread를 읽어
-  화면을 다시 그립니다. **열어 두고 떠난 확인 카드까지** 그대로 다시 섭니다.
-- **내 예약 클릭 재개**: 사이드바의 예약이 버튼이 되어,
-  누르면 그 예약 건으로 상담이 이어집니다.
-- **전화번호 정규화**: 위의 로그인 발췌에 있는 `normalize_phone`이 이때 들어왔습니다.
+- **재로그인 대화 복원**
+  - 새 `GET /history`가 checkpointer에서 thread를 읽어 화면을 다시 그립니다.
+  - **열어 두고 떠난 확인 카드까지** 그대로 다시 섭니다.
+- **내 예약 클릭 재개**
+  - 사이드바의 예약이 버튼이 되어, 누르면 그 예약 건으로 상담이 이어집니다.
+- **전화번호 정규화**
+  - 위의 로그인 발췌에 있는 `normalize_phone`이 이때 들어왔습니다.
 
 </Slide>
 
 <Slide>
 
-## 재로그인 직후의 실측 화면
+### 재로그인 직후의 실측 화면
 
 ![v1.1.0 재로그인 직후: 지난 대화가 복원되고 내 예약이 버튼이 된 화면](../../../courses/ko/day-02-session-03/ui-v11-restored.jpg)
 
@@ -969,20 +976,21 @@ flowchart LR
 
 <Slide>
 
-## 더 단단하게: v1.2.0
+### 더 단단하게: v1.2.0
 
-- **db에 이름 있는 볼륨**: 그동안 pg 데이터가 익명 볼륨에 살아
-  `docker compose down` 후 `up`이면 초기화됐습니다.
-  pgdata 볼륨이 붙어 이제 컨테이너를 지웠다 새로 만들어도 예약·대화가 그대로입니다.
-  초기화는 `down -v`로만 일어납니다.
-- **새로고침 로그인 유지**: 손님은 URL의 손님 id, 사장은 발급 토큰이
-  새로고침을 넘깁니다. 전화번호도 비밀번호도 URL에 싣지 않습니다.
+- **db에 이름 있는 볼륨**
+  - 그동안 pg 데이터가 익명 볼륨에 살아 `down` 후 `up`이면 초기화됐습니다.
+  - pgdata 볼륨이 붙어, 컨테이너를 지웠다 새로 만들어도 그대로입니다.
+  - 초기화는 `down -v`로만 일어납니다.
+- **새로고침 로그인 유지**
+  - 손님은 URL의 손님 id, 사장은 발급 토큰이 새로고침을 넘깁니다.
+  - 전화번호도 비밀번호도 URL에 싣지 않습니다.
 
 </Slide>
 
 <Slide>
 
-## 과거 태그는 그대로 둡니다
+### 과거 태그는 그대로 둡니다
 
 - 과거 태그(v0.1\~v1.1.0)의 compose에는 볼륨 선언이 없습니다.
 - 태그 체크아웃 후 기동하면 항상 **깨끗한 시드에서 시작**합니다.
@@ -1000,7 +1008,7 @@ LLM은 각본 대역, db는 진짜
 
 <Slide>
 
-## 쓰기 직전에 멈춘다는 계약
+### 쓰기 직전에 멈춘다는 계약
 
 ```python
 def test_write_tool_pauses_before_execution(monkeypatch):
@@ -1014,7 +1022,7 @@ def test_write_tool_pauses_before_execution(monkeypatch):
 
 <Slide>
 
-## 재시작 생존도 유닛테스트로
+### 재시작 생존도 유닛테스트로
 
 ```python
 def test_fresh_graph_instance_resumes_thread(monkeypatch):
@@ -1032,11 +1040,11 @@ def test_fresh_graph_instance_resumes_thread(monkeypatch):
 
 <Slide>
 
-## 나머지 약속들
+### 나머지 약속들
 
 - 승인만 쓰고 보류는 안 쓴다.
-- 읽기 도구는 멈추지 않는다
-- 남의 예약은 취소되지 않는다
+- 읽기 도구는 멈추지 않는다.
+- 남의 예약은 취소되지 않는다.
 - `run_sql`은 세 겹을 지킨다.
 - 사장 승인은 requested에서만 전이된다.
 
@@ -1054,14 +1062,14 @@ def test_fresh_graph_instance_resumes_thread(monkeypatch):
   멈춘 상태도 checkpoint라서, 영속성이 있어야 비로소 웹 제품이 된다.
 - 승인이라고 다 같은 승인이 아니다.
   손님 확인은 그래프의 멈춤, 사장 승인은 도메인 상태 머신이다.
-- LLM에게 SQL을 맡기려면 방어를 겹으로 두른다
-- checkpoint 목록은 시간축이다. 과거에서 다시 실행하면 평행 계보가 열린다
+- LLM에게 SQL을 맡기려면 방어를 겹으로 두른다.
+- checkpoint 목록은 시간축이다. 과거에서 다시 실행하면 평행 계보가 열린다.
 
 </Slide>
 
 <Slide class="center">
 
-## 기억은 이제 재시작을 넘습니다
+### 기억은 이제 재시작을 넘습니다
 
 ## 그러나 thread를 넘지는 못합니다
 

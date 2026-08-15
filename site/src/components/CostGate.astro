@@ -1,0 +1,201 @@
+---
+/**
+ * 비용 게이트를 직접 돌려 보는 도구 (Day 3 · 4세션).
+ *
+ * 추정식은 `src/lib/day-03-rules.mjs`에 있고, coding-agent의
+ * `estimate_run`·`assign_model`을 그대로 옮긴 것이다. 단가는 litellm 가격표에서
+ * 가져온 값이며, 파이썬 원본과 같은 입력 16건을 대조해 전부 일치한다
+ * (`docs/day-03-rules-port.md`).
+ *
+ * 여기 없는 것: 실측 비용. 추정은 계산이라 브라우저에서 그대로 돌지만, 실제로
+ * 얼마가 나갈지는 모델이 얼마나 뱉느냐에 달렸다. 그 숫자는 교안의 실측표에
+ * 있다.
+ */
+const ROLES = [
+  { id: 'backend', label: 'backend', file: 'app.py' },
+  { id: 'frontend', label: 'frontend', file: 'static/index.html' },
+  { id: 'tests', label: 'tests', file: 'tests/test_api.py' },
+];
+
+const RULE = `def estimate_call(model, role, prompt_chars):
+    in_tokens  = max(200, prompt_chars // 2)      # 한글은 대략 두 글자 한 토큰
+    out_tokens = EXPECTED_OUT_TOKENS[role]        # 역할마다 뱉는 양이 다르다
+    return cost_per_token(model, in_tokens, out_tokens)`;
+---
+
+<div class="cgate" data-cgate>
+  <div class="cgate-head">
+    <strong>게이트가 열리는지 닫히는지 직접 재보기</strong>
+    <span>
+      난이도를 바꾸면 모델이 갈리고, 모델이 갈리면 추정이 갈립니다. 상한을
+      움직여 문이 열리고 닫히는 지점을 찾아보세요. 계산은 coding-agent의
+      <code>estimate_run</code>과 같은 식입니다.
+    </span>
+  </div>
+
+  <div class="cgate-rule"><code set:html={RULE} /></div>
+
+  <div class="cgate-roles">
+    {ROLES.map((role) => (
+      <div class="cgate-role">
+        <span class="cgate-role-name">{role.label}</span>
+        <code>{role.file}</code>
+        <label>
+          <input type="checkbox" data-hard={role.id} />
+          <span>어려움(hard)</span>
+        </label>
+      </div>
+    ))}
+  </div>
+
+  <div class="cgate-sliders">
+    <label class="cgate-label" for="cgate-chars">
+      SPEC + 규약의 길이 <output data-chars-out>2,400자</output>
+    </label>
+    <input id="cgate-chars" data-chars type="range" min="800" max="6000" step="200" value="2400" />
+
+    <label class="cgate-label" for="cgate-budget">
+      비용 상한 <output data-budget-out>$0.0200</output>
+    </label>
+    <input id="cgate-budget" data-budget type="range" min="0" max="60" step="1" value="20" />
+  </div>
+
+  <table class="cgate-table">
+    <thead>
+      <tr><th>역할</th><th>모델</th><th>예상 입력</th><th>예상 출력</th><th>예상 비용</th></tr>
+    </thead>
+    <tbody data-rows></tbody>
+    <tfoot><tr><td colspan="4">합계</td><td data-cgate-total>—</td></tr></tfoot>
+  </table>
+
+  <div class="cgate-verdict" data-verdict></div>
+</div>
+
+<script>
+  import { assignModel, estimateRun, gateDecision } from '../lib/day-03-rules.mjs';
+
+  const ROLE_IDS = ['backend', 'frontend', 'tests'];
+
+  const root = document.querySelector<HTMLElement>('[data-cgate]');
+  if (root) init(root);
+
+  function init(root: HTMLElement) {
+    const $ = <T extends HTMLElement>(s: string) => root.querySelector<T>(s)!;
+    const chars = $<HTMLInputElement>('[data-chars]');
+    const budget = $<HTMLInputElement>('[data-budget]');
+    const charsOut = $<HTMLOutputElement>('[data-chars-out]');
+    const budgetOut = $<HTMLOutputElement>('[data-budget-out]');
+    const rows = $<HTMLTableSectionElement>('[data-rows]');
+    const total = $<HTMLTableCellElement>('[data-cgate-total]');
+    const verdict = $<HTMLElement>('[data-verdict]');
+
+    root.querySelectorAll<HTMLInputElement>('[data-hard]').forEach((box) =>
+      box.addEventListener('change', render));
+    chars.addEventListener('input', render);
+    budget.addEventListener('input', render);
+    render();
+
+    function render() {
+      const promptChars = Number(chars.value);
+      const budgetUsd = Number(budget.value) / 1000;
+      charsOut.textContent = `${promptChars.toLocaleString('ko-KR')}자`;
+      budgetOut.textContent = `$${budgetUsd.toFixed(4)}`;
+
+      const tasks = ROLE_IDS.map((role) => {
+        const hard = root.querySelector<HTMLInputElement>(`[data-hard="${role}"]`)!.checked;
+        return { role, model: assignModel(hard ? 'hard' : 'easy'), hard };
+      });
+
+      const estimate = estimateRun(tasks, promptChars);
+      const perTask = estimate.perTask as Array<Record<string, any>>;
+      rows.innerHTML = perTask
+        .map((item, index: number) => `<tr>
+          <td>${item.role}${tasks[index].hard ? ' <em>hard</em>' : ''}</td>
+          <td><code>${item.model.split('/').pop()}</code></td>
+          <td>${item.inTokens.toLocaleString('ko-KR')}</td>
+          <td>${item.outTokens.toLocaleString('ko-KR')}</td>
+          <td>$${item.costUsd.toFixed(4)}</td>
+        </tr>`)
+        .join('');
+      total.textContent = `$${estimate.totalUsd.toFixed(4)}`;
+
+      const decision = gateDecision(estimate.totalUsd, budgetUsd);
+      verdict.className = `cgate-verdict ${decision.asks ? 'is-asks' : 'is-open'}`;
+      verdict.innerHTML = `<strong>${decision.label}</strong><span>${decision.why}</span>`;
+    }
+  }
+</script>
+
+<style>
+  .cgate {
+    margin: 2rem 0;
+    padding: 1.1rem 1.1rem 0.9rem;
+    border: 1px solid var(--aas-border);
+    border-radius: 14px;
+    background: var(--aas-panel);
+    box-shadow: var(--aas-shadow);
+    font-family: var(--aas-sans);
+    --cg-open: #0ca30c;
+    --cg-asks: #fab219;
+  }
+
+  .cgate-head { display: flex; flex-direction: column; gap: 0.3rem; }
+  .cgate-head strong { font-size: 1rem; color: var(--aas-text); }
+  .cgate-head span { font-size: 0.85rem; line-height: 1.65; color: var(--aas-muted); }
+
+  .cgate-rule {
+    margin: 0.9rem 0; padding: 0.6rem 0.7rem;
+    border-radius: 8px; border: 1px solid var(--aas-border);
+    background: var(--aas-bg); overflow-x: auto;
+  }
+  .cgate-rule code {
+    display: block;
+    font-size: 0.72rem; line-height: 1.45; color: var(--aas-muted);
+    white-space: pre; background: none; padding: 0;
+  }
+
+  .cgate-roles {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+    gap: 0.45rem; margin-bottom: 0.9rem;
+  }
+  .cgate-role {
+    display: flex; flex-direction: column; gap: 0.2rem;
+    padding: 0.5rem 0.6rem; border-radius: 8px;
+    border: 1px solid var(--aas-border); background: var(--aas-bg);
+  }
+  .cgate-role-name { font-size: 0.84rem; font-weight: 600; color: var(--aas-text); }
+  .cgate-role code { font-size: 0.72rem; color: var(--aas-muted); background: none; padding: 0; }
+  .cgate-role label {
+    display: flex; align-items: center; gap: 0.3rem;
+    font-size: 0.76rem; color: var(--aas-muted); margin-top: 0.15rem;
+  }
+
+  .cgate-sliders { display: grid; gap: 0.15rem; margin-bottom: 0.9rem; }
+  .cgate-label {
+    display: flex; justify-content: space-between; align-items: baseline;
+    font-size: 0.78rem; color: var(--aas-muted); margin-top: 0.45rem;
+  }
+  .cgate-label output { color: var(--aas-text); font-weight: 600; }
+  .cgate-sliders input[type='range'] { width: 100%; accent-color: var(--aas-accent); }
+
+  .cgate-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+  .cgate-table th, .cgate-table :global(td) {
+    text-align: left; padding: 0.35rem 0.4rem;
+    border-bottom: 1px solid var(--aas-border);
+  }
+  .cgate-table th { color: var(--aas-muted); font-weight: 500; font-size: 0.74rem; }
+  .cgate-table :global(td) { color: var(--aas-text); }
+  .cgate-table :global(td code) { font-size: 0.74rem; background: none; padding: 0; }
+  .cgate-table :global(td em) { font-style: normal; font-size: 0.7rem; color: var(--cg-asks); }
+  .cgate-table tfoot td { font-weight: 600; border-bottom: none; }
+
+  .cgate-verdict {
+    display: flex; flex-direction: column; gap: 0.15rem;
+    margin-top: 0.9rem; padding: 0.6rem 0.7rem;
+    border-radius: 8px; border: 1px solid currentcolor;
+  }
+  .cgate-verdict :global(strong) { font-size: 0.88rem; }
+  .cgate-verdict :global(span) { font-size: 0.79rem; color: var(--aas-muted); }
+  .cgate-verdict.is-open { color: var(--cg-open); }
+  .cgate-verdict.is-asks { color: var(--cg-asks); }
+</style>

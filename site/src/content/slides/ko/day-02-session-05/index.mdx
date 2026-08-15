@@ -5,6 +5,7 @@ presenter: CodeCompose
 date: "2026-08-15"
 order: 13
 transition: none
+toc_level: 3
 toc_open: false
 ---
 
@@ -48,13 +49,13 @@ Day 2 · 5. food-rag-agent: Agentic RAG
 
 ## 오늘의 순서
 
-1. 시스템 구조: rag 컨테이너가 처음 등장한다.
+1. 시스템 구조: rag 컨테이너가 처음 등장한다
 2. 데이터: 1000건이면 충분하다
 3. 벡터 검색이란 무엇인가
 4. v0.1 · 두 층: 서로의 구멍이 서로의 강점
 5. v0.2 · 깔때기: 싼 층이 줄이고 비싼 층이 고른다
-6. v0.3 · 검증자: 코드가 원본과 대조한다.
-7. v1.0 · 제품: 근거가 함께 나간다.
+6. v0.3 · 검증자: 코드가 원본과 대조한다
+7. v1.0 · 제품: 근거가 함께 나간다
 
 </Slide>
 
@@ -68,7 +69,7 @@ Day 2 · 5. food-rag-agent: Agentic RAG
 
 <Slide>
 
-## rag 컨테이너가 처음 등장합니다
+### rag 컨테이너가 처음 등장합니다
 
 ```mermaid
 flowchart LR
@@ -83,19 +84,21 @@ flowchart LR
 
 <Slide>
 
-## Chroma: 벡터 전용 저장소
+### Chroma: 벡터 전용 저장소
 ::sub[rag 컨테이너의 정체]
 
 - 벡터를 넣어 두고 "이것과 가까운 것 k개"를 돌려주는 것이 전부인 저장소입니다.
 - secretary-agent는 pgvector로 **같은 일을 pg 안에서** 했습니다.
 - 기억 몇 줄이 아니라 **1000건의 색인**이 되면 전용 저장소가 편해집니다.
-  컬렉션 단위 재생성, 거리 함수 선언, 메타데이터 필터가 기본으로 붙습니다.
+  - 컬렉션 단위 재생성
+  - 거리 함수 선언
+  - 메타데이터 필터
 
 </Slide>
 
 <Slide>
 
-## 원본 한 벌, 색인은 옆에
+### 원본 한 벌, 색인은 옆에
 
 - 수치와 본문의 원본은 **PostgreSQL에만** 있습니다.
 - Chroma에는 벡터와 최소 메타데이터(`food_id`)만 둡니다.
@@ -107,7 +110,7 @@ flowchart LR
 
 <Slide class="center">
 
-## secretary-agent에서 부품으로 만난 벡터 검색이
+### secretary-agent에서 부품으로 만난 벡터 검색이
 
 ## 여기서는 전용 벡터 저장소로 승격됩니다
 
@@ -115,7 +118,7 @@ flowchart LR
 
 <Slide>
 
-## RAG와 Agentic RAG
+### RAG와 Agentic RAG
 ::sub[이름을 한 번 정리하고 갑니다]
 
 - **RAG**: 모델이 모르는 것을 외부에서 **찾아와 근거로 붙여** 답하게 하는 방식
@@ -133,13 +136,13 @@ flowchart LR
 
 ## Part 2. 데이터
 
-1000건이면 충분하다
+1000건이면 충분하다.
 
 </Slide>
 
 <Slide>
 
-## 무엇이 실려 오는가
+### 무엇이 실려 오는가
 ::sub[수업은 "정제된 데이터가 이미 있다"에서 출발합니다]
 
 | 데이터 | 출처 | 라이선스 |
@@ -153,7 +156,7 @@ clone만 하면 첫 기동 때 적재됩니다.
 
 <Slide>
 
-## 19,495행에서 1000건을 고른 기준
+### 19,495행에서 1000건을 고른 기준
 
 - 프랜차이즈 브랜드 메뉴 **15,225행을 제외**
 - 같은 음식의 여러 기원(가정식·외식·급식)에서 **하나를 고름**
@@ -166,7 +169,7 @@ clone만 하면 첫 기동 때 적재됩니다.
 
 <Slide class="center">
 
-## 1000건 중 845건은 위키 문서가 없습니다
+### 1000건 중 845건은 위키 문서가 없습니다
 
 현실 데이터의 결측을 감추지 않고,
 
@@ -176,7 +179,7 @@ clone만 하면 첫 기동 때 적재됩니다.
 
 <Slide>
 
-## 수집기가 남긴 흉터
+### 수집기가 남긴 흉터
 ::sub[수집기 자체도 작은 교재입니다]
 
 - 위키백과가 429를 던지면 `Retry-After`만큼 물러났다 다시 갑니다.
@@ -197,7 +200,7 @@ clone만 하면 첫 기동 때 적재됩니다.
 
 <Slide>
 
-## 임베딩: 문장을 좌표로 바꾼다
+### 임베딩: 문장을 좌표로 바꾼다
 
 - 임베딩 모델은 텍스트를 받아 **길이가 고정된 숫자 배열**을 돌려줍니다.
 - 숫자 하나하나에 "칼로리"나 "매운맛" 같은 뜻이 붙어 있는 것은 아닙니다.
@@ -208,7 +211,7 @@ clone만 하면 첫 기동 때 적재됩니다.
 
 <Slide>
 
-## Day 1 3세션에서 이미 실측으로 봤습니다
+### Day 1 3세션에서 이미 실측으로 봤습니다
 
 ```text
 '국물 요리' vs '탕이나 찌개' = 0.843  (의미가 가깝다)
@@ -222,7 +225,7 @@ clone만 하면 첫 기동 때 적재됩니다.
 
 <Slide>
 
-## 코사인 유사도: 가깝다를 재는 방법
+### 코사인 유사도: 가깝다를 재는 방법
 
 - 두 벡터가 가까운지는 **사이 각도**로 잽니다.
 - 방향이 같으면 1, 직각이면 0, 정반대면 -1입니다.
@@ -233,7 +236,7 @@ clone만 하면 첫 기동 때 적재됩니다.
 
 <Slide>
 
-## Chroma에 맡깁니다
+### Chroma에 맡깁니다
 
 ```python
 client.get_or_create_collection(COLLECTION,
@@ -249,7 +252,7 @@ client.get_or_create_collection(COLLECTION,
 
 <Slide class="center">
 
-## 말로는 잘 안 잡히는 대목이라
+### 말로는 잘 안 잡히는 대목이라
 
 ## 실제 색인을 그대로 그렸습니다
 
@@ -260,7 +263,7 @@ client.get_or_create_collection(COLLECTION,
 
 <Slide>
 
-## 직접 보기: 1000건이 놓인 공간
+### 직접 보기: 1000건이 놓인 공간
 
 <VectorSpace />
 
@@ -268,18 +271,19 @@ client.get_or_create_collection(COLLECTION,
 
 <Slide>
 
-## 두 질의가 정반대로 갈립니다
+### 두 질의가 정반대로 갈립니다
 
-- <strong>"든든한 국물 요리"</strong>는 국물 무리 **한복판에** 내려앉습니다.
-- <strong>"100kcal 이하의 저칼로리 음식"</strong>은 어느 무리에도 속하지 못하고
-  가운데 **어중간한 자리에** 떨어지고,
-  끌려 나온 것 중에는 100kcal을 넘는 것이 섞입니다.
+- <strong>"든든한 국물 요리"</strong>
+  - 국물 무리 **한복판에** 내려앉습니다.
+- <strong>"100kcal 이하의 저칼로리 음식"</strong>
+  - 어느 무리에도 속하지 못하고 가운데 **어중간한 자리에** 떨어지고,
+  - 끌려 나온 것 중에는 100kcal을 넘는 것이 섞입니다.
 
 </Slide>
 
 <Slide class="center">
 
-## 벡터는 분위기를 알지 숫자를 모릅니다
+### 벡터는 분위기를 알지 숫자를 모릅니다
 
 그림에서는 이렇게 보입니다.
 
@@ -287,7 +291,7 @@ client.get_or_create_collection(COLLECTION,
 
 <Slide>
 
-## 색인 시점과 질의 시점
+### 색인 시점과 질의 시점
 
 ```mermaid
 flowchart LR
@@ -306,7 +310,7 @@ flowchart LR
 
 <Slide>
 
-## 색인에 넣는 텍스트는 음식의 서술입니다
+### 색인에 넣는 텍스트는 음식의 서술입니다
 
 ```python
 text = f"{name} · {category}"
@@ -320,7 +324,7 @@ if wiki:
 
 <Slide>
 
-## 칼로리와 단백질은 일부러 넣지 않았습니다
+### 칼로리와 단백질은 일부러 넣지 않았습니다
 
 - 수치를 문장으로 적어 벡터에 섞어 봐야
   **"저칼로리"라는 분위기만 얻고 100kcal이라는 경계는 얻지 못합니다**.
@@ -330,7 +334,7 @@ if wiki:
 
 <Slide>
 
-## 질의 때는 같은 모델로 임베딩합니다
+### 질의 때는 같은 모델로 임베딩합니다
 
 ```python
 # 색인·질의 임베딩 — day-01 랩, secretary-agent와 같은 선택
@@ -346,7 +350,7 @@ EMBED_DIMS = 768     # Day 1에서 본 기본 3072에서 줄여 잡았다
 
 <Slide>
 
-## 벡터가 돌려주는 것은 id와 점수까지다
+### 벡터가 돌려주는 것은 id와 점수까지다
 
 ```python
 hits.append({"food_id": meta["food_id"],
@@ -361,7 +365,7 @@ Chroma에서 나오는 것은 `food_id`와 점수뿐이고,
 
 <Slide class="center">
 
-## 좌표는 의미의 지도이지 값의 장부가 아닙니다
+### 좌표는 의미의 지도이지 값의 장부가 아닙니다
 
 이것이 다음 두 층 실습의 전제입니다.
 
@@ -369,7 +373,7 @@ Chroma에서 나오는 것은 `food_id`와 점수뿐이고,
 
 <Slide>
 
-## 시작하기
+### 시작하기
 
 ```bash
 git clone https://github.com/2026-ai-agents/food-rag-agent.git
@@ -387,7 +391,7 @@ docker compose exec app python build_index.py   # 색인 구축 (한 번, 약 1�
 
 <Slide>
 
-## 릴리즈 사다리: 깔때기가 자라는 순서
+### 릴리즈 사다리: 깔때기가 자라는 순서
 
 | 릴리즈 | 상태 | 테스트 |
 | --- | --- | --- |
@@ -408,7 +412,7 @@ docker compose exec app python build_index.py   # 색인 구축 (한 번, 약 1�
 
 <Slide>
 
-## 무엇이 서는가
+### 무엇이 서는가
 
 - **에이전트가 없습니다**.
 - `/search/sql`과 `/search/semantic`이 두 검색 층을 날것으로 내놓습니다.
@@ -418,7 +422,7 @@ docker compose exec app python build_index.py   # 색인 구축 (한 번, 약 1�
 
 <Slide>
 
-## 무엇을 볼 것인가
+### 무엇을 볼 것인가
 ::sub[네 가지를 순서대로 돌립니다]
 
 1. SQL 층이 **잘하는 것**: 수치 조건
@@ -430,7 +434,7 @@ docker compose exec app python build_index.py   # 색인 구축 (한 번, 약 1�
 
 <Slide>
 
-## 시연
+### 시연
 
 ```bash
 git checkout v0.1 && docker compose up --build -d
@@ -441,7 +445,7 @@ docker compose exec app python demos/two_layers.py
 
 <Slide>
 
-## 1) SQL 층: 숫자는 완벽하다
+### 1) SQL 층: 숫자는 완벽하다
 
 ```text
 === 1) SQL 층: 100g당 100kcal 이하 · 단백질 5g 이상 ===
@@ -456,7 +460,7 @@ docker compose exec app python demos/two_layers.py
 
 <Slide>
 
-## 2) 그런데 SQL로 '든든한'을 찾으면
+### 2) 그런데 SQL로 '든든한'을 찾으면
 
 ```text
 === 2) SQL로 '든든한'을 찾으면? ===
@@ -469,7 +473,7 @@ docker compose exec app python demos/two_layers.py
 
 <Slide>
 
-## 3) 의미 검색: 뉘앙스는 잡는다
+### 3) 의미 검색: 뉘앙스는 잡는다
 
 ```text
 === 3) 의미 검색: '든든한 국물 요리' ===
@@ -484,7 +488,7 @@ docker compose exec app python demos/two_layers.py
 
 <Slide>
 
-## 4) 그런데 의미 검색으로 숫자를 찾으면
+### 4) 그런데 의미 검색으로 숫자를 찾으면
 
 ```text
 === 4) 의미 검색으로 '100kcal 이하 음식'을 찾으면? ===
@@ -500,7 +504,7 @@ docker compose exec app python demos/two_layers.py
 
 <Slide>
 
-## 결과 읽기: 두 층의 실패가 정확히 대칭이다
+### 결과 읽기: 두 층의 실패가 정확히 대칭이다
 
 - **SQL**은 수치를 완벽하게 거르지만 "든든한"에는 **0건**입니다.
 - **벡터**는 "든든한"을 받지만 100kcal 경계에 **244kcal 샌드위치**를 통과시킵니다.
@@ -509,7 +513,7 @@ docker compose exec app python demos/two_layers.py
 
 <Slide>
 
-## 어느 층이 무엇을 맡는가
+### 어느 층이 무엇을 맡는가
 
 | | SQL 층 | 벡터 층 |
 | --- | --- | --- |
@@ -522,7 +526,7 @@ docker compose exec app python demos/two_layers.py
 
 <Slide class="center">
 
-## 각 층은 대체가 아니라 분담입니다
+### 각 층은 대체가 아니라 분담입니다
 
 이 둘을 잇는 것이 다음 단의 깔때기입니다.
 
@@ -532,13 +536,13 @@ docker compose exec app python demos/two_layers.py
 
 ## Part 5. v0.2 · 깔때기
 
-싼 층이 줄이고, 비싼 층이 고른다
+싼 층이 줄이고, 비싼 층이 고른다.
 
 </Slide>
 
 <Slide>
 
-## 무엇이 바뀌나
+### 무엇이 바뀌나
 
 - 1000건은 컨텍스트에 다 넣을 수 없고, 넣을 수 있어도 비쌉니다.
 - **비용 사다리 순서로** 후보를 줄입니다.
@@ -547,7 +551,7 @@ docker compose exec app python demos/two_layers.py
 
 <Slide>
 
-## 비용 사다리
+### 비용 사다리
 
 ```mermaid
 flowchart TD
@@ -561,7 +565,7 @@ flowchart TD
 
 <Slide class="center">
 
-## 이 그래프에는 checkpointer가 없습니다
+### 이 그래프에는 checkpointer가 없습니다
 
 추천은 질문 하나로 끝나는 파이프라인이라
 thread에 걸칠 상태가 없습니다.
@@ -572,7 +576,7 @@ thread에 걸칠 상태가 없습니다.
 
 <Slide>
 
-## 코드 발췌: plan이 질문을 두 갈래로 가른다
+### 코드 발췌: plan이 질문을 두 갈래로 가른다
 
 ```python
 def plan(state: FunnelState) -> dict:
@@ -587,7 +591,7 @@ def plan(state: FunnelState) -> dict:
 
 <Slide>
 
-## plan은 왜 LLM인가
+### plan은 왜 LLM인가
 
 - "다이어트 중인데 든든한 저녁"에서
   **셀 수 있는 조건**(칼로리 상한)과 **흐릿한 조건**(든든한)을 갈라내는 일입니다.
@@ -599,7 +603,7 @@ def plan(state: FunnelState) -> dict:
 
 <Slide>
 
-## plan이 내놓는 것
+### plan이 내놓는 것
 
 ```json
 {"max_kcal": 200,
@@ -616,7 +620,7 @@ def plan(state: FunnelState) -> dict:
 
 <Slide>
 
-## 실행 결과: 깔때기가 좁아지는 것을 숫자로
+### 실행 결과: 깔때기가 좁아지는 것을 숫자로
 
 ```text
 [질문] 다이어트 중인데 저녁으로 든든한 국물 요리 뭐 없을까?
@@ -632,7 +636,7 @@ def plan(state: FunnelState) -> dict:
 
 <Slide>
 
-## 질문이 바뀌면 깔때기 모양도 바뀝니다
+### 질문이 바뀌면 깔때기 모양도 바뀝니다
 
 ```text
 [질문] 운동 끝나고 단백질 보충되는 담백한 음식 추천해줘
@@ -647,7 +651,7 @@ def plan(state: FunnelState) -> dict:
 
 <Slide>
 
-## 결과 읽기: LLM 앞에는 언제나 20건
+### 결과 읽기: LLM 앞에는 언제나 20건
 
 - 다이어트 질문은 칼로리 조건으로 **500까지**
 - 단백질 질문은 `min_protein 15`로 **99까지**
@@ -659,7 +663,7 @@ def plan(state: FunnelState) -> dict:
 
 <Slide>
 
-## 코드에서 보는 곳
+### 코드에서 보는 곳
 
 | 단계 | 무엇을 하는가 | 비용 |
 | --- | --- | --- |
@@ -672,7 +676,7 @@ def plan(state: FunnelState) -> dict:
 
 <Slide class="center">
 
-## 벡터 검색은 1차 후보 "안에서" 돕니다
+### 벡터 검색은 1차 후보 "안에서" 돕니다
 
 전체 1000건에서 고르는 것이 아니라,
 
@@ -692,7 +696,7 @@ LLM이 아니라 코드가 원본과 대조한다.
 
 <Slide>
 
-## 사고 재현: 근거를 안 주면 지어낸다
+### 사고 재현: 근거를 안 주면 지어낸다
 ::sub[후보의 이름만 주고 수치를 묻습니다]
 
 ```bash
@@ -706,7 +710,7 @@ docker compose exec app python demos/hallucination.py
 
 <Slide>
 
-## 1부 · 사고: 이름만 주고 수치를 묻는다
+### 1부 · 사고: 이름만 주고 수치를 묻는다
 
 ```text
 === 1부 · 사고: 이름만 주고 수치를 묻는다 (무근거 생성) ===
@@ -723,7 +727,7 @@ docker compose exec app python demos/hallucination.py
 
 <Slide class="center">
 
-## 닭백숙 115kcal은 아무 근거 없이 만들어졌습니다
+### 닭백숙 115kcal은 아무 근거 없이 만들어졌습니다
 
 그런데도 **자신만만합니다.**
 
@@ -733,7 +737,7 @@ grounding이 없는 생성이 어떤 모습인지의 표본입니다.
 
 <Slide>
 
-## 2부 · 방어: 같은 주장을 검증자에 통과시킨다
+### 2부 · 방어: 같은 주장을 검증자에 통과시킨다
 
 ```text
 === 2부 · 방어: 같은 주장을 검증자에 통과시킨다 ===
@@ -749,7 +753,7 @@ grounding이 없는 생성이 어떤 모습인지의 표본입니다.
 
 <Slide>
 
-## 코드 발췌: 검증자는 결정적 검사다
+### 코드 발췌: 검증자는 결정적 검사다
 
 ```python
 def verify_picks(raw_picks, shortlist, conditions):
@@ -764,7 +768,7 @@ def verify_picks(raw_picks, shortlist, conditions):
 
 <Slide>
 
-## 세 가지 검사
+### 세 가지 검사
 
 - **① 존재**: 추천이 후보(원본 행)에 실재하는가.
   없는 음식을 지어냈으면 여기서 걸립니다.
@@ -777,7 +781,7 @@ def verify_picks(raw_picks, shortlist, conditions):
 
 <Slide>
 
-## 불합격은 사유와 함께 돌아갑니다
+### 불합격은 사유와 함께 돌아갑니다
 
 - 불합격은 사유와 함께 select로 돌아가 **한 번** 재선별됩니다.
 - 통과분의 수치는 LLM의 주장이 아니라 **원본 행으로 교체**되어 나갑니다.
@@ -786,7 +790,7 @@ def verify_picks(raw_picks, shortlist, conditions):
 
 <Slide>
 
-## 재선별은 한 번만 돕니다
+### 재선별은 한 번만 돕니다
 
 - 불합격 사유를 들고 select로 돌아가되, **재시도는 한 번**입니다.
 - Day 1 6세션에서 본 그대로입니다.
@@ -797,7 +801,7 @@ def verify_picks(raw_picks, shortlist, conditions):
 
 <Slide>
 
-## 검증자가 코드여야 하는 이유
+### 검증자가 코드여야 하는 이유
 
 - LLM 평가자는 **같은 종류의 실수**를 합니다.
   지어낸 수치를 지어낸 기준으로 채점할 수 있습니다.
@@ -808,7 +812,7 @@ def verify_picks(raw_picks, shortlist, conditions):
 
 <Slide class="center">
 
-## Day 1 Reflexion의 제품판입니다
+### Day 1 Reflexion의 제품판입니다
 
 생성 → 평가 → 재시도 순환은 같고,
 
@@ -820,7 +824,7 @@ def verify_picks(raw_picks, shortlist, conditions):
 
 <Slide>
 
-## 그래프도 실측으로: verify와 재선별 순환
+### 그래프도 실측으로: verify와 재선별 순환
 
 ```mermaid
 ---
@@ -851,7 +855,7 @@ graph TD;
 
 <Slide>
 
-## 깔때기도 5단이 됩니다
+### 깔때기도 5단이 됩니다
 
 ```text
 전체 1000 → sql 500 → vector 20 → select 3 → verify 3
@@ -864,7 +868,7 @@ graph TD;
 
 <Slide>
 
-## 통과분의 수치는 원본으로 교체됩니다
+### 통과분의 수치는 원본으로 교체됩니다
 
 - LLM이 옮겨 적은 숫자는 **화면에 나가지 않습니다**.
 - 검증자가 통과시킨 뒤에도, 실제로 실리는 값은 pg의 행입니다.
@@ -876,13 +880,13 @@ graph TD;
 
 ## Part 7. v1.0 · 제품
 
-어떻게 골라졌는지가 곧 신뢰다
+어떻게 골라졌는지가 곧 신뢰다.
 
 </Slide>
 
 <Slide>
 
-## 무엇이 완성되나
+### 무엇이 완성되나
 ::sub[화면에 추천만 나오는 게 아닙니다]
 
 - 깔때기 단계별 후보 수
@@ -896,7 +900,7 @@ graph TD;
 
 <Slide>
 
-## 왜 과정을 화면에 보여주는가
+### 왜 과정을 화면에 보여주는가
 
 - 깔때기 후보 수, 검증 탈락 사유가 화면에 나갑니다.
 - 추천만 보여주면 사용자는 **믿을지 말지**만 고를 수 있습니다.
@@ -908,7 +912,7 @@ graph TD;
 
 <Slide>
 
-## grounding: 근거는 응답의 일부다
+### grounding: 근거는 응답의 일부다
 
 - **수치**는 검증자가 이미 원본으로 교체했습니다.
 - **설명**은 위키 원문에서 300자를 발췌하고,
@@ -920,7 +924,7 @@ graph TD;
 
 <Slide>
 
-## 완성 화면
+### 완성 화면
 
 ![완성 화면: 깔때기 후보 수와 추천 카드 3장, 삼계탕 카드에는 위키 발췌와 출처 링크](../../../courses/ko/day-02-session-05/ui-v10-recommend.jpg)
 
@@ -932,7 +936,7 @@ graph TD;
 
 <Slide>
 
-## 다이어트 질문의 완성 화면
+### 다이어트 질문의 완성 화면
 
 ![다이어트 질문의 완성 화면: 저칼로리 국물 3종과 검증을 통과한 원본 수치](../../../courses/ko/day-02-session-05/ui-v10-diet.jpg)
 
@@ -940,7 +944,7 @@ graph TD;
 
 <Slide>
 
-## 코드 발췌: 근거를 다는 곳
+### 코드 발췌: 근거를 다는 곳
 
 ```python
 def attach_grounding(picks):
@@ -960,7 +964,7 @@ def attach_grounding(picks):
 
 <Slide>
 
-## 대역과 진짜의 경계
+### 대역과 진짜의 경계
 
 - LLM은 **각본**
 - 임베딩은 **결정적 해시 대역**
@@ -972,7 +976,7 @@ def attach_grounding(picks):
 
 <Slide>
 
-## 옮겨 적다 틀린 수치는 걸린다
+### 옮겨 적다 틀린 수치는 걸린다
 
 ```python
 def test_wrong_number_is_rejected():
@@ -987,7 +991,7 @@ def test_wrong_number_is_rejected():
 
 <Slide>
 
-## 나머지 약속들
+### 나머지 약속들
 
 - 환각 이름이 걸러진 뒤 재선별이 **정확히 한 번** 돌고,
   그 프롬프트에 탈락 사유가 실리는 것
@@ -1003,7 +1007,7 @@ def test_wrong_number_is_rejected():
 ## 이 세션이 남기는 것
 
 - 검색 층은 대체가 아니라 분담이다.
-  SQL은 숫자를, 벡터는 의미를, LLM만 이유를 안다
+  SQL은 숫자를, 벡터는 의미를, LLM만 이유를 안다.
 - 깔때기는 비용 사다리다. 싼 층이 줄여준 뒤에만 비싼 층이 일한다.
 - LLM 출력은 그럴듯함이지 보증이 아니다.
   내보내기 전에 코드가 원본과 대조한다.
@@ -1014,7 +1018,7 @@ def test_wrong_number_is_rejected():
 
 <Slide>
 
-## 색인은 언제든 다시 만듭니다
+### 색인은 언제든 다시 만듭니다
 
 ```bash
 docker compose exec app python build_index.py   # 약 1분
@@ -1029,7 +1033,7 @@ docker compose exec app python build_index.py   # 약 1분
 
 <Slide class="center">
 
-## Day 2가 여기서 닫힙니다
+### Day 2가 여기서 닫힙니다
 
 </Slide>
 
@@ -1048,7 +1052,7 @@ docker compose exec app python build_index.py   # 약 1분
 
 <Slide>
 
-## Day 1부터 이어진 규율
+### Day 1부터 이어진 규율
 
 - **LLM이 만든 값은 실행·표시 직전에 코드로 검증한다**
   (Day 1 4세션 인자 환각 → 오늘의 검증자)
@@ -1063,7 +1067,7 @@ docker compose exec app python build_index.py   # 약 1분
 
 <Slide>
 
-## 라이선스는 데이터의 일부입니다
+### 라이선스는 데이터의 일부입니다
 
 - 음식 데이터: 식약처, **공공누리 (출처표시)**
 - 위키 설명: **CC BY-SA 4.0**, 행마다 원문 URL
@@ -1075,7 +1079,7 @@ docker compose exec app python build_index.py   # 약 1분
 
 <Slide class="center">
 
-## 넷 다 혼자 일하는 에이전트였습니다
+### 넷 다 혼자 일하는 에이전트였습니다
 
 에이전트 **여럿**이 협업하는 순간 무엇이 필요해지는가,
 
