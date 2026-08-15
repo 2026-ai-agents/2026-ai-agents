@@ -116,7 +116,7 @@ flowchart LR
 
 ## db 이미지에 미리 깔린 것
 
-- db 이미지가 `pgvector/pgvector:pg17`인 것도 봐 두세요
+- db 이미지가 `pgvector/pgvector:pg17`인 것도 봐 두세요.
 - v1.0의 의미 기반 검색이 **벡터 컬럼**을 씁니다.
 - 이건 RAG가 아니라 RAG도 쓰는 **더 밑단의 부품**입니다.
 - 다음 세션에서 이 부품이 파이프라인으로 확장됩니다.
@@ -272,7 +272,7 @@ docker compose exec app python demos/blank_slate.py
 ## 결과 읽기: 두 답이 문제를 정확히 자른다
 
 - **방금 thread A가 잡은 치과 일정은 조회됩니다.**
-  일정은 db 행이라 thread와 무관하게 남으니까요
+  일정은 db 행이라 thread와 무관하게 남으니까요.
 - **그런데 한 메시지 전에 들은 알레르기는 백지입니다.**
   대화 기억이 thread 안에 갇혀 있기 때문입니다.
 
@@ -291,7 +291,7 @@ thread 너머로 옮기는 것, 그것이 장기 기억(store)의 일입니다.
 
 ## Part 4. v0.2 · 서랍
 
-부탁한 기억이 thread를 넘는다
+부탁한 기억이 thread를 넘는다.
 
 </Slide>
 
@@ -356,7 +356,7 @@ def save_memory(store: BaseStore, user_id: int, fact: str) -> str:
 
 ## store가 주는 것은 셋
 
-- `put(ns, key, value)`: 서랍에 넣는다
+- `put(ns, key, value)`: 서랍에 넣는다.
 - `get(ns, key)` · `list`: 꺼내 본다.
 - `search(ns, query=…)`: **의미로** 찾는다 (v1.0에서 씁니다)
 
@@ -490,7 +490,7 @@ checkpoint 테이블 옆에 store 테이블이 나란히 있습니다.
 
 ## Part 5. v0.3 · 판단
 
-부탁하지 않아도 담을 것을 담는다
+부탁하지 않아도 담을 것을 담는다.
 
 </Slide>
 
@@ -702,7 +702,7 @@ docker compose exec app python demos/auto_memory.py
 
 ## Part 6. v1.0 · 완성
 
-의미로 꺼내고, 낡으면 갈아 끼운다
+의미로 꺼내고, 낡으면 갈아 끼운다.
 
 </Slide>
 
@@ -933,10 +933,10 @@ def test_broken_judgment_never_kills_the_answer(monkeypatch):
   도메인 행(영구), checkpoint(thread 안), store(사용자에 붙음)는
   같은 db의 다른 테이블이다.
 - store는 네임스페이스로 격리되는 사용자별 서랍이고,
-  노드는 `compile(store=…)` 주입으로 연다
+  노드는 `compile(store=…)` 주입으로 연다.
 - 무엇을 기억할지는 코드가 아니라 프롬프트의 판단 기준이 정한다.
   판단이 죽어도 답변은 살아야 한다.
-- 기억이 쌓이면 전부가 아니라 의미가 가까운 것만 싣는다
+- 기억이 쌓이면 전부가 아니라 의미가 가까운 것만 싣는다.
 - 사실은 변한다. 서랍은 remove로 갈아 끼우는 살아 있는 기억이다.
 
 </Slide>

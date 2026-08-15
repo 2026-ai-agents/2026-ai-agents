@@ -51,7 +51,7 @@ Day 2 · 3. booking-agent: 영속성과 승인
 2. 출발점: diet-agent의 도착점
 3. v0.1 · 결핍: 기억은 프로세스에 산다
 4. v0.2 · 이사: 상태의 거처가 PostgreSQL로
-5. v0.3 · 관문: 쓰기 직전, 사람이 확인한다.
+5. v0.3 · 관문: 쓰기 직전, 사람이 확인한다
 6. v1.0 · 두 입장: 손님과 사장
 
 </Slide>
@@ -237,7 +237,7 @@ LLM은 신원 인자를 만들 수조차 없습니다.
 
 ## Part 3. v0.1 · 결핍
 
-기억은 프로세스에 산다
+기억은 프로세스에 산다.
 
 </Slide>
 
@@ -749,7 +749,7 @@ docker compose exec app python demos/approve_flow.py
 
 ## Part 6. v1.0 · 두 입장
 
-손님과 사장은 다른 화면을 산다
+손님과 사장은 다른 화면을 산다.
 
 </Slide>
 
@@ -1042,8 +1042,8 @@ def test_fresh_graph_instance_resumes_thread(monkeypatch):
 ## 나머지 약속들
 
 - 승인만 쓰고 보류는 안 쓴다.
-- 읽기 도구는 멈추지 않는다
-- 남의 예약은 취소되지 않는다
+- 읽기 도구는 멈추지 않는다.
+- 남의 예약은 취소되지 않는다.
 - `run_sql`은 세 겹을 지킨다.
 - 사장 승인은 requested에서만 전이된다.
 
@@ -1061,8 +1061,8 @@ def test_fresh_graph_instance_resumes_thread(monkeypatch):
   멈춘 상태도 checkpoint라서, 영속성이 있어야 비로소 웹 제품이 된다.
 - 승인이라고 다 같은 승인이 아니다.
   손님 확인은 그래프의 멈춤, 사장 승인은 도메인 상태 머신이다.
-- LLM에게 SQL을 맡기려면 방어를 겹으로 두른다
-- checkpoint 목록은 시간축이다. 과거에서 다시 실행하면 평행 계보가 열린다
+- LLM에게 SQL을 맡기려면 방어를 겹으로 두른다.
+- checkpoint 목록은 시간축이다. 과거에서 다시 실행하면 평행 계보가 열린다.
 
 </Slide>
 
