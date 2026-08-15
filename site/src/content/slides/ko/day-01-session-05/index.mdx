@@ -5,6 +5,7 @@ presenter: CodeCompose
 date: "2026-08-14"
 order: 5
 transition: none
+toc_level: 3
 toc_open: false
 ---
 
@@ -105,7 +106,7 @@ flowchart TD
 
 <Slide>
 
-## 먼저 의사코드로
+### 먼저 의사코드로
 
 ```plaintext
 messages = [system, user]
@@ -125,7 +126,7 @@ messages = [system, user]
 
 <Slide>
 
-## v0.3 코드 포인트
+### v0.3 코드 포인트
 
 ```python
 for step_no in range(1, max_steps + 1):
@@ -150,7 +151,7 @@ response = completion(model=model, messages=messages)
 
 <Slide>
 
-## 분기 조건은 하나뿐
+### 분기 조건은 하나뿐
 
 ```python
 if not message.tool_calls:
@@ -165,7 +166,7 @@ if not message.tool_calls:
 
 <Slide>
 
-## 종료 조건 ②: 한도 도달
+### 종료 조건 ②: 한도 도달
 
 ```python
 # 한도 도달 후의 마무리 호출
@@ -181,7 +182,7 @@ response = completion(model=model, messages=messages)   # tools 없음
 
 <Slide>
 
-## 매 스텝 messages 배열은 이렇게 쌓인다
+### 매 스텝 messages 배열은 이렇게 쌓인다
 
 ```plaintext
 [system] 여행 상담원 지침
@@ -200,7 +201,7 @@ response = completion(model=model, messages=messages)   # tools 없음
 
 <Slide>
 
-## 도구 목록도 매 스텝 다시 실린다
+### 도구 목록도 매 스텝 다시 실린다
 
 ```python
 response = completion(model=model, messages=messages, tools=tool_schemas())
@@ -214,7 +215,7 @@ response = completion(model=model, messages=messages, tools=tool_schemas())
 
 <Slide>
 
-## 매 스텝은 데이터로 남는다
+### 매 스텝은 데이터로 남는다
 
 - 매 스텝이 `StepRecord`(도구·인자·결과·토큰)로 기록됩니다.
 - 오늘 볼 예제 4종이 전부 **이 데이터를 읽어서** 만들어집니다.
@@ -225,7 +226,7 @@ response = completion(model=model, messages=messages, tools=tool_schemas())
 
 <Slide class="center">
 
-## 루프를 만드는 데 필요한 것은
+### 루프를 만드는 데 필요한 것은
 
 ## 새로운 개념이 아니라 종료 조건입니다
 
@@ -244,7 +245,7 @@ response = completion(model=model, messages=messages, tools=tool_schemas())
 
 <Slide>
 
-## 1. 트레이스 읽기
+### 1. 트레이스 읽기
 ::sub[01_react_trace.py · "3박 4일 오사카, 예산 80만원"을 verbose로]
 
 ```bash
@@ -258,7 +259,7 @@ docker compose exec lab python examples/04_react/01_react_trace.py
 
 <Slide>
 
-## 트레이스를 읽을 때 보는 것
+### 트레이스를 읽을 때 보는 것
 ::sub[네 가지만 보면 됩니다]
 
 - **어떤 도구**를 불렀나 (도구 선택이 맞았나)
@@ -270,7 +271,7 @@ docker compose exec lab python examples/04_react/01_react_trace.py
 
 <Slide>
 
-## 앞의 두 스텝: 예산을 두 번 계산했다
+### 앞의 두 스텝: 예산을 두 번 계산했다
 
 ```text
 [step 1] calc_budget({"people": 1, "nights": 3, "style": "보통"})
@@ -286,7 +287,7 @@ docker compose exec lab python examples/04_react/01_react_trace.py
 
 <Slide>
 
-## 두 인자를 나란히 놓고 보세요
+### 두 인자를 나란히 놓고 보세요
 
 ```text
 step 1: {"people": 1, "nights": 3, "style": "보통"}
@@ -302,7 +303,7 @@ step 2: {"people": 1, "nights": 3, "style": "절약"}
 
 <Slide>
 
-## 그다음에야 장소를 검색했다
+### 그다음에야 장소를 검색했다
 
 ```text
 [step 3] search_places({"category": "관광", "city": "오사카"}) …  (1045tk)
@@ -318,7 +319,7 @@ step 2: {"people": 1, "nights": 3, "style": "절약"}
 
 <Slide>
 
-## 최종 답
+### 최종 답
 
 ```text
 === 최종 답 (앞부분) ===
@@ -333,7 +334,7 @@ step 2: {"people": 1, "nights": 3, "style": "절약"}
 
 <Slide class="center">
 
-## 시키지 않은 일이 일어났습니다
+### 시키지 않은 일이 일어났습니다
 
 "예산을 초과하면 다시 계산하라"고 쓴 적이 없습니다.
 
@@ -343,7 +344,7 @@ step 2: {"people": 1, "nights": 3, "style": "절약"}
 
 <Slide>
 
-## 트레이스가 말해 주는 것
+### 트레이스가 말해 주는 것
 
 - 어떤 도구를, 어떤 인자로, 어떤 순서로 불렀나
 - 각 스텝의 컨텍스트가 얼마나 컸나 (799 → 1,673토큰)
@@ -354,7 +355,7 @@ step 2: {"people": 1, "nights": 3, "style": "절약"}
 
 <Slide>
 
-## 종료 사유 두 가지를 구분하세요
+### 종료 사유 두 가지를 구분하세요
 
 | 종료 사유 | 무슨 뜻인가 | 어떻게 읽나 |
 | --- | --- | --- |
@@ -368,7 +369,7 @@ step 2: {"people": 1, "nights": 3, "style": "절약"}
 
 <Slide class="center">
 
-## 트레이스는 print가 아니라 데이터입니다
+### 트레이스는 print가 아니라 데이터입니다
 
 스텝·인자·결과·토큰이 구조로 남아야 읽을 수 있습니다.
 
@@ -386,7 +387,7 @@ step 2: {"people": 1, "nights": 3, "style": "절약"}
 
 <Slide>
 
-## 2. 같은 질문, 세 가지 한도
+### 2. 같은 질문, 세 가지 한도
 ::sub[02_max_steps.py · 한도가 도구 사용량과 근거의 두께를 어떻게 바꾸나]
 
 - 실행
@@ -411,7 +412,7 @@ docker compose exec lab python examples/04_react/02_max_steps.py
 
 <Slide>
 
-## 한도 3과 10
+### 한도 3과 10
 
 ```text
 === max_steps = 3 ===
@@ -430,7 +431,7 @@ docker compose exec lab python examples/04_react/02_max_steps.py
 
 <Slide>
 
-## 결과 읽기
+### 결과 읽기
 
 - 한도가 낮으면 답이 안 나오는 게 아니라 **근거가 얇아집니다**.
 - 한도 10에서는 한도가 쓰이지도 않았습니다.
@@ -441,7 +442,7 @@ docker compose exec lab python examples/04_react/02_max_steps.py
 
 <Slide>
 
-## 세 실행을 표로
+### 세 실행을 표로
 
 | 한도 | 사용한 스텝 | 종료 | 쓴 도구 수 | 답 길이 |
 | --- | --- | --- | --- | --- |
@@ -456,7 +457,7 @@ docker compose exec lab python examples/04_react/02_max_steps.py
 
 <Slide>
 
-## 그럼 한도를 얼마로 둘 것인가
+### 그럼 한도를 얼마로 둘 것인가
 
 - 너무 낮으면: 근거가 얇은 답이 나옵니다. 그래도 답은 나옵니다.
 - 너무 높으면: 폭주 시 비용이 커집니다. 정상 실행에는 영향이 없습니다.
@@ -468,7 +469,7 @@ docker compose exec lab python examples/04_react/02_max_steps.py
 
 <Slide class="center">
 
-## 스텝 한도는 품질 설정이 아니라
+### 스텝 한도는 품질 설정이 아니라
 
 ## 폭주에 대한 보험입니다
 
@@ -486,7 +487,7 @@ docker compose exec lab python examples/04_react/02_max_steps.py
 
 <Slide>
 
-## 3. 세 가지 프롬프트
+### 3. 세 가지 프롬프트
 ::sub[03_prompt_ablation.py · 같은 질문을 세 조건으로]
 
 - **①** 온전한 프롬프트
@@ -501,7 +502,7 @@ docker compose exec lab python examples/04_react/03_prompt_ablation.py
 
 <Slide>
 
-## 무엇을 빼는가
+### 무엇을 빼는가
 
 에이전트의 시스템 프롬프트는 대략 이런 문단들로 되어 있습니다.
 
@@ -516,7 +517,7 @@ docker compose exec lab python examples/04_react/03_prompt_ablation.py
 
 <Slide>
 
-## ① 온전한 프롬프트
+### ① 온전한 프롬프트
 
 ```text
   스텝 8, 도구 사용 7회
@@ -530,7 +531,7 @@ docker compose exec lab python examples/04_react/03_prompt_ablation.py
 
 <Slide>
 
-## ② 도구 지침 제거 · ③ 빈 프롬프트
+### ② 도구 지침 제거 · ③ 빈 프롬프트
 
 ```text
 === ② 도구 지침 문단 제거 ===
@@ -546,7 +547,7 @@ docker compose exec lab python examples/04_react/03_prompt_ablation.py
 
 <Slide>
 
-## 정직하게 읽어야 하는 결과입니다
+### 정직하게 읽어야 하는 결과입니다
 
 - **빈 프롬프트에서도 도구는 쓰였습니다**.
 - 요즘 모델은 도구 사용 자체를 훈련으로 익히고 있어서,
@@ -557,7 +558,7 @@ docker compose exec lab python examples/04_react/03_prompt_ablation.py
 
 <Slide>
 
-## 차이는 꼼꼼함에서 난다
+### 차이는 꼼꼼함에서 난다
 
 - **온전한 프롬프트**: "근거를 도구로 확인하라"는 지침 때문에
   도구를 7회 쓰며 검증했습니다.
@@ -568,7 +569,7 @@ docker compose exec lab python examples/04_react/03_prompt_ablation.py
 
 <Slide class="center">
 
-## 프롬프트의 각 문단은
+### 프롬프트의 각 문단은
 
 ## 루프의 생사가 아니라 일하는 기준을 바꿉니다
 
@@ -576,7 +577,7 @@ docker compose exec lab python examples/04_react/03_prompt_ablation.py
 
 <Slide>
 
-## 이 실험을 읽을 때의 주의
+### 이 실험을 읽을 때의 주의
 
 - 각 조건을 **1회씩** 돌린 결과입니다. 모델은 비결정적입니다.
 - 숫자(스텝 8 vs 4)를 성능 지표로 받아들이면 안 됩니다.
@@ -597,7 +598,7 @@ ReAct의 비용 구조
 
 <Slide>
 
-## 4. 스텝별 입력 토큰
+### 4. 스텝별 입력 토큰
 ::sub[04_context_growth.py · 스텝마다 얼마가 실려 가는가]
 
 - 실행
@@ -622,7 +623,7 @@ docker compose exec lab python examples/04_react/04_context_growth.py
 
 <Slide>
 
-## 합계
+### 합계
 
 ```text
 === 합계 ===
@@ -636,7 +637,7 @@ docker compose exec lab python examples/04_react/04_context_growth.py
 
 <Slide>
 
-## 왜 우상향 계단인가
+### 왜 우상향 계단인가
 
 - 2세션에서 본 **무상태**의 대가입니다.
 - 서버는 아무것도 기억하지 않으므로,
@@ -648,7 +649,7 @@ docker compose exec lab python examples/04_react/04_context_growth.py
 
 <Slide class="center">
 
-## 막대만으로는 "무엇이 다시 가는가"가 안 보입니다
+### 막대만으로는 "무엇이 다시 가는가"가 안 보입니다
 
 같은 질문을 한 번 더 돌리면서
 **매 호출에 실려 간 messages 배열을 통째로** 떠 왔습니다.
@@ -659,7 +660,7 @@ docker compose exec lab python examples/04_react/04_context_growth.py
 
 <Slide>
 
-## 직접 넘겨 보기: 배열이 자라고, compact가 접는다
+### 직접 넘겨 보기: 배열이 자라고, compact가 접는다
 
 <ContextGrowth />
 
@@ -667,7 +668,7 @@ docker compose exec lab python examples/04_react/04_context_growth.py
 
 <Slide>
 
-## 넘겨 보면 걸리는 두 가지
+### 넘겨 보면 걸리는 두 가지
 
 - **새로 붙는 것은 매 스텝 메시지 두 개뿐인데**,
   청구서는 직전 호출분을 통째로 다시 냅니다.
@@ -680,7 +681,7 @@ docker compose exec lab python examples/04_react/04_context_growth.py
 
 <Slide>
 
-## 접어 보기: compact도 실측입니다
+### 접어 보기: compact도 실측입니다
 
 - 접어 보기를 누르면 2세션 9번의 compact가 **이 배열에 실제로** 적용됩니다.
 - 요약문은 손으로 쓴 것이 아니라 **LLM에 접기를 시켜 받은 것**이고,
@@ -692,7 +693,7 @@ docker compose exec lab python examples/04_react/04_context_growth.py
 
 <Slide>
 
-## 곡선을 공격하는 세 가지 방향
+### 곡선을 공격하는 세 가지 방향
 
 - **재전송을 줄인다**: 오래된 구간을 요약으로 갈아끼운다 (2세션의 compact)
 - **LLM 호출 자체를 줄인다**: 계획을 먼저 세우고 도구는 LLM 없이 돌린다
@@ -704,7 +705,7 @@ docker compose exec lab python examples/04_react/04_context_growth.py
 
 <Slide class="center">
 
-## 루프 설계가 곧 비용 설계입니다
+### 루프 설계가 곧 비용 설계입니다
 
 이 곡선이 ReAct의 비용 구조이고,
 
@@ -722,7 +723,7 @@ docker compose exec lab python examples/04_react/04_context_growth.py
 
 <Slide>
 
-## 무한 루프의 조건
+### 무한 루프의 조건
 
 - 모델이 도구만 계속 요청하면 루프가 영원히 돕니다.
 - 실제 모델로 재현하면 비결정적이고 돈이 나가므로,
@@ -733,7 +734,7 @@ docker compose exec lab python examples/04_react/04_context_growth.py
 
 <Slide>
 
-## 각본 LLM이란
+### 각본 LLM이란
 ::sub[비결정적인 것을 결정적으로 만드는 테스트 기법]
 
 - 실제 API 대신 **미리 정해 둔 응답을 순서대로 돌려주는** 가짜 LLM
@@ -745,7 +746,7 @@ docker compose exec lab python examples/04_react/04_context_growth.py
 
 <Slide>
 
-## 각본 LLM 테스트
+### 각본 LLM 테스트
 
 ```python
 # tests/test_react.py — 모델이 영원히 도구만 요청하는 각본
@@ -763,7 +764,7 @@ assert "tools" not in llm.calls[2]     # 마무리 호출엔 도구가 없어야
 
 <Slide class="center">
 
-## 세 번째 단언이 핵심입니다
+### 세 번째 단언이 핵심입니다
 
 한도에 걸린 뒤의 마무리 호출에 tools가 실렸다면
 
@@ -773,7 +774,7 @@ assert "tools" not in llm.calls[2]     # 마무리 호출엔 도구가 없어야
 
 <Slide>
 
-## 테스트가 박제하는 세 가지
+### 테스트가 박제하는 세 가지
 
 - `stopped_by == "max_steps"`: 한도가 실제로 걸렸는가
 - 답이 비어 있지 않은가: 마무리 호출이 답을 만들어 냈는가
@@ -794,7 +795,7 @@ assert "tools" not in llm.calls[2]     # 마무리 호출엔 도구가 없어야
 
 <Slide>
 
-## 완성 확인
+### 완성 확인
 
 ```bash
 git checkout v0.3
@@ -810,7 +811,7 @@ v0.3부터는 **여러 도구를 오가며 스스로 멈출 때까지 반복**�
 
 <Slide>
 
-## v0.3에서 새로 생긴 것
+### v0.3에서 새로 생긴 것
 
 - `agent/react.py`: 루프 본체와 종료 조건 둘
 - `StepRecord`: 스텝마다 도구·인자·결과·토큰을 남기는 자료구조
@@ -823,7 +824,7 @@ v0.3부터는 **여러 도구를 오가며 스스로 멈출 때까지 반복**�
 
 <Slide class="center">
 
-## 여기까지가 "에이전트"의 최소 정의입니다
+### 여기까지가 "에이전트"의 최소 정의입니다
 
 도구를 부를지, 몇 번 부를지, 언제 멈출지를
 

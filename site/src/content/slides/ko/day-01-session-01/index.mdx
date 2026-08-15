@@ -5,6 +5,7 @@ presenter: CodeCompose
 date: "2026-08-14"
 order: 1
 transition: none
+toc_level: 3
 toc_open: false
 ---
 
@@ -48,7 +49,7 @@ Day 1 · 1. 오리엔테이션과 환경 점검
 
 <Slide>
 
-## 저장소 하나 = 에이전트 하나
+### 저장소 하나 = 에이전트 하나
 ::sub[Day 1은 실습 랩, Day 2부터는 독립된 제품]
 
 ```mermaid
@@ -67,7 +68,7 @@ flowchart TD
 
 <Slide>
 
-## 공통인 것은 시작 명령뿐
+### 공통인 것은 시작 명령뿐
 
 ```bash
 git clone https://github.com/2026-ai-agents/day-01.git
@@ -85,7 +86,7 @@ docker compose exec lab python check_env.py
 
 <Slide>
 
-## 컨테이너 이름 규약
+### 컨테이너 이름 규약
 ::sub[저장소 사이에서 공유되는 자원이 아니라, 반복해서 쓰는 이름입니다]
 
 - `lab`: Day 1 전용. 예제·에이전트를 전부 터미널에서 실행
@@ -110,7 +111,7 @@ docker compose exec lab python check_env.py
 
 <Slide>
 
-## 사다리 사용법
+### 사다리 사용법
 ::sub[태그 하나가 그 시점의 동작 전체를 재현합니다]
 
 ```bash
@@ -125,7 +126,7 @@ docker compose exec lab pytest                      # 어느 태그에서든 그
 
 <Slide>
 
-## 사다리의 세 가지 약속
+### 사다리의 세 가지 약속
 
 - **v0.1은 시작점**: 뼈대가 기동되는 상태
 - **릴리즈 하나 = feature 하나**, 그리고 **모든 릴리즈는 그 자체로 실행 가능**
@@ -138,7 +139,7 @@ docker compose exec lab pytest                      # 어느 태그에서든 그
 
 <Slide>
 
-## Day 1의 사다리는 다섯 단
+### Day 1의 사다리는 다섯 단
 
 | 릴리즈 | 상태 | 테스트 |
 | --- | --- | --- |
@@ -174,7 +175,7 @@ docker compose exec lab pytest                      # 어느 태그에서든 그
 
 <Slide>
 
-## 잘 안 될 때
+### 잘 안 될 때
 
 - `docker: command not found` → Docker Desktop이 실행 중인지 확인
 - 키 인증 실패 → `.env`의 키 앞뒤 공백·따옴표 확인, 충전 여부 확인
@@ -187,7 +188,7 @@ docker compose exec lab pytest                      # 어느 태그에서든 그
 
 <Slide>
 
-## 예제 실행 방법
+### 예제 실행 방법
 ::sub[전부 docker compose exec로 돕니다]
 
 ```bash
@@ -202,7 +203,7 @@ docker compose exec lab python examples/01_api/01_hello_completion.py
 
 <Slide>
 
-## 키 없이 도는 것들
+### 키 없이 도는 것들
 
 - 토큰 세기, 단가표, 스키마 생성, 경로 감금, 출력 필터,
   비용 추정, budget guard, 트레이스 로그
@@ -227,7 +228,7 @@ $5 충전을 권했습니다.
 
 <Slide>
 
-## 2026-08-14 실측
+### 2026-08-14 실측
 
 | 하는 일 | 비용 |
 | --- | --- |
@@ -240,7 +241,7 @@ $5 충전을 권했습니다.
 
 <Slide>
 
-## 비용 읽기
+### 비용 읽기
 
 - 예제 51종을 전부 따라 돌리고 에이전트를 여러 번 실행해도
   **하루 $1 안쪽**입니다.
@@ -252,7 +253,7 @@ $5 충전을 권했습니다.
 
 <Slide class="center">
 
-## 호출 한 번은 티끌이지만
+### 호출 한 번은 티끌이지만
 ## 에이전트는 루프입니다
 
 비용 감각은 첫날부터 장비처럼 챙깁니다.
@@ -290,7 +291,7 @@ flowchart LR
 
 <Slide>
 
-## 3일이 얹는 것
+### 3일이 얹는 것
 
 - **Day 1 (오늘)**: 프레임워크 없이 원리를 다집니다.
   LLM API의 본질부터 tool calling, ReAct와 그 너머의 루프, 하네스, MCP 맛보기

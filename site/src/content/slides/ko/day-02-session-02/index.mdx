@@ -5,6 +5,7 @@ presenter: CodeCompose
 date: "2026-08-15"
 order: 10
 transition: none
+toc_level: 3
 toc_open: false
 ---
 
@@ -36,7 +37,7 @@ Day 2 · 2. diet-agent: LangGraph 기본기
 
 ## 핵심 문장
 
-**Day 1의 수제 ReAct를 선언적 그래프로 다시 세운다**
+**Day 1의 수제 ReAct를 선언적 그래프로 다시 세운다**.
 
 같은 동작, 다른 구조
 
@@ -52,7 +53,7 @@ Day 1의 `lab` 하나가 세 컨테이너로 갈라집니다.
 
 <Slide>
 
-## 컨테이너 셋
+### 컨테이너 셋
 
 ```mermaid
 flowchart LR
@@ -66,7 +67,7 @@ flowchart LR
 
 <Slide>
 
-## 각자의 몫
+### 각자의 몫
 ::sub[역할 규약은 Day 2\~3의 모든 저장소에서 반복됩니다]
 
 - **`app`이 에이전트 본체입니다.** 그래프도, 도구도, LLM 키도 여기에만 있습니다.
@@ -78,7 +79,7 @@ flowchart LR
 
 <Slide>
 
-## 상담 요청 하나가 지나는 길
+### 상담 요청 하나가 지나는 길
 
 ```mermaid
 sequenceDiagram
@@ -103,7 +104,7 @@ sequenceDiagram
 
 <Slide class="center">
 
-## Day 1 4세션의 왕복 그대로입니다
+### Day 1 4세션의 왕복 그대로입니다
 
 달라진 것은 그 왕복이
 
@@ -113,7 +114,7 @@ sequenceDiagram
 
 <Slide>
 
-## 시작하기
+### 시작하기
 
 ```bash
 git clone https://github.com/2026-ai-agents/diet-agent.git
@@ -138,7 +139,7 @@ docker compose up --build
 
 <Slide>
 
-## 재료는 셋뿐입니다
+### 재료는 셋뿐입니다
 ::sub[에이전트의 제어 흐름을 상태를 나르는 그래프로 선언합니다]
 
 - **State**: 그래프가 나르는 데이터의 형태. 우리는 대화 메시지 목록 하나
@@ -150,7 +151,7 @@ docker compose up --build
 
 <Slide class="center">
 
-## 같은 에이전트가 이 저장소에 두 번 있습니다
+### 같은 에이전트가 이 저장소에 두 번 있습니다
 
 `demos/handloop.py` (Day 1 방식의 수제 루프, 대조군)
 
@@ -163,7 +164,7 @@ docker compose up --build
 
 <Slide>
 
-## 수제 루프: 제어 흐름이 함수 본문 안에
+### 수제 루프: 제어 흐름이 함수 본문 안에
 
 ```python
 # demos/handloop.py
@@ -186,7 +187,7 @@ for _ in range(MAX_STEPS):
 
 <Slide>
 
-## 그래프 선언: 제어 흐름이 코드 밖에
+### 그래프 선언: 제어 흐름이 코드 밖에
 
 ```python
 # app/agent/graph.py
@@ -206,7 +207,7 @@ graph = builder.compile()
 
 <Slide>
 
-## 무엇이 다른가
+### 무엇이 다른가
 
 | | 수제 루프 | 그래프 선언 |
 | --- | --- | --- |
@@ -221,7 +222,7 @@ graph = builder.compile()
 
 <Slide class="center">
 
-## 자유를 내주고 부품을 얻습니다
+### 자유를 내주고 부품을 얻습니다
 
 루프를 손으로 쥐고 있으면 자유롭지만, 모든 기능을 본문에 꿰매야 합니다.
 
@@ -234,7 +235,7 @@ Day 2\~3의 모든 개념이 그 부품들입니다.
 
 <Slide>
 
-## 시연: 대조군을 직접 돌려본다
+### 시연: 대조군을 직접 돌려본다
 ::sub[대조군도 이 저장소의 실행 코드입니다. clone 직후 바로 돌아갑니다]
 
 - 실행
@@ -256,7 +257,7 @@ docker compose exec app python demos/handloop.py   # 그래프 없는 diet-agent
 
 <Slide>
 
-## 2턴째도 기억합니다
+### 2턴째도 기억합니다
 
 ```text
 [사용자] 제가 방금 뭐 먹었다고 했죠? 저녁 추천도 해주세요.
@@ -273,7 +274,7 @@ docker compose exec app python demos/handloop.py   # 그래프 없는 diet-agent
 
 <Slide>
 
-## 차이는 마지막 줄에 있습니다
+### 차이는 마지막 줄에 있습니다
 
 - 그 기억은 `handloop.py`가 history 배열 **6칸을 직접 들고 다녔기 때문**입니다.
 - **저 배열을 잃으면 기억도 끝입니다**.
@@ -285,7 +286,7 @@ docker compose exec app python demos/handloop.py   # 그래프 없는 diet-agent
 
 <Slide>
 
-## 코드가 그림을 그린다: draw_mermaid
+### 코드가 그림을 그린다: draw_mermaid
 ::sub[선언의 보너스 하나]
 
 ```bash
@@ -300,7 +301,7 @@ docker compose exec app python -c \
 
 <Slide>
 
-## 코드가 뽑아 준 완성 그래프
+### 코드가 뽑아 준 완성 그래프
 
 ```mermaid
 ---
@@ -323,7 +324,7 @@ graph TD;
 
 <Slide class="center">
 
-## 이 그림은 코드가 그렸습니다
+### 이 그림은 코드가 그렸습니다
 
 선언과 그림의 **원천이 같으므로 어긋날 수가 없습니다**.
 
@@ -342,7 +343,7 @@ graph TD;
 
 <Slide>
 
-## 네 단이 무엇을 얹는가
+### 네 단이 무엇을 얹는가
 
 | 릴리즈 | 상태 | 테스트 |
 | --- | --- | --- |
@@ -358,7 +359,7 @@ graph TD;
 
 <Slide>
 
-## 그래프의 성장을 나란히
+### 그래프의 성장을 나란히
 
 ```mermaid
 flowchart LR
@@ -389,7 +390,7 @@ flowchart LR
 
 <Slide class="center">
 
-## v1.0은 그래프가 아니라 UI가 완성되는 단입니다
+### v1.0은 그래프가 아니라 UI가 완성되는 단입니다
 
 그래프는 **v0.3에서 이미 끝나 있습니다**.
 
@@ -405,7 +406,7 @@ flowchart LR
 
 <Slide>
 
-## 무엇이 서는가
+### 무엇이 서는가
 
 - compose가 3컨테이너를 띄우고, db에 **식품 45종**이 자동 적재됩니다.
 - 그래프는 LangGraph의 네 재료가 전부 보이는 최소 구성입니다.
@@ -415,7 +416,7 @@ flowchart LR
 
 <Slide>
 
-## 코드 발췌: 그래프 전체가 화면 하나에
+### 코드 발췌: 그래프 전체가 화면 하나에
 
 ```python
 class DietState(TypedDict):
@@ -442,7 +443,7 @@ graph = builder.compile()            # 선언을 실행 가능한 그래프로
 
 <Slide class="center">
 
-## 노드는 평범한 함수입니다
+### 노드는 평범한 함수입니다
 
 상태를 받아 상태 조각을 돌려줄 뿐,
 
@@ -454,7 +455,7 @@ LangGraph의 클래스를 상속하지도, 데코레이터를 달지도 않습�
 
 <Slide>
 
-## 코드 발췌: 그래프를 HTTP로
+### 코드 발췌: 그래프를 HTTP로
 ::sub[FastAPI는 그래프를 감싸는 얇은 껍데기입니다]
 
 ```python
@@ -470,7 +471,7 @@ def chat(req: ChatRequest) -> ChatResponse:
 
 <Slide>
 
-## 시연: 기동
+### 시연: 기동
 
 - 실행
 
@@ -500,7 +501,7 @@ graph TD;
 
 <Slide>
 
-## db에 시드가 실제로 실렸는가
+### db에 시드가 실제로 실렸는가
 
 - 실행
 
@@ -525,7 +526,7 @@ docker compose exec db psql -U diet -d dietdb \
 
 <Slide>
 
-## UI는 아직 빈 화면입니다
+### UI는 아직 빈 화면입니다
 
 ![v0.1의 빈 상담 화면: 입력창과 말풍선 틀만 있다](../../../courses/ko/day-02-session-02/ui-v01-empty.jpg)
 
@@ -533,7 +534,7 @@ docker compose exec db psql -U diet -d dietdb \
 
 <Slide>
 
-## 실행 결과: 도구 없는 상담
+### 실행 결과: 도구 없는 상담
 
 ```text
 질문: 점심에 김치찌개랑 공기밥 먹었어요. 어때요?
@@ -548,7 +549,7 @@ docker compose exec db psql -U diet -d dietdb \
 
 <Slide>
 
-## 결과 읽기: 그럴듯한데 수치가 없다
+### 결과 읽기: 그럴듯한데 수치가 없다
 
 - "들어가는 돼지고기나 참치"처럼 **일반론으로 얼버무립니다**.
 - 방금 psql로 확인한 대로 db에는 김치찌개 240kcal이 있는데,
@@ -569,7 +570,7 @@ docker compose exec db psql -U diet -d dietdb \
 
 <Slide>
 
-## 무엇이 바뀌나
+### 무엇이 바뀌나
 
 - `lookup_food`·`daily_total` 도구가 db를 조회합니다.
 - advisor는 매 턴 "도구를 부를 것인가, 답할 것인가"를 판단합니다.
@@ -580,7 +581,7 @@ docker compose exec db psql -U diet -d dietdb \
 
 <Slide>
 
-## 분기가 생긴 그래프
+### 분기가 생긴 그래프
 
 ```mermaid
 flowchart LR
@@ -594,7 +595,7 @@ flowchart LR
 
 <Slide>
 
-## 코드 발췌: 도구는 Day 1 규약 그대로
+### 코드 발췌: 도구는 Day 1 규약 그대로
 
 ```python
 class LookupFoodArgs(BaseModel):
@@ -619,7 +620,7 @@ pydantic이 스키마와 검증을 겸하고, 에러도 결과로 돌려줍니�
 
 <Slide>
 
-## 왜 @tool 데코레이터·ToolNode가 아닌가
+### 왜 @tool 데코레이터·ToolNode가 아닌가
 ::sub[의도된 선택입니다]
 
 - 프리빌트들은 langchain-core의 메시지·모델 타입 위에 서 있습니다.
@@ -633,7 +634,7 @@ pydantic이 스키마와 검증을 겸하고, 에러도 결과로 돌려줍니�
 
 <Slide>
 
-## 코드 발췌: conditional edge
+### 코드 발췌: conditional edge
 
 ```python
 def route_after_advisor(state: DietState) -> Literal["tools", "__end__"]:
@@ -650,7 +651,7 @@ builder.add_edge("tools", "advisor")   # observation은 다시 판단으로 돌�
 
 <Slide class="center">
 
-## 분기 조건이 함수 하나에 격리되어 있어
+### 분기 조건이 함수 하나에 격리되어 있어
 
 ## 그래프 그림과 코드가 1:1입니다
 
@@ -660,7 +661,7 @@ Day 1에서는 이 분기가 while 루프 본문 안에 묻혀 있었습니다.
 
 <Slide>
 
-## 시연
+### 시연
 
 - 실행
 
@@ -686,7 +687,7 @@ docker compose exec app python demos/trace.py "김치찌개랑 공기밥 먹었�
 
 <Slide>
 
-## 결과 읽기: 답의 성격이 바뀌었다
+### 결과 읽기: 답의 성격이 바뀌었다
 
 - v0.1과 **같은 질문**인데, 일반론 대신 **db 원본 수치**가 근거로 나옵니다.
   240 + 310 = 550
@@ -697,7 +698,7 @@ docker compose exec app python demos/trace.py "김치찌개랑 공기밥 먹었�
 
 <Slide class="center">
 
-## 트레이스를 공짜로 얻은 것도 봐 두세요
+### 트레이스를 공짜로 얻은 것도 봐 두세요
 
 `graph.stream(stream_mode="updates")` 한 줄이
 **노드 단위 관찰**을 줍니다.
@@ -708,7 +709,7 @@ Day 1에서는 StepRecord를 손으로 만들었던 자리입니다.
 
 <Slide>
 
-## 그래프도 실측으로: 분기가 그림에 나타난다
+### 그래프도 실측으로: 분기가 그림에 나타난다
 
 - 실행
 
@@ -740,7 +741,7 @@ graph TD;
 
 <Slide>
 
-## 그래프 구조의 변화는 여기가 마지막입니다
+### 그래프 구조의 변화는 여기가 마지막입니다
 
 - v0.3과 v1.0에서 같은 명령을 실행하면 출력이 **바이트 단위로 같습니다**.
 - v0.3의 reducer와 checkpointer는 **상태(State)와 컴파일 옵션의 일**이라
@@ -759,7 +760,7 @@ reducer 한 줄이 멀티턴을 만든다.
 
 <Slide>
 
-## 두 가지가 바뀝니다
+### 두 가지가 바뀝니다
 
 - State의 messages에 **reducer**가 붙어 노드는 **델타만** 돌려줍니다.
 - **checkpointer**가 thread_id별 상태를 저장합니다.
@@ -770,7 +771,7 @@ reducer 한 줄이 멀티턴을 만든다.
 
 <Slide>
 
-## reducer가 있고 없고
+### reducer가 있고 없고
 
 ```mermaid
 flowchart LR
@@ -790,7 +791,7 @@ flowchart LR
 
 <Slide>
 
-## 코드 발췌: 핵심은 한 줄
+### 코드 발췌: 핵심은 한 줄
 
 ```python
 class DietState(TypedDict):
@@ -808,7 +809,7 @@ graph = builder.compile(checkpointer=MemorySaver())   # thread별 기억
 
 <Slide>
 
-## 호출하는 쪽도 바뀝니다
+### 호출하는 쪽도 바뀝니다
 
 ```python
 result = graph.invoke(
@@ -824,7 +825,7 @@ result = graph.invoke(
 
 <Slide>
 
-## thread_id는 대화의 열쇠
+### thread_id는 대화의 열쇠
 
 ```mermaid
 flowchart LR
@@ -838,7 +839,7 @@ flowchart LR
 
 <Slide>
 
-## 시연: thread 안의 기억
+### 시연: thread 안의 기억
 
 - 실행
 
@@ -862,7 +863,7 @@ docker compose exec app python demos/multiturn.py
 
 <Slide>
 
-## 그리고 thread 밖의 백지
+### 그리고 thread 밖의 백지
 
 ```text
 === thread B — 새 대화 ===
@@ -877,7 +878,7 @@ docker compose exec app python demos/multiturn.py
 
 <Slide>
 
-## 사고 재현: reducer가 없으면
+### 사고 재현: reducer가 없으면
 ::sub[같은 노드·엣지·checkpointer에서 reducer만 뺀 그래프]
 
 ```bash
@@ -888,7 +889,7 @@ docker compose exec app python demos/broken_reducer.py
 
 <Slide>
 
-## 사고 ①: 대화가 끊긴다
+### 사고 ①: 대화가 끊긴다
 
 ```text
 === 사고 ①: 대화가 끊긴다 (도구 없는 2턴) ===
@@ -905,7 +906,7 @@ docker compose exec app python demos/broken_reducer.py
 
 <Slide>
 
-## 사고 ②: 도구가 끼면 한 턴도 못 버틴다
+### 사고 ②: 도구가 끼면 한 턴도 못 버틴다
 
 ```text
 === 사고 ②: 도구가 끼면 한 턴도 못 버틴다 ===
@@ -918,7 +919,7 @@ docker compose exec app python demos/broken_reducer.py
 
 <Slide>
 
-## 결과 읽기: 고아 tool 메시지
+### 결과 읽기: 고아 tool 메시지
 
 - tools 노드의 델타(role이 tool인 메시지)가 **상태를 덮어씁니다**.
 - 짝이 되는 `tool_calls`를 잃은 **고아 tool 메시지**만 남고,
@@ -929,7 +930,7 @@ docker compose exec app python demos/broken_reducer.py
 
 <Slide class="center">
 
-## reducer는 장식이 아닙니다
+### reducer는 장식이 아닙니다
 
 없으면 한 턴도 못 버티는 사고를 실측으로 봤습니다.
 
@@ -939,7 +940,7 @@ docker compose exec app python demos/broken_reducer.py
 
 <Slide>
 
-## 스트리밍도 여기서
+### 스트리밍도 여기서
 
 - 실행
 
@@ -963,7 +964,7 @@ advisor가 토큰을 custom 스트림으로 흘리고(`get_stream_writer`),
 
 <Slide>
 
-## app은 이것을 SSE로 relay합니다
+### app은 이것을 SSE로 relay합니다
 
 ```text
 data: {"type": "step", "node": "advisor", "tools": ["lookup_food"]}
@@ -979,7 +980,7 @@ data: {"type": "answer", "answer": "…전체 답…"}
 
 <Slide>
 
-## 결과 읽기: 기억의 정체는 Day 1 그대로
+### 결과 읽기: 기억의 정체는 Day 1 그대로
 
 - 서버가 아니라 **배열이 기억**하고,
   checkpointer는 그 배열을 thread_id로 보관해 주는 장치입니다.
@@ -990,7 +991,7 @@ data: {"type": "answer", "answer": "…전체 답…"}
 
 <Slide class="center">
 
-## 이 결핍이 다음 세션의 첫 장면입니다
+### 이 결핍이 다음 세션의 첫 장면입니다
 
 PostgreSQL로 메우는 것이 booking-agent이고,
 
@@ -1008,7 +1009,7 @@ UI까지 연결
 
 <Slide>
 
-## 무엇이 완성되나
+### 무엇이 완성되나
 
 - Streamlit UI가 세션마다 thread_id를 만들어 서버의 기억과 연결됩니다.
 - 답은 SSE로 **토큰이 오는 대로** 그려집니다.
@@ -1019,7 +1020,7 @@ UI까지 연결
 
 <Slide>
 
-## UI가 스트림을 받는 흐름
+### UI가 스트림을 받는 흐름
 
 ```mermaid
 sequenceDiagram
@@ -1040,7 +1041,7 @@ sequenceDiagram
 
 <Slide>
 
-## 코드 발췌: UI가 스트림을 그리는 법
+### 코드 발췌: UI가 스트림을 그리는 법
 
 ```python
 def tokens():
@@ -1059,7 +1060,7 @@ answer = st.write_stream(tokens())
 
 <Slide>
 
-## 시연
+### 시연
 
 ```bash
 git checkout v1.0 && docker compose up --build    # 제품 완성판
@@ -1073,7 +1074,7 @@ git checkout v1.0 && docker compose up --build    # 제품 완성판
 
 <Slide>
 
-## 완성 화면
+### 완성 화면
 
 ![v1.0 상담 화면: 1턴의 DB 근거 분석과, 그것을 기억한 2턴의 저녁 추천](../../../courses/ko/day-02-session-02/ui-v10-multiturn.jpg)
 
@@ -1081,7 +1082,7 @@ git checkout v1.0 && docker compose up --build    # 제품 완성판
 
 <Slide>
 
-## Day 1과 나란히: 같은 동작, 다른 구조
+### Day 1과 나란히: 같은 동작, 다른 구조
 
 | | day-01 (수제 루프) | diet-agent (LangGraph) |
 | --- | --- | --- |
@@ -1096,7 +1097,7 @@ git checkout v1.0 && docker compose up --build    # 제품 완성판
 
 <Slide class="center">
 
-## 동작은 같습니다
+### 동작은 같습니다
 
 달라진 것은 그 동작이 **선언**되어 있어서,
 
@@ -1113,7 +1114,7 @@ git checkout v1.0 && docker compose up --build    # 제품 완성판
 
 <Slide>
 
-## 대역과 진짜의 경계
+### 대역과 진짜의 경계
 
 - LLM은 **각본 대역**으로 갈아끼웁니다.
 - 도구가 때리는 **db는 진짜**를 씁니다.
@@ -1123,7 +1124,7 @@ git checkout v1.0 && docker compose up --build    # 제품 완성판
 
 <Slide>
 
-## 분기와 db 접근을 한 문장으로
+### 분기와 db 접근을 한 문장으로
 
 ```python
 def test_tool_branch_roundtrip(monkeypatch):
@@ -1143,7 +1144,7 @@ def test_tool_branch_roundtrip(monkeypatch):
 
 <Slide>
 
-## 나머지 약속들
+### 나머지 약속들
 
 - `test_same_thread_remembers`: 2턴째 호출에 1턴 히스토리가 실려 가는지
 - `test_threads_are_isolated`: 다른 thread는 백지로 시작하는지
@@ -1158,9 +1159,9 @@ def test_tool_branch_roundtrip(monkeypatch):
 ## 이 세션이 남기는 것
 
 - LangGraph의 재료는 넷뿐이다: State, Node, Edge, compile.
-  노드는 평범한 함수다
+  노드는 평범한 함수다.
 - 분기는 conditional edge 함수의 선언이고, 그래프 그림과 코드가 1:1이 된다.
-- reducer는 장식이 아니다. 없으면 한 턴도 못 버티는 사고를 실측으로 봤다
+- reducer는 장식이 아니다. 없으면 한 턴도 못 버티는 사고를 실측으로 봤다.
 - checkpointer는 배열을 thread별로 보관하는 장치이고,
   MemorySaver의 휘발성이 다음 세션의 출발점이 된다.
 - 테스트는 각본 LLM + 진짜 db. 어느 태그에서든 통과한다.

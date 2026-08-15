@@ -5,6 +5,7 @@ presenter: CodeCompose
 date: "2026-08-14"
 order: 8
 transition: none
+toc_level: 3
 toc_open: false
 ---
 
@@ -85,7 +86,7 @@ flowchart LR
 
 <Slide>
 
-## 1. 데코레이터 하나
+### 1. 데코레이터 하나
 ::sub[01_mcp_server.py · 평범한 함수 2개를 MCP 서버에 싣는다]
 
 - 코드
@@ -117,7 +118,7 @@ docker compose exec lab python examples/07_mcp/01_mcp_server.py
 
 <Slide>
 
-## 실행하면 침묵합니다
+### 실행하면 침묵합니다
 
 - 기본(stdio)으로 단독 실행하면 아무 출력 없이 침묵하고, Ctrl+C로 종료합니다.
 - 더 이상한 것: 이 상태에서 다른 터미널로 2번 클라이언트를 돌려도
@@ -128,7 +129,7 @@ docker compose exec lab python examples/07_mcp/01_mcp_server.py
 
 <Slide>
 
-## 이상한 게 아니라 stdio 전송의 본질입니다
+### 이상한 게 아니라 stdio 전송의 본질입니다
 
 - stdio에서는 **클라이언트가 서버를 자기 하위 프로세스로 직접 띄워**
   표준입출력으로 대화합니다.
@@ -140,7 +141,7 @@ docker compose exec lab python examples/07_mcp/01_mcp_server.py
 
 <Slide>
 
-## 스키마를 손으로 쓴 곳이 없습니다
+### 스키마를 손으로 쓴 곳이 없습니다
 
 - 함수 시그니처와 docstring이 **그대로 프로토콜의 도구 명세**가 됩니다.
   타입 힌트에서 자동 생성됩니다.
@@ -158,7 +159,7 @@ docker compose exec lab python examples/07_mcp/01_mcp_server.py
 
 <Slide>
 
-## 2. 클라이언트
+### 2. 클라이언트
 ::sub[02_list_tools.py · 키 없이 돌고, 서버를 미리 띄울 필요도 없다]
 
 - 코드
@@ -184,7 +185,7 @@ docker compose exec lab python examples/07_mcp/02_list_tools.py
 
 <Slide>
 
-## 받은 도구 목록
+### 받은 도구 목록
 
 ```text
 === 서버가 내어놓은 도구 목록 (프로토콜로 수신) ===
@@ -201,7 +202,7 @@ docker compose exec lab python examples/07_mcp/02_list_tools.py
 
 <Slide>
 
-## 결과 읽기: 구현이 한 줄도 없는데 돕니다
+### 결과 읽기: 구현이 한 줄도 없는데 돕니다
 
 - 수신된 입력 스키마를 보세요.
   **4세션에서 pydantic으로 뽑던 것과 같은 JSON 스키마**입니다.
@@ -218,7 +219,7 @@ docker compose exec lab python examples/07_mcp/02_list_tools.py
 
 <Slide>
 
-## 3. 변환 함수 하나
+### 3. 변환 함수 하나
 ::sub[03_mcp_to_agent.py · 루프는 도구가 어디서 왔는지 모른다]
 
 - 코드
@@ -247,7 +248,7 @@ docker compose exec lab python examples/07_mcp/03_mcp_to_agent.py
 
 <Slide>
 
-## 실행 결과
+### 실행 결과
 
 ```text
 === 프로토콜로 받은 도구 2개를 루프에 장착 ===
@@ -265,7 +266,7 @@ docker compose exec lab python examples/07_mcp/03_mcp_to_agent.py
 
 <Slide class="center">
 
-## 변환 함수가 하는 일은 필드 1:1 복사뿐입니다
+### 변환 함수가 하는 일은 필드 1:1 복사뿐입니다
 
 MCP의 도구 명세와 4세션의 도구 명세는 사실상 같은 물건이고,
 
@@ -283,7 +284,7 @@ MCP의 도구 명세와 4세션의 도구 명세는 사실상 같은 물건이�
 
 <Slide>
 
-## 4. HTTP 전송
+### 4. HTTP 전송
 ::sub[04_http_client.py · 2번과 똑같은 일을 익숙한 그림으로]
 
 - 코드
@@ -311,7 +312,7 @@ docker compose exec lab python examples/07_mcp/04_http_client.py
 
 <Slide>
 
-## 이번에는 서버 쪽에 로그가 흐릅니다
+### 이번에는 서버 쪽에 로그가 흐릅니다
 
 ```text
 INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
@@ -329,7 +330,7 @@ Terminating session: e92899507abc46a1a04022cc5edfa050
 
 <Slide>
 
-## 두 전송의 차이
+### 두 전송의 차이
 
 | | stdio (2번) | HTTP (4번) |
 | --- | --- | --- |
@@ -344,7 +345,7 @@ Day 3에서 `food-rag-agent`를 세상에 내어줄 때가 바로 이 HTTP 형�
 
 <Slide class="center">
 
-## Day 3 예고: 역방향
+### Day 3 예고: 역방향
 
 오늘은 도구를 **가져오는** 쪽이었습니다.
 
@@ -370,7 +371,7 @@ Day 3에서는 우리가 만든 에이전트를 MCP 서버로 만들어 **내어
 
 <Slide class="center">
 
-## 내일은
+### 내일은
 
 이 **수제 루프**를 LangGraph의 **선언적 그래프**로 다시 세웁니다.
 

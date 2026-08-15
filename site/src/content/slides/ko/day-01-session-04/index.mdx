@@ -5,6 +5,7 @@ presenter: CodeCompose
 date: "2026-08-14"
 order: 4
 transition: none
+toc_level: 3
 toc_open: false
 ---
 
@@ -83,7 +84,7 @@ flowchart LR
 
 <Slide>
 
-## 요청에 tools를 실으면 이렇게 생겼습니다
+### 요청에 tools를 실으면 이렇게 생겼습니다
 
 ```json
 {
@@ -106,7 +107,7 @@ flowchart LR
 
 <Slide class="center">
 
-## 모델에게 보이는 것은 이 JSON뿐입니다
+### 모델에게 보이는 것은 이 JSON뿐입니다
 
 함수 본문도, 리턴 값도, 파일 이름도 보이지 않습니다.
 
@@ -116,7 +117,7 @@ flowchart LR
 
 <Slide>
 
-## 1. 환율 도구 하나짜리 최소 구성
+### 1. 환율 도구 하나짜리 최소 구성
 ::sub[01_single_tool.py]
 
 - 코드
@@ -142,7 +143,7 @@ docker compose exec lab python examples/03_tools/01_single_tool.py
 
 <Slide>
 
-## 왕복 두 번, 그리고 답
+### 왕복 두 번, 그리고 답
 
 ```text
 === 1왕복: 모델이 도구를 요청한다 ===
@@ -163,7 +164,7 @@ docker compose exec lab python examples/03_tools/01_single_tool.py
 
 <Slide>
 
-## 세 줄로 요약하면
+### 세 줄로 요약하면
 
 ```python
 call = resp.choices[0].message.tool_calls[0]   # ① 모델이 요청했다
@@ -180,7 +181,7 @@ messages.append({"role": "tool", "tool_call_id": call.id, …})  # ③ 우리가
 
 <Slide>
 
-## 2. tool call의 실체: 메시지 필드 하나
+### 2. tool call의 실체: 메시지 필드 하나
 ::sub[02_roundtrip_raw.py · 같은 왕복을 원문으로]
 
 - 실행
@@ -210,7 +211,7 @@ docker compose exec lab python examples/03_tools/02_roundtrip_raw.py
 
 <Slide>
 
-## 이 시점의 messages 배열
+### 이 시점의 messages 배열
 
 ```text
 === ③ 이 시점의 messages 배열 전체 구조 ===
@@ -230,7 +231,7 @@ docker compose exec lab python examples/03_tools/02_roundtrip_raw.py
 
 <Slide class="center">
 
-## "모델이 함수를 호출한다"의 실체는
+### "모델이 함수를 호출한다"의 실체는
 
 **assistant 메시지의 `tool_calls` 필드 하나**
 
@@ -238,7 +239,7 @@ docker compose exec lab python examples/03_tools/02_roundtrip_raw.py
 
 <Slide>
 
-## 왜 `content`가 `null`인가
+### 왜 `content`가 `null`인가
 
 - 그 턴에 모델은 **답을 쓰지 않았습니다**. 실행 요청만 보냈습니다.
 - 그래서 `content`는 비고, `tool_calls`만 채워집니다.
@@ -257,7 +258,7 @@ docker compose exec lab python examples/03_tools/02_roundtrip_raw.py
 
 <Slide>
 
-## 우리가 매일 만나는 도구들
+### 우리가 매일 만나는 도구들
 ::sub[모델 자체는 텍스트 생성밖에 못 하는데, 제품들은 분명히 그 이상을 합니다]
 
 - ChatGPT가 "검색 중…"을 띄우는 순간: **웹 검색 도구**가 불린 것
@@ -271,7 +272,7 @@ docker compose exec lab python examples/03_tools/02_roundtrip_raw.py
 
 <Slide class="center">
 
-## 같은 모델이라도
+### 같은 모델이라도
 ## 쥐여준 도구 목록이 다르면 다른 제품입니다
 
 모델이 "할 수 있는 일"의 경계는
@@ -281,7 +282,7 @@ docker compose exec lab python examples/03_tools/02_roundtrip_raw.py
 
 <Slide>
 
-## 도구가 메우는 세 가지 구멍
+### 도구가 메우는 세 가지 구멍
 
 ```mermaid
 flowchart TD
@@ -299,7 +300,7 @@ flowchart TD
 
 <Slide>
 
-## 세 구멍 읽기
+### 세 구멍 읽기
 
 - **지식**: 모델은 학습 시점 이후를 모르고, 우리 회사 DB는 아예 모릅니다.
   검색·조회 도구가 그 구멍을 메웁니다.
@@ -313,7 +314,7 @@ flowchart TD
 
 <Slide>
 
-## 만들 때 지켜야 하는 것
+### 만들 때 지켜야 하는 것
 ::sub[남은 예제들이 하나씩 증명할 규율]
 
 - **모델에게 도구는 문자열이 전부다**: 코드가 아니라 이름·설명·스키마만
@@ -336,7 +337,7 @@ flowchart TD
 
 <Slide>
 
-## 4. Pydantic: 스키마와 검증이 한 몸
+### 4. Pydantic: 스키마와 검증이 한 몸
 ::sub[03_pydantic_schema.py · 스키마 생성 부분은 키 없이 돈다]
 
 - 코드
@@ -362,7 +363,7 @@ docker compose exec lab python examples/03_tools/03_pydantic_schema.py
 
 <Slide>
 
-## 파이썬 클래스에서 나온 JSON 스키마
+### 파이썬 클래스에서 나온 JSON 스키마
 
 ```text
 === pydantic 모델에서 뽑은 JSON 스키마 ===
@@ -386,7 +387,7 @@ docker compose exec lab python examples/03_tools/03_pydantic_schema.py
 
 <Slide>
 
-## Field가 스키마의 어디로 가나
+### Field가 스키마의 어디로 가나
 
 | 파이썬 쪽 | JSON 스키마 쪽 | 모델에게 주는 정보 |
 | --- | --- | --- |
@@ -402,7 +403,7 @@ docker compose exec lab python examples/03_tools/03_pydantic_schema.py
 
 <Slide>
 
-## 5. 병렬 도구 호출: 독립 조회는 한 턴에
+### 5. 병렬 도구 호출: 독립 조회는 한 턴에
 ::sub[04_parallel_tools.py · 항공과 숙소, 서로 의존이 없는 조회 2건]
 
 - 실행
@@ -431,7 +432,7 @@ docker compose exec lab python examples/03_tools/04_parallel_tools.py
 
 <Slide>
 
-## 병렬 요청을 처리할 때 주의
+### 병렬 요청을 처리할 때 주의
 
 - 결과 메시지는 **요청마다 하나씩**, `tool_call_id`를 맞춰 넣습니다.
 - 하나라도 빠뜨리면 다음 호출에서 프로바이더가 거부합니다.
@@ -443,7 +444,7 @@ docker compose exec lab python examples/03_tools/04_parallel_tools.py
 
 <Slide>
 
-## 6. 인자 제약: 스키마는 프롬프트보다 강하다
+### 6. 인자 제약: 스키마는 프롬프트보다 강하다
 ::sub[05_arg_constraints.py · 키 없이 돈다]
 
 - 실행
@@ -475,7 +476,7 @@ docker compose exec lab python examples/03_tools/05_arg_constraints.py
 
 <Slide>
 
-## 7. tool_choice: 쓸지 말지를 코드가 정한다
+### 7. tool_choice: 쓸지 말지를 코드가 정한다
 ::sub[06_tool_choice.py · 도구가 전혀 필요 없는 인사말에 세 값을 시험]
 
 - 실행
@@ -500,7 +501,7 @@ docker compose exec lab python examples/03_tools/06_tool_choice.py
 
 <Slide>
 
-## tool_choice 세 값 정리
+### tool_choice 세 값 정리
 
 | 값 | 뜻 | 쓰는 자리 |
 | --- | --- | --- |
@@ -521,7 +522,7 @@ docker compose exec lab python examples/03_tools/06_tool_choice.py
 
 <Slide>
 
-## 8. 에러 되먹임: 실패를 알려주면 복구한다
+### 8. 에러 되먹임: 실패를 알려주면 복구한다
 ::sub[07_tool_error.py · 도구는 THB(태국 바트)를 모른다]
 
 - 코드
@@ -551,7 +552,7 @@ docker compose exec lab python examples/03_tools/07_tool_error.py
 
 <Slide>
 
-## 모델이 스스로 방법을 바꾼다
+### 모델이 스스로 방법을 바꾼다
 
 ```text
 === [2] 최종 답 ===
@@ -567,7 +568,7 @@ docker compose exec lab python examples/03_tools/07_tool_error.py
 
 <Slide>
 
-## 모델이 읽을 에러 메시지 쓰는 법
+### 모델이 읽을 에러 메시지 쓰는 법
 
 - **무엇이 잘못됐는지**: "지원하지 않는 통화: THB"
 - **어떻게 고치면 되는지**: "지원 목록: ['JPY', 'USD']"
@@ -578,7 +579,7 @@ docker compose exec lab python examples/03_tools/07_tool_error.py
 
 <Slide>
 
-## 9. 인자 환각: 스키마는 통과해도 값은 허구일 수 있다
+### 9. 인자 환각: 스키마는 통과해도 값은 허구일 수 있다
 ::sub[08_hallucinated_args.py · 호텔 목록을 안 알려주고 예약을 시킨다]
 
 - 실행
@@ -603,7 +604,7 @@ docker compose exec lab python examples/03_tools/08_hallucinated_args.py
 
 <Slide class="center">
 
-## 스키마는 형태만 안다
+### 스키마는 형태만 안다
 
 '오사카 오션뷰 호텔'은 문자열 타입이라 스키마는 통과합니다.
 
@@ -615,7 +616,7 @@ Day 2 `food-rag-agent` 검증자의 씨앗입니다.
 
 <Slide>
 
-## 검증은 두 층입니다
+### 검증은 두 층입니다
 
 | 층 | 무엇을 보는가 | 누가 하는가 |
 | --- | --- | --- |
@@ -638,7 +639,7 @@ Day 2 `food-rag-agent` 검증자의 씨앗입니다.
 
 <Slide>
 
-## 10. 구조화 출력: LLM을 타입 있는 함수처럼
+### 10. 구조화 출력: LLM을 타입 있는 함수처럼
 ::sub[09_structured_output.py · 실행할 생각이 없어도 스키마로 강제할 수 있다]
 
 - 코드
@@ -663,7 +664,7 @@ docker compose exec lab python examples/03_tools/09_structured_output.py
 
 <Slide>
 
-## 자유 문장이 검증된 객체가 되는 순간
+### 자유 문장이 검증된 객체가 되는 순간
 
 ```text
 === 검증까지 통과한 타입 있는 결과 ===
@@ -680,7 +681,7 @@ docker compose exec lab python examples/03_tools/09_structured_output.py
 
 <Slide>
 
-## 세 가지 출력 강제 방식 비교
+### 세 가지 출력 강제 방식 비교
 
 | 방식 | 보장하는 것 | 한계 |
 | --- | --- | --- |
@@ -695,7 +696,7 @@ docker compose exec lab python examples/03_tools/09_structured_output.py
 
 <Slide>
 
-## 11. 도구 선택: 이름과 설명이 품질을 가른다
+### 11. 도구 선택: 이름과 설명이 품질을 가른다
 ::sub[10_tool_selection.py · 같은 10개 도구를 두 벌로 등록]
 
 ```bash
@@ -719,7 +720,7 @@ docker compose exec lab python examples/03_tools/10_tool_selection.py
 
 <Slide class="center">
 
-## 도구 설명은 곧 프롬프트입니다
+### 도구 설명은 곧 프롬프트입니다
 
 실행 코드는 한 줄도 바뀌지 않았는데, 문자열을 지우자 선택이 틀렸습니다.
 
@@ -729,7 +730,7 @@ docker compose exec lab python examples/03_tools/10_tool_selection.py
 
 <Slide>
 
-## 도구 설명 쓰는 법
+### 도구 설명 쓰는 법
 ::sub[사람이 아니라 모델이 읽습니다]
 
 - **언제 쓰는 도구인지**를 씁니다. 무엇을 하는지만 쓰면 부족합니다.
@@ -750,7 +751,7 @@ docker compose exec lab python examples/03_tools/10_tool_selection.py
 
 <Slide>
 
-## 요청에 실려 가는 것
+### 요청에 실려 가는 것
 
 - **messages**: 지금까지의 대화 전체.
   이전의 도구 요청과 결과도 여기 쌓여 있습니다.
@@ -766,7 +767,7 @@ docker compose exec lab python examples/03_tools/10_tool_selection.py
 
 <Slide>
 
-## 구조도: 판단과 실행의 순환
+### 구조도: 판단과 실행의 순환
 
 ```mermaid
 flowchart TD
@@ -786,7 +787,7 @@ flowchart TD
 
 <Slide>
 
-## 역할별 흐름: 누가 무엇을 하는가
+### 역할별 흐름: 누가 무엇을 하는가
 
 ```mermaid
 sequenceDiagram
@@ -810,7 +811,7 @@ sequenceDiagram
 
 <Slide>
 
-## 세 주체의 책임
+### 세 주체의 책임
 
 - **모델**: 판단만 합니다. 어떤 도구를 어떤 인자로 쓸지 정하고, 결과를 읽고,
   답을 씁니다. **실행 능력은 없습니다**.
@@ -823,7 +824,7 @@ sequenceDiagram
 
 <Slide>
 
-## 이 구조가 알려주는 것
+### 이 구조가 알려주는 것
 
 - **실행 주체는 항상 사용자 쪽입니다**: ChatGPT의 검색도, Claude Code의
   파일 수정도, 실행은 서비스의 코드가 합니다.
@@ -845,7 +846,7 @@ sequenceDiagram
 
 <Slide>
 
-## v0.2 코드 포인트: agent/tools.py
+### v0.2 코드 포인트: agent/tools.py
 
 ```python
 class BudgetArgs(BaseModel):
@@ -869,7 +870,7 @@ def run_tool(name: str, raw_arguments: str) -> str:
 
 <Slide>
 
-## 코드에서 보는 곳
+### 코드에서 보는 곳
 
 - **docstring이 곧 도구 설명입니다**.
   11번 예제의 교훈이 구조로 박힌 자리입니다.
@@ -881,7 +882,7 @@ def run_tool(name: str, raw_arguments: str) -> str:
 
 <Slide>
 
-## 확인
+### 확인
 
 ```bash
 git checkout v0.2
@@ -896,7 +897,7 @@ v0.2의 에이전트는 도구를 **딱 1왕복만** 씁니다.
 
 <Slide>
 
-## v0.1에서 v0.2로, diff로 읽으면
+### v0.1에서 v0.2로, diff로 읽으면
 
 ```bash
 git diff v0.1 v0.2

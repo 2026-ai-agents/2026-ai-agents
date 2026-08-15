@@ -30,9 +30,9 @@ const cut = data.compact.beforeTokens - data.compact.afterTokens;
   </div>
 
   <div class="cgrow-stepper">
-    <button type="button" data-prev aria-label="이전 스텝">←</button>
+    <button type="button" data-cgrow-prev aria-label="이전 스텝">←</button>
     <div class="cgrow-ticks" data-ticks></div>
-    <button type="button" data-next aria-label="다음 스텝">→</button>
+    <button type="button" data-cgrow-next aria-label="다음 스텝">→</button>
   </div>
 
   <div class="cgrow-body">
@@ -280,8 +280,8 @@ const cut = data.compact.beforeTokens - data.compact.afterTokens;
     const list = $('[data-list]');
     const chart = $<HTMLCanvasElement>('[data-chart]');
     const ctx = chart.getContext('2d')!;
-    const prev = $<HTMLButtonElement>('[data-prev]');
-    const next = $<HTMLButtonElement>('[data-next]');
+    const prev = $<HTMLButtonElement>('[data-cgrow-prev]');
+    const next = $<HTMLButtonElement>('[data-cgrow-next]');
     const fold = $<HTMLButtonElement>('[data-fold]');
     const summary = $('[data-summary]');
 
