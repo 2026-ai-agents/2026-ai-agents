@@ -1,0 +1,200 @@
+---
+/**
+ * 하이브리드 라우팅을 직접 돌려 보는 도구 (Day 3 · 2세션).
+ *
+ * 판정 로직은 `src/lib/day-03-rules.mjs`에 있고, energy-agent의
+ * `_rule_route`·`wants_chart`를 규칙 그대로 옮긴 것이다. 파이썬 원본과 같은
+ * 입력 60건을 대조해 전부 일치하는 것을 확인했다 (`docs/day-03-rules-port.md`).
+ *
+ * 여기 없는 것: LLM이 정하는 자리. 규칙이 멈추면 그다음은 모델의 판단이고,
+ * 그 판단은 실행마다 흔들린다(교안이 정확히 그것을 재고 있다). 그래서 이
+ * 도구는 "여기부터는 LLM"이라고 표시하고 멈춘다.
+ */
+const PRESETS = [
+  '지난달 요금이 왜 이렇게 많이 나왔나요?',
+  '최근 1년 추이를 그래프로 보여주세요',
+  '제 계약전력이 몇 kW인가요?',
+  '사용량 차트 좀 뽑아줘',
+];
+
+const RULE = `def _rule_route(state):
+    if not HYBRID_ROUTING: return None
+    done_agents = {f["agent"] for f in state["findings"]}
+    if state["answer"]:                    return "done", "규칙: 답변이 나왔다"
+    if "analyst" not in done_agents:       return "analyst", "규칙: 자료가 없으면 분석부터"
+    if wants_chart(state["question"]) and "visualizer" not in done_agents:
+        return "visualizer", "규칙: 그래프를 명시적으로 요청했다"
+    return None                            # 애매하면 LLM에게 묻는다`;
+---
+
+<div class="rrule" data-rrule>
+  <div class="rrule-head">
+    <strong>라우팅을 규칙이 어디까지 정하는지 보기</strong>
+    <span>
+      아래 판정은 모델을 부르지 않는 결정적 코드입니다. 그래서 이 페이지에서
+      그대로 돌아갑니다. 흉내가 아니라 energy-agent의 <code>_rule_route</code>와
+      같은 규칙이고, 같은 입력에 같은 답을 냅니다. 질문을 바꿔 보세요.
+    </span>
+  </div>
+
+  <div class="rrule-rule"><code set:html={RULE} /></div>
+
+  <label class="rrule-label" for="rrule-q">고객의 질문</label>
+  <input class="rrule-input" id="rrule-q" data-q type="text" value={PRESETS[0]} />
+
+  <div class="rrule-presets">
+    {PRESETS.map((preset) => (
+      <button type="button" data-preset={preset}>{preset}</button>
+    ))}
+  </div>
+
+  <label class="rrule-toggle">
+    <input type="checkbox" data-hybrid checked />
+    <span>하이브리드 라우팅 (v0.3). 끄면 v0.2처럼 <strong>모든</strong> 결정을 LLM이 합니다</span>
+  </label>
+
+  <ol class="rrule-steps" data-steps></ol>
+
+  <p class="rrule-foot" data-foot></p>
+</div>
+
+<script>
+  import { traceSupervisor, wantsChart, CHART_WORDS, SUPERVISOR_AGENTS }
+    from '../lib/day-03-rules.mjs';
+
+  const root = document.querySelector<HTMLElement>('[data-rrule]');
+  if (root) init(root);
+
+  function init(root: HTMLElement) {
+    const $ = <T extends HTMLElement>(s: string) => root.querySelector<T>(s)!;
+    const input = $<HTMLInputElement>('[data-q]');
+    const hybrid = $<HTMLInputElement>('[data-hybrid]');
+    const steps = $<HTMLOListElement>('[data-steps]');
+    const foot = $<HTMLParagraphElement>('[data-foot]');
+    const esc = (s: string) =>
+      s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+    root.querySelectorAll<HTMLButtonElement>('[data-preset]').forEach((button) =>
+      button.addEventListener('click', () => {
+        input.value = button.dataset.preset ?? '';
+        render();
+      }));
+
+    input.addEventListener('input', render);
+    hybrid.addEventListener('change', render);
+    render();
+
+    function render() {
+      const question = input.value;
+      const on = hybrid.checked;
+      const trace = traceSupervisor(question, { hybrid: on });
+
+      steps.innerHTML = trace
+        .map((step) => {
+          const labels = SUPERVISOR_AGENTS as Record<string, string>;
+          const label = labels[step.next] ?? step.next;
+          const badge = step.by === 'rule' ? '규칙' : 'LLM';
+          return `<li class="is-${step.by}">
+            <span class="rrule-badge">${badge}</span>
+            <span class="rrule-next">${step.by === 'rule' ? esc(label) : '판단 필요'}</span>
+            <span class="rrule-why">${esc(step.why)}</span>
+          </li>`;
+        })
+        .join('');
+
+      const ruled = trace.filter((s) => s.by === 'rule').length;
+      const hit = CHART_WORDS.filter((w) => question.includes(w));
+      const chart = wantsChart(question)
+        ? `그래프 낱말 <code>${hit.map(esc).join(' · ')}</code>가 걸렸습니다.`
+        : '그래프 낱말이 없습니다.';
+      foot.innerHTML = on
+        ? `${chart} 규칙이 ${ruled}개의 결정을 끝냈고, 남은 자리만 모델이 봅니다.`
+        : '규칙을 껐습니다. 첫 결정부터 모델의 판단이고, 실행마다 달라질 수 있습니다.';
+    }
+  }
+</script>
+
+<style>
+  .rrule {
+    margin: 2rem 0;
+    padding: 1.1rem 1.1rem 0.9rem;
+    border: 1px solid var(--aas-border);
+    border-radius: 14px;
+    background: var(--aas-panel);
+    box-shadow: var(--aas-shadow);
+    font-family: var(--aas-sans);
+    --rr-rule: #0ca30c;
+    --rr-llm: #fab219;
+  }
+
+  .rrule-head { display: flex; flex-direction: column; gap: 0.3rem; }
+  .rrule-head strong { font-size: 1rem; color: var(--aas-text); }
+  .rrule-head span { font-size: 0.85rem; line-height: 1.65; color: var(--aas-muted); }
+
+  .rrule-rule {
+    margin: 0.9rem 0; padding: 0.6rem 0.7rem;
+    border-radius: 8px; border: 1px solid var(--aas-border);
+    background: var(--aas-bg); overflow-x: auto;
+  }
+  .rrule-rule code {
+    display: block;
+    font-size: 0.72rem; line-height: 1.45; color: var(--aas-muted);
+    white-space: pre; background: none; padding: 0;
+  }
+
+  .rrule-label {
+    display: block; font-size: 0.78rem; color: var(--aas-muted);
+    margin-bottom: 0.35rem;
+  }
+  .rrule-input {
+    display: block; width: 100%; box-sizing: border-box;
+    padding: 0.45rem 0.6rem; border-radius: 8px;
+    border: 1px solid var(--aas-border); background: var(--aas-bg);
+    color: var(--aas-text); font-size: 0.86rem; line-height: 1.6;
+    font-family: inherit;
+  }
+
+  .rrule-presets { display: flex; flex-wrap: wrap; gap: 0.35rem; margin: 0.55rem 0 0.8rem; }
+  .rrule-presets button {
+    padding: 0.28rem 0.6rem; border-radius: 999px;
+    border: 1px solid var(--aas-border); background: var(--aas-bg);
+    color: var(--aas-muted); font-family: inherit; font-size: 0.76rem;
+    cursor: pointer; transition: background 0.15s ease;
+  }
+  .rrule-presets button:hover { background: var(--aas-tint); }
+
+  .rrule-toggle {
+    display: flex; align-items: flex-start; gap: 0.45rem;
+    font-size: 0.8rem; color: var(--aas-muted); line-height: 1.6;
+    margin-bottom: 0.9rem;
+  }
+  .rrule-toggle input { margin-top: 0.25rem; }
+
+  .rrule-steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.4rem; }
+  .rrule-steps :global(li) {
+    display: grid; grid-template-columns: 3.2rem 7rem 1fr; gap: 0.6rem;
+    align-items: baseline;
+    padding: 0.45rem 0.6rem; border-radius: 8px;
+    border: 1px solid var(--aas-border); background: var(--aas-bg);
+    font-size: 0.82rem;
+  }
+  .rrule-steps :global(.rrule-badge) {
+    font-size: 0.7rem; font-weight: 600; text-align: center;
+    padding: 0.1rem 0.3rem; border-radius: 999px;
+    border: 1px solid currentcolor;
+  }
+  .rrule-steps :global(li.is-rule .rrule-badge) { color: var(--rr-rule); }
+  .rrule-steps :global(li.is-llm .rrule-badge) { color: var(--rr-llm); }
+  .rrule-steps :global(.rrule-next) { color: var(--aas-text); font-weight: 600; }
+  .rrule-steps :global(.rrule-why) { color: var(--aas-muted); }
+
+  .rrule-foot, .rrule-foot :global(code) {
+    margin: 0.8rem 0 0; font-size: 0.8rem; line-height: 1.65;
+    color: var(--aas-muted);
+  }
+
+  @media (max-width: 34rem) {
+    .rrule-steps :global(li) { grid-template-columns: 3.2rem 1fr; }
+    .rrule-why { grid-column: 1 / -1; }
+  }
+</style>

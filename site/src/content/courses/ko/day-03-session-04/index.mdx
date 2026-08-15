@@ -10,6 +10,8 @@ slides: []
 tags: ["병렬 실행", "비용 게이트", "재계획", "LangGraph", "멀티 에이전트"]
 ---
 
+import CostGate from '../../../../components/CostGate.astro';
+
 > 원안 7.3절. 교재는 [coding-agent](https://github.com/2026-ai-agents/coding-agent)
 > 저장소이고, 릴리즈 사다리 v0.1\~v1.0을 오르며 진행합니다.  
 > 이 문서의 실행 결과·화면은 2026-08-16에 실제로 돌린 실측입니다.
@@ -126,12 +128,47 @@ git 이력이 곧 작업 기록입니다. 누가 어느 가지에서 무엇을 �
 바뀐 것은 두 줄입니다. planner도 worker가 하는 일도 integrator도 v0.1의
 것을 그대로 가져다 씁니다. 그래서 비교가 공정합니다.
 
+#### `Send`가 무엇인가
+
+조건부 엣지는 지금까지 **문자열 하나**를 돌려주었습니다. "다음은 analyst"처럼
+갈 곳 하나를 고르는 함수였습니다. 같은 자리에서 `Send`의 **리스트**를
+돌려주면 뜻이 달라집니다. 같은 노드를 **여러 벌 동시에** 띄웁니다.
+
 ```python
 def fan_out(state):
     """여기가 v0.2의 전부다. 태스크마다 worker 하나씩."""
     return [Send("worker", {"task": task, "spec": state["spec"], "index": index})
             for index, task in enumerate(state["tasks"])]
 ```
+
+`Send(노드_이름, 페이로드)`에서 페이로드는 **그 실행분의 입력**이 됩니다.
+worker 노드가 받는 것은 전체 상태가 아니라 자기 몫의 딕셔너리 하나입니다.
+
+```mermaid
+flowchart LR
+    P["planner<br/>태스크 3개"] --> F{{"fan_out<br/>Send 3개를 돌려준다"}}
+    F -->|"Send(worker, 태스크①)"| W1["worker<br/>backend"]
+    F -->|"Send(worker, 태스크②)"| W2["worker<br/>frontend"]
+    F -->|"Send(worker, 태스크③)"| W3["worker<br/>tests"]
+    W1 --> I["integrator<br/>results 가 합쳐져 도착"]
+    W2 --> I
+    W3 --> I
+```
+
+돌아오는 길은 reducer가 맡습니다. 세 worker가 각각 `{"results": [결과]}`를
+돌려주면 `Annotated[list, operator.add]`가 하나로 합칩니다. Day 2 첫 세션에서
+"상태를 덮어쓰지 않고 쌓는다"고 했던 그 reducer입니다. **병렬의 절반은
+reducer가 이미 하고 있었습니다.**
+
+미리 엣지를 세 개 그려 두는 것과 무엇이 다른가 하면, **개수가 실행 시점에
+정해진다**는 점입니다. SPEC이 태스크 다섯 개로 쪼개지면 worker도 다섯이
+됩니다. 그래프를 다시 그리지 않습니다.
+
+| | 미리 그린 병렬 엣지 | `Send` |
+| --- | --- | --- |
+| 개수 | 그래프를 짤 때 고정 | 실행 시점에 정해진다 |
+| 각 실행의 입력 | 같은 상태 | 서로 다른 페이로드 |
+| 어울리는 일 | 역할이 고정된 분업 | 목록을 훑는 일(map) |
 
 그리고 **worktree**. 이것이 없으면 위의 한 줄은 사고입니다.
 
@@ -143,9 +180,46 @@ finally:
     runner.project.remove_worktree(task["role"])   # 브랜치는 남고 디렉터리만 치운다
 ```
 
-브랜치를 나눠도 작업 트리가 하나면 셋이 같은 디렉터리에서 checkout 하며
-서로의 파일을 밟습니다. `git worktree`는 저장소 하나에 작업 디렉터리를 여럿
-붙이는 기능이고, 정확히 이 자리를 위해 있습니다.
+#### 브랜치와 작업 트리는 다른 것이다
+
+git을 오래 써도 헷갈리는 지점입니다. **브랜치는 이름표이고, 작업 트리는
+실제 파일이 놓인 디렉터리입니다.** 평소에는 저장소 하나에 작업 트리가 하나뿐이라
+둘이 붙어 다니는 것처럼 보입니다. `git checkout`은 그 하나뿐인 디렉터리의
+파일을 통째로 갈아 끼우는 명령입니다.
+
+그러니 셋이 동시에 checkout 하면 어떻게 되는지는 뻔합니다. 마지막으로 실행한
+것이 이깁니다. 브랜치를 나눈 것과 무관하게 **파일은 한 벌뿐**이기 때문입니다.
+
+```mermaid
+flowchart TB
+    subgraph BAD["작업 트리 하나 · 브랜치만 셋"]
+        direction LR
+        G1[(".git")] --- D1["todo-app/<br/>파일 한 벌"]
+        D1 --- X["backend·frontend·tests가<br/>같은 파일을 밟는다"]
+    end
+    subgraph GOOD["worktree · 작업 트리 셋"]
+        direction LR
+        G2[(".git<br/>하나")] --- W1["todo-app/<br/>main"]
+        G2 --- W2[".worktrees/…-backend<br/>feature/backend"]
+        G2 --- W3[".worktrees/…-frontend<br/>feature/frontend"]
+    end
+    BAD ~~~ GOOD
+```
+
+`git worktree add`는 같은 저장소(`.git` 하나)에 **작업 디렉터리를 하나 더**
+붙입니다. 커밋 이력은 공유하고 파일만 따로 씁니다. 일이 끝나면 디렉터리는
+치우고 브랜치는 남깁니다.
+
+```sh
+git worktree add -b feature/backend /workspace/.worktrees/todo-app-backend main
+# … 그 디렉터리에서 짜고 커밋 …
+git worktree remove --force /workspace/.worktrees/todo-app-backend
+```
+
+정리하면 이렇습니다. **병렬로 벌고 싶은 것은 모델이 파일을 쓰는 시간이고,
+그것을 벌려면 파일이 놓일 자리가 따로 있어야 합니다.** git 명령 자체는
+오히려 자물쇠로 줄을 세웠습니다. worktree 장부를 동시에 건드려서 얻을 것은
+없기 때문입니다.
 
 ```
 === v0.1 순차 ===
@@ -163,9 +237,6 @@ tests        2.5s →   4.9s                 ███████████�
 
 **시간은 줄고 비용은 그대로입니다.** 같은 일을 같은 모델로 하기 때문입니다.
 병렬화가 파는 물건은 시간 하나뿐이고, 그것을 정확히 아는 것이 중요합니다.
-
-한 가지 더. git 명령 자체는 자물쇠로 줄을 세웠습니다. 병렬로 벌고 싶은 것은
-모델 호출 시간이지 worktree 장부가 아닙니다.
 
 ## 5. v0.3: 값을 먼저 묻는 문
 
@@ -220,6 +291,12 @@ planner와 worker 사이에 문이 하나 생겼습니다. 난이도에 따라 �
 추정은 일부러 거칩니다. 역할별 예상 출력 토큰에 가격표를 곱한 것이 전부이고,
 자릿수만 맞으면 상한은 제 일을 합니다. 화면에 추정과 실측을 나란히 두면
 "얼마나 맞는지"까지 함께 배웁니다.
+
+<CostGate />
+
+backend 하나만 hard로 바꿔 보십시오. 상위 모델이 배정되면서 추정이 세 배
+가까이 뜁니다. **난이도 판정 한 번이 비용을 가르고, 그 판정을 planner가
+합니다.** 게이트가 있어야 하는 이유가 여기 있습니다.
 
 ![비용 게이트 화면: 예상 비용 표와 승인·중단 버튼, 실측은 아직 planner 한 번뿐인 $0.0012](./cost-gate.jpg)
 
