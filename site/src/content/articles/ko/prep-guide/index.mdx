@@ -1,9 +1,9 @@
 ---
 title: "사전 준비 가이드"
-description: "강의 전에 완료해 두면 좋은 두 단계: API 키 발급과 소액 충전, 그리고 Docker 셋업과 환경 점검"
+description: "강의 전에 완료해 두면 좋은 두 단계: API 키 발급과 소액 충전, 그리고 git·Docker 셋업과 환경 점검"
 date: 2026-08-14
 category: guide
-tags: ["사전 준비", "API 키", "Docker"]
+tags: ["사전 준비", "API 키", "git", "Docker"]
 ---
 
 이 과정은 **GPU가 전혀 필요 없습니다**. 모델 추론과 임베딩은 전부 외부 API로
@@ -12,7 +12,7 @@ tags: ["사전 준비", "API 키", "Docker"]
 채울 수 있으므로 충전이 먼저입니다.
 
 1. 플랫폼 3사(Google AI Studio · OpenAI · Anthropic) 중 **1개 이상 API 키 발급 + 소액 충전**
-2. **Docker 셋업**: Docker Desktop 설치 → `day-01` 클론 → `.env`에 키 세팅 → `docker compose up --build` → `check_env.py` 통과 확인
+2. **개발 환경 셋업**: git·Docker Desktop 설치 → `day-01` 클론 → `.env`에 키 세팅 → `docker compose up --build` → `check_env.py` 통과 확인
 
 ## 1. API 키 발급과 소액 충전
 
@@ -113,9 +113,29 @@ Gemini API 결제는 AI Studio가 아니라 **Google Cloud Billing 계정**이
 - 결제를 붙인 뒤에도 **프로젝트 목록의 결제 등급이 바뀌었는지** 한 번 봅니다.
   키를 다른 프로젝트로 만들었다면 무료 등급 그대로입니다.
 
-## 2. Docker 셋업
+## 2. git과 Docker 셋업
 
-### 2-1. Docker Desktop 설치
+설치할 것은 둘입니다. **git**으로 저장소를 받고, **Docker**로 그 안의 것을
+띄웁니다. 로컬 Python은 필요 없습니다.
+
+### 2-1. git 설치
+
+강의 자료와 여덟 개의 저장소를 전부 `git clone`으로 받습니다. 태그를 오가며
+릴리즈 사다리를 되짚는 것도 git이 하는 일이라, 없으면 시작할 수 없습니다.
+
+| OS | 설치 |
+| --- | --- |
+| Windows | [git-scm.com/download/win](https://git-scm.com/download/win)에서 설치 파일을 받아 기본값으로 설치합니다. 함께 깔리는 Git Bash를 터미널로 쓰면 편합니다 |
+| macOS | 터미널에서 `git --version`을 치면 개발자 도구 설치를 묻습니다. 그대로 설치하거나, Homebrew가 있다면 `brew install git` |
+| Linux | `sudo apt install git` (데비안·우분투 계열) |
+
+설치 확인: 아래 명령이 버전을 출력하면 완료입니다.
+
+```bash
+git --version
+```
+
+### 2-2. Docker Desktop 설치
 
 - [docker.com/products/docker-desktop](https://www.docker.com/products/docker-desktop)에서
   OS에 맞는 설치 파일을 받아 설치하고 실행합니다
@@ -126,7 +146,7 @@ Gemini API 결제는 AI Studio가 아니라 **Google Cloud Billing 계정**이
 docker compose version
 ```
 
-### 2-2. 저장소 클론과 .env 세팅
+### 2-3. 저장소 클론과 .env 세팅
 
 ```bash
 git clone https://github.com/2026-ai-agents/day-01.git
@@ -147,7 +167,7 @@ ANTHROPIC_API_KEY=
 `.env`는 gitignore 되어 있어 커밋되지 않습니다. `.env.sample`에는 절대 실제
 키를 넣지 마세요.
 
-### 2-3. 기동과 환경 점검
+### 2-4. 기동과 환경 점검
 
 ```bash
 docker compose up --build -d
@@ -164,6 +184,7 @@ docker compose exec lab python check_env.py
 
 | 증상 | 확인할 것 |
 | --- | --- |
+| `git: command not found` | git 설치 후 터미널을 새로 열었는지 확인 |
 | `docker: command not found` | Docker Desktop이 실행 중인지 확인 |
 | 키 인증 실패 | `.env`의 키 앞뒤 공백·따옴표, 충전 여부 확인 |
 | 그 외 | 첫날 오리엔테이션 시간에 함께 해결 |
@@ -171,5 +192,5 @@ docker compose exec lab python check_env.py
 ## 준비물 체크리스트
 
 - 노트북 (GPU 불필요, RAM 8GB 이상 권장. 컨테이너 3\~4개를 동시에 띄웁니다)
-- git + [[docker|Docker]] Desktop. 로컬 Python 환경은 불필요하고, 의존성은 전부 컨테이너 이미지에 들어 있습니다
+- **git**과 [[docker|Docker]] Desktop 두 가지. 로컬 Python 환경은 불필요하고, 의존성은 전부 컨테이너 이미지에 들어 있습니다
 - 플랫폼 3사 중 최소 1개 API 키. 의미 검색 실습에는 Google 키를 권장합니다
