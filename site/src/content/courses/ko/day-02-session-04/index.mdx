@@ -66,8 +66,8 @@ cp .env.sample .env        # 키 채우기 (권장: Google — 의미 검색 임
 docker compose up --build
 ```
 
-- ui → `http://localhost:8501` (비서 화면 — 이름+전화로 로그인)
-- 테스트: `docker compose exec app pytest` (LLM 키 불필요 — 임베딩도 결정적 대역)
+- ui → `http://localhost:8501` (비서 화면, 이름+전화로 로그인)
+- 테스트: `docker compose exec app pytest` (LLM 키 불필요, 임베딩도 결정적 대역)
 
 ![로그인 화면: 일정을 챙기고, 당신을 기억하는 비서](./ui-login.jpg)
 
@@ -135,7 +135,7 @@ docker compose exec app python demos/blank_slate.py
 #### 결과 읽기
 
 thread B의 두 답이 이 세션의 문제를 정확히 자릅니다. **방금 thread A가
-잡은 치과 일정은 조회됩니다** — 일정은 db 행이라 thread와 무관하게
+잡은 치과 일정은 조회됩니다**. 일정은 db 행이라 thread와 무관하게
 남으니까요. 그런데 한 메시지 전에 들은 알레르기는 백지입니다. 대화
 기억이 thread 안에 갇혀 있기 때문입니다. thread A에서 "제가 잘 기억하고
 있겠습니다"라고 약속한 직후라 더 아픕니다. 도메인 데이터가 아니라
@@ -287,7 +287,7 @@ memorize는 실패에 관대하게 짭니다. 판단기의 JSON이 깨지면 그
 
 #### 그래프도 실측으로: memorize 정거장이 나타난다
 
-구조가 바뀌었으니 draw_mermaid를 다시 뽑습니다(색 지정만 걷어내고 렌더).
+구조가 바뀌었으니 draw_mermaid를 색 지정만 걷어내고 다시 렌더합니다.
 END로 가던 점선이 memorize를 거쳐 갑니다.
 
 ```mermaid
@@ -371,8 +371,8 @@ def advisor(state, config, *, store: BaseStore) -> dict:
 
 #### 실행 결과: 질의마다 다른 기억이 올라온다
 
-기억 6건을 채우고 세 가지 질의로 검색한 실측입니다
-(`demos/semantic_recall.py`, 임베딩은 gemini-embedding-001).
+기억 6건을 채우고 세 가지 질의로 검색한 실측입니다. 데모는
+`demos/semantic_recall.py`, 임베딩은 gemini-embedding-001입니다.
 
 ```text
 [질의] 다음 회의 일정을 잡아 줘
@@ -390,8 +390,8 @@ def advisor(state, config, *, store: BaseStore) -> dict:
 
 회의 질의엔 회의 선호가, 쿠키 심부름엔 견과류 알레르기가, 주말 질문엔
 테니스가 올라옵니다. 문자열이 겹쳐서가 아니라 **의미가 가까워서**입니다.
-순위가 항상 직관과 같지는 않으므로 상위 1건이 아니라 **관련권
-전체(top-5)**를 싣습니다. 검색은 정답기가 아니라 깔때기입니다.
+순위가 항상 직관과 같지는 않으므로 상위 1건이 아니라 관련권
+전체인 <strong>top-5</strong>를 싣습니다. 검색은 정답기가 아니라 깔때기입니다.
 
 #### 실행 결과: 사실은 변한다
 
