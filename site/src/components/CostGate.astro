@@ -65,7 +65,7 @@ const RULE = `def estimate_call(model, role, prompt_chars):
       <tr><th>역할</th><th>모델</th><th>예상 입력</th><th>예상 출력</th><th>예상 비용</th></tr>
     </thead>
     <tbody data-rows></tbody>
-    <tfoot><tr><td colspan="4">합계</td><td data-total>—</td></tr></tfoot>
+    <tfoot><tr><td colspan="4">합계</td><td data-cgate-total>—</td></tr></tfoot>
   </table>
 
   <div class="cgate-verdict" data-verdict></div>
@@ -86,7 +86,7 @@ const RULE = `def estimate_call(model, role, prompt_chars):
     const charsOut = $<HTMLOutputElement>('[data-chars-out]');
     const budgetOut = $<HTMLOutputElement>('[data-budget-out]');
     const rows = $<HTMLTableSectionElement>('[data-rows]');
-    const total = $<HTMLTableCellElement>('[data-total]');
+    const total = $<HTMLTableCellElement>('[data-cgate-total]');
     const verdict = $<HTMLElement>('[data-verdict]');
 
     root.querySelectorAll<HTMLInputElement>('[data-hard]').forEach((box) =>
