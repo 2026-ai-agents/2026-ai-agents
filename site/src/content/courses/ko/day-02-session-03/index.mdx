@@ -17,7 +17,9 @@ tags: ["checkpointer", "interrupt", "PostgreSQL", "time-travel"]
 - **제품**: 손님은 대화로 예약을 넣고, 사장은 따로 로그인해 승인하는 식당 예약 웹앱
 - **핵심 문장**: 에이전트의 상태는 어디에 사는가. 그리고 되돌릴 수 없는 일은 누가 확인하는가
 
-## 시스템 구조: 컨테이너 4개, 그래프 2개
+## 1. 시스템 구조: 컨테이너 4개, 그래프 2개
+
+#### 컨테이너 넷과 그래프 둘
 
 diet-agent의 세 컨테이너에 **사장 화면(admin)이 하나 더** 붙습니다.
 손님과 사장은 서로 다른 주소에서 각자 로그인하는, 완전히 다른 화면을
@@ -40,8 +42,9 @@ flowchart LR
   상태(checkpoint)까지** 이 안에 삽니다. diet-agent가 남긴 결핍이 여기서
   풀립니다
 
-예약 한 건의 생애는 상태 네 값으로 흐릅니다. 이 흐름이 세션 전체의
-지도입니다.
+#### 예약 한 건의 생애
+
+상태 네 값으로 흐릅니다. 이 흐름이 세션 전체의 지도입니다.
 
 ```mermaid
 stateDiagram-v2
@@ -52,8 +55,9 @@ stateDiagram-v2
     confirmed --> cancelled: 손님 취소
 ```
 
-이 세션에는 "승인"이 두 번 나옵니다. **성격이 전혀 다르므로** 미리
-갈라 둡니다.
+#### 이름이 같은 두 승인을 미리 갈라 둔다
+
+이 세션에는 "승인"이 두 번 나옵니다. 성격이 전혀 다릅니다.
 
 | | 손님의 확인 (v0.3) | 사장의 승인 (v1.0) |
 | --- | --- | --- |
@@ -62,7 +66,7 @@ stateDiagram-v2
 | 왜 필요한가 | 에이전트의 불가역 행위를 사람이 확인 | 업무 규칙: 식당이 신청을 검토 |
 | 재개 방법 | Command(resume=결정) | UPDATE 한 문장 |
 
-## 시작하기
+## 2. 시작하기
 
 ```bash
 git clone https://github.com/2026-ai-agents/booking-agent.git
@@ -75,7 +79,7 @@ docker compose up --build
 - admin → `http://localhost:8502` (사장 화면, 비밀번호는 `.env`의 ADMIN_PASSWORD)
 - 테스트: `docker compose exec app pytest` (LLM 키 불필요, db는 진짜)
 
-## diet-agent의 도착점이 이 저장소의 출발점이다
+## 3. diet-agent의 도착점이 이 저장소의 출발점이다
 
 앞 세션이 한 시간에 걸쳐 세운 것(advisor ↔ tools 순환, conditional edge,
 reducer, checkpointer)이 여기서는 **v0.1에 이미 들어 있습니다**. 새로
@@ -108,7 +112,7 @@ def tools(state: BookingState) -> dict:
 말에 속아 남의 이름으로 예약하는 길을 **스키마 수준에서** 막는 것입니다.
 LLM은 신원 인자를 만들 수조차 없습니다.
 
-## 릴리즈 사다리: 상태의 거처가 자라는 순서
+## 4. 릴리즈 사다리: 상태의 거처가 자라는 순서
 
 | 릴리즈 | 상태 | 테스트 |
 | --- | --- | --- |
@@ -120,7 +124,7 @@ LLM은 신원 인자를 만들 수조차 없습니다.
 네 태그 전부에서 `git checkout → docker compose up --build → pytest`가
 통과하는 것을 확인해 두었습니다.
 
-## v0.1 · 결핍: 기억은 프로세스에 산다
+## 5. v0.1 · 결핍: 기억은 프로세스에 산다
 
 #### 무엇이 서는가
 
@@ -219,7 +223,7 @@ docker compose exec app python demos/amnesia.py --probe  # 재시작 후 다시
 바꿔주세요"가 통하지 않는 제품은 상담원이 매번 바뀌는 콜센터와 같습니다.
 이 결핍이 v0.2의 주제입니다.
 
-## v0.2 · 이사: 상태의 거처가 PostgreSQL로
+## 6. v0.2 · 이사: 상태의 거처가 PostgreSQL로
 
 #### 무엇이 바뀌나
 
@@ -311,7 +315,7 @@ setup() 한 번이 만든 테이블 4개에 thread별 checkpoint가 쌓입니다
 다시 뽑으면 v0.1과 바이트 단위로 같습니다. 상태의 거처는 그래프 그림에
 나타나지 않는, compile의 일이기 때문입니다.
 
-## v0.3 · 관문: 쓰기 직전, 사람이 확인한다
+## 7. v0.3 · 관문: 쓰기 직전, 사람이 확인한다
 
 #### 무엇이 바뀌나
 
@@ -451,7 +455,7 @@ UI에서는 이 멈춤이 확인 카드로 렌더됩니다. 카드가 떠 있는
 와도 그 자리에서 이어집니다. **영속성(v0.2) 없이는 interrupt가 웹 제품이
 될 수 없습니다.**
 
-## v1.0 · 두 입장: 손님과 사장은 다른 화면을 산다
+## 8. v1.0 · 두 입장: 손님과 사장은 다른 화면을 산다
 
 #### 무엇이 완성되나
 
@@ -616,10 +620,14 @@ minor 릴리즈로 반영됐습니다. 셋 다 이 세션의 개념과 정확히
 기동하면 항상 깨끗한 시드에서 시작합니다. 릴리즈 사다리 재현에는 그쪽이
 의도된 동작이라 그대로 둡니다.
 
-## 테스트도 교재다
+## 9. 테스트도 교재다
+
+#### 대역과 진짜의 경계
 
 LLM은 각본 대역, db는 진짜라는 규약은 그대로이고, v0.3의 계약이 테스트
 문장으로 박제되어 있습니다.
+
+#### 쓰기 직전에 멈춘다는 계약
 
 ```python
 def test_write_tool_pauses_before_execution(monkeypatch):
@@ -629,8 +637,10 @@ def test_write_tool_pauses_before_execution(monkeypatch):
     assert rows() == 0                     # 멈춘 동안 db에는 아무것도 없다
 ```
 
-재시작 생존도 유닛테스트 판이 있습니다. 새로 compile한 그래프(새 프로세스
-흉내)가 같은 pg에서 대화를 이어받는지를 확인합니다.
+#### 재시작 생존도 유닛테스트로
+
+새로 compile한 그래프(새 프로세스 흉내)가 같은 pg에서 대화를 이어받는지를
+확인합니다.
 
 ```python
 def test_fresh_graph_instance_resumes_thread(monkeypatch):
@@ -640,6 +650,8 @@ def test_fresh_graph_instance_resumes_thread(monkeypatch):
     sent = llm.calls[1]["messages"]
     assert [m.get("role") for m in sent] == ["system", "user", "assistant", "user"]
 ```
+
+#### 나머지 약속들
 
 그 밖에 승인만 쓰고 보류는 안 쓴다, 읽기 도구는 멈추지 않는다, 남의
 예약은 취소되지 않는다, run_sql은 세 겹을 지킨다, 사장 승인은 requested
