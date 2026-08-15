@@ -105,6 +105,10 @@ if __name__ == "__main__":
         mcp.run()  # stdio: 클라이언트가 이 프로세스를 직접 띄웠을 때의 전송
 ```
 
+```bash
+docker compose exec lab python examples/07_mcp/01_mcp_server.py
+```
+
 </Slide>
 
 <Slide>
@@ -162,6 +166,10 @@ async with stdio_client(SERVER) as (read, write):
             "get_exchange_rate", {"currency": "JPY"})
 ```
 
+```bash
+docker compose exec lab python examples/07_mcp/02_list_tools.py
+```
+
 이 클라이언트가 1번 서버를 자기 하위 프로세스로 직접 띄워 접속합니다
 
 </Slide>
@@ -217,6 +225,10 @@ def to_litellm_schema(tool) -> dict:
 tools = [to_litellm_schema(t) for t in (await session.list_tools()).tools]
 resp = completion(model=model, messages=messages, tools=tools)   # 4세션 그대로
 result = await session.call_tool(call.function.name, args)       # 실행만 원격
+```
+
+```bash
+docker compose exec lab python examples/07_mcp/03_mcp_to_agent.py
 ```
 
 </Slide>

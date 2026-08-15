@@ -166,6 +166,10 @@ personas = {
 
 질문은 하나로 고정: "오사카에서 꼭 먹어야 할 것 하나만"
 
+```bash
+docker compose exec lab python examples/01_api/02_roles.py
+```
+
 </Slide>
 
 <Slide>
@@ -212,6 +216,10 @@ personas = {
 ## 3. 토큰: 한글이 더 비싼 이유
 ::sub[03_tokens.py · API 호출 없이 토크나이저만으로 돈다. 키 불필요]
 
+```bash
+docker compose exec lab python examples/01_api/03_tokens.py
+```
+
 ```text
    한국어 |   영어 | 문장
     11 |    9 | 안녕하세요, 오늘 날씨가 정말 좋네요.…
@@ -234,6 +242,10 @@ personas = {
 model = min(available_models(), key=lambda m: get_model_info(m)["max_input_tokens"])
 limit = get_model_info(model)["max_input_tokens"]
 text = chunk * (int(limit * 1.5) // chunk_tokens + 1)   # 확실히 초과
+```
+
+```bash
+docker compose exec lab python examples/01_api/04_context_limit.py
 ```
 
 요청이 거부되므로 **과금되지 않습니다**
@@ -275,6 +287,10 @@ text = chunk * (int(limit * 1.5) // chunk_tokens + 1)   # 확실히 초과
 ## 5. temperature: 재현성과 다양성의 손잡이
 ::sub[05_temperature.py · 같은 질문을 0과 1로 5번씩]
 
+```bash
+docker compose exec lab python examples/01_api/05_temperature.py
+```
+
 ```text
 (시연 모델: openai/gpt-5.4-nano)
 
@@ -314,6 +330,10 @@ text = chunk * (int(limit * 1.5) // chunk_tokens + 1)   # 확실히 초과
 ## 6. 스트리밍: 답은 조각으로 온다
 ::sub[06_streaming.py · 채팅 UI가 글자를 흘리는 것의 실체]
 
+```bash
+docker compose exec lab python examples/01_api/06_streaming.py
+```
+
 ```text
 === 처음 5개 청크 원문 ===
   chunk[0] delta='**'
@@ -336,6 +356,10 @@ text = chunk * (int(limit * 1.5) // chunk_tokens + 1)   # 확실히 초과
 ```python
 tasks = [acompletion(model=model, messages=[…]) for city in cities]
 await asyncio.gather(*tasks)
+```
+
+```bash
+docker compose exec lab python examples/01_api/07_async_parallel.py
 ```
 
 ```text
@@ -362,6 +386,10 @@ Day 3 `coding-agent`의 병렬 worker가 이 확장판입니다
 
 ## 8. 무상태: 기억은 서버가 아니라 배열에 있다
 ::sub[08_multiturn_stateless.py · 히스토리 없이, 그리고 실어서]
+
+```bash
+docker compose exec lab python examples/01_api/08_multiturn_stateless.py
+```
 
 ```text
 === 1턴: 자기소개 ===
@@ -479,6 +507,10 @@ compact 직후 "아까 그 함수 이름 뭐였지?"에 모델이 답하지 못�
 ## 10. JSON 강제: 부탁이 아니라 계약으로
 ::sub[09_json_mode.py · 부탁한 버전과 강제한 버전을 json.loads에 통과시킨다]
 
+```bash
+docker compose exec lab python examples/01_api/09_json_mode.py
+```
+
 ````text
 === 그냥 부탁만 한 경우 ===
   오사카의 대표적인 명소 2곳을 담은 JSON 배열입니다.
@@ -519,6 +551,10 @@ content = [
 ]
 ```
 
+```bash
+docker compose exec lab python examples/01_api/10_vision.py
+```
+
 ```text
 === 응답 ===
   이 사진 속 주요 건물은 일본 오사카에 위치한 역사적인 랜드마크인 오사카성입니다.
@@ -541,6 +577,10 @@ content = [
 
 ## 12. 비용 계산: 토큰 곱하기 단가
 ::sub[11_cost_calc.py · 키 없이 돈다]
+
+```bash
+docker compose exec lab python examples/01_api/11_cost_calc.py
+```
 
 ```text
 === 모델별 비용 (litellm 내장 단가표) ===

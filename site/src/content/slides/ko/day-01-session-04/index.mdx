@@ -130,6 +130,10 @@ messages.append({"role": "tool", "tool_call_id": call.id,
                  "content": json.dumps(result)})       # ③ 결과 회신
 ```
 
+```bash
+docker compose exec lab python examples/03_tools/01_single_tool.py
+```
+
 </Slide>
 
 <Slide>
@@ -174,6 +178,10 @@ messages.append({"role": "tool", "tool_call_id": call.id, …})  # ③ 우리가
 
 ## 2. tool call의 실체: 메시지 필드 하나
 ::sub[02_roundtrip_raw.py · 같은 왕복을 원문으로]
+
+```bash
+docker compose exec lab python examples/03_tools/02_roundtrip_raw.py
+```
 
 ```text
 === ① 모델이 보낸 assistant 메시지 원문 ===
@@ -334,6 +342,10 @@ schema = BudgetArgs.model_json_schema()      # ① 모델에게 보여줄 스키
 BudgetArgs.model_validate(raw_args)          # ② 도착한 인자의 검증
 ```
 
+```bash
+docker compose exec lab python examples/03_tools/03_pydantic_schema.py
+```
+
 </Slide>
 
 <Slide>
@@ -381,6 +393,10 @@ BudgetArgs.model_validate(raw_args)          # ② 도착한 인자의 검증
 ## 5. 병렬 도구 호출: 독립 조회는 한 턴에
 ::sub[04_parallel_tools.py · 항공과 숙소, 서로 의존이 없는 조회 2건]
 
+```bash
+docker compose exec lab python examples/03_tools/04_parallel_tools.py
+```
+
 ```text
 === 한 턴에 실려 온 도구 요청: 2건 ===
   search_flights({"city": "오사카"})
@@ -414,6 +430,10 @@ BudgetArgs.model_validate(raw_args)          # ② 도착한 인자의 검증
 ## 6. 인자 제약: 스키마는 프롬프트보다 강하다
 ::sub[05_arg_constraints.py · 키 없이 돈다]
 
+```bash
+docker compose exec lab python examples/03_tools/05_arg_constraints.py
+```
+
 ```text
   "category": {
     "anyOf": [ { "enum": ["관광", "식당", "카페"], "type": "string" },
@@ -437,6 +457,10 @@ BudgetArgs.model_validate(raw_args)          # ② 도착한 인자의 검증
 
 ## 7. tool_choice: 쓸지 말지를 코드가 정한다
 ::sub[06_tool_choice.py · 도구가 전혀 필요 없는 인사말에 세 값을 시험]
+
+```bash
+docker compose exec lab python examples/03_tools/06_tool_choice.py
+```
 
 ```text
 === tool_choice = auto (기본) ===      인사말에 대한 반응: 그냥 답변
@@ -482,6 +506,10 @@ except ValueError as e:
 messages.append({"role": "tool", "tool_call_id": call.id, "content": result})
 ```
 
+```bash
+docker compose exec lab python examples/03_tools/07_tool_error.py
+```
+
 ```text
 === [1] get_exchange_rate({'currency': 'THB'}) → 실패를 되먹임 ===
   {"error": "지원하지 않는 통화: THB. 지원 목록: ['JPY', 'USD']"}
@@ -522,6 +550,10 @@ messages.append({"role": "tool", "tool_call_id": call.id, "content": result})
 
 ## 9. 인자 환각: 스키마는 통과해도 값은 허구일 수 있다
 ::sub[08_hallucinated_args.py · 호텔 목록을 안 알려주고 예약을 시킨다]
+
+```bash
+docker compose exec lab python examples/03_tools/08_hallucinated_args.py
+```
 
 ```text
 === 모델이 보낸 인자 ===
@@ -585,6 +617,10 @@ resp = completion(…, tools=[tool],
 plan = TripPlan.model_validate(json.loads(raw))   # 여기서부터는 파이썬 객체
 ```
 
+```bash
+docker compose exec lab python examples/03_tools/09_structured_output.py
+```
+
 </Slide>
 
 <Slide>
@@ -623,6 +659,10 @@ plan = TripPlan.model_validate(json.loads(raw))   # 여기서부터는 파이썬
 
 ## 11. 도구 선택: 이름과 설명이 품질을 가른다
 ::sub[10_tool_selection.py · 같은 10개 도구를 두 벌로 등록]
+
+```bash
+docker compose exec lab python examples/03_tools/10_tool_selection.py
+```
 
 - ① 성의 있는 이름·설명
 - ② 익명 이름(`tool_0`…)과 무성의한 설명

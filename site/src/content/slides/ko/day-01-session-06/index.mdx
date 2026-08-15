@@ -124,6 +124,10 @@ observations = [run(step) for step in plan]
 final = completion(…, content=f"요청: {question}\n도구 결과: {observations}…")
 ```
 
+```bash
+docker compose exec lab python examples/05_loops/01_plan_execute.py
+```
+
 </Slide>
 
 <Slide>
@@ -221,6 +225,10 @@ completion(…, response_format={"type": "json_object"})
 if attempt > 1:
     extra = (f"주의: 직전 계획의 {failed!r} 검색이 빈 결과였다. "
              f"검색 가능한 도시: 오사카, 교토")
+```
+
+```bash
+docker compose exec lab python examples/05_loops/02_replan.py
 ```
 
 실패 기록과 힌트를 **다음 계획 프롬프트에 첨부**합니다
@@ -327,6 +335,10 @@ if total >= 24: break               # 통과 기준
 feedback = score["feedback"]        # 미달이면 피드백을 들고 재시도
 ```
 
+```bash
+docker compose exec lab python examples/05_loops/03_reflexion.py
+```
+
 </Slide>
 
 <Slide>
@@ -383,6 +395,10 @@ feedback = score["feedback"]        # 미달이면 피드백을 들고 재시도
 
 ## 4. 루브릭 실험: 기준을 바꾸면 승자가 뒤집힌다
 ::sub[04_eval_rubric.py · 같은 초안 2개를 두 루브릭으로 채점]
+
+```bash
+docker compose exec lab python examples/05_loops/04_eval_rubric.py
+```
 
 - 초안 **A**: 정보형 (입장료·이동 시간·가격·위치)
 - 초안 **B**: 감성형 (풍경·여운)
@@ -444,6 +460,10 @@ feedback = score["feedback"]        # 미달이면 피드백을 들고 재시도
 
 ## 5. 결과 자리를 변수로 비워 둔다
 ::sub[05_rewoo.py]
+
+```bash
+docker compose exec lab python examples/05_loops/05_rewoo.py
+```
 
 ```text
 === ① 플랜 (변수 자리가 비어 있다) ===
@@ -508,6 +528,10 @@ feedback = score["feedback"]        # 미달이면 피드백을 들고 재시도
 
 ## 6. 루프 비용 비교
 ::sub[06_loop_cost_compare.py · 같은 과제를 미니 ReAct와 Plan-and-Execute로]
+
+```bash
+docker compose exec lab python examples/05_loops/06_loop_cost_compare.py
+```
 
 ```text
 === 계산서 ===
