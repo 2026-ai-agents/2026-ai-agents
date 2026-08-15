@@ -23,7 +23,7 @@ tags: ["사전 준비", "API 키", "git", "Docker"]
 - 무료 티어는 rate limit이 빡빡해 멀티 에이전트의 폭발적 호출에서 금방 막힙니다
 - 도구 호출([[tool-calling|tool calling]]) 안정성은 상위 모델일수록 확연히 좋습니다
 
-### 플랫폼별 특징과 발급 절차
+### 1.1. 플랫폼별 특징과 발급 절차
 
 화면 문구는 바뀔 수 있으니 흐름만 참고하세요.
 
@@ -47,7 +47,7 @@ tags: ["사전 준비", "API 키", "git", "Docker"]
 [[litellm|LiteLLM]]이 세 플랫폼을 동일 인터페이스로 통일하므로, 같은 코드로
 3사를 교체하며 비용·품질·지연을 비교할 수 있습니다.
 
-### 화면으로 따라가기
+### 1.2. 화면으로 따라가기
 
 세 플랫폼 모두 순서가 같습니다. **① 이 과정 몫의 프로젝트를 따로 만들고 →
 ② 거기에 결제를 붙이고 → ③ 그 프로젝트로 키를 만듭니다.** 프로젝트를 따로
@@ -56,7 +56,7 @@ tags: ["사전 준비", "API 키", "git", "Docker"]
 키는 하나만 있어도 되므로, 쓰려는 플랫폼의 절차만 따라가면 됩니다. 화면
 문구는 바뀔 수 있으니 흐름을 보세요. 아래 화면의 주황색 번호가 누를 곳입니다.
 
-#### Google AI Studio: 프로젝트와 결제
+### 1.3. Google AI Studio: 프로젝트와 결제
 
 **1. 프로젝트를 새로 만듭니다.** 왼쪽 **프로젝트** 메뉴에서 오른쪽 위
 **새 프로젝트 만들기**를 누릅니다.
@@ -85,7 +85,7 @@ tags: ["사전 준비", "API 키", "git", "Docker"]
 
 ![크레딧 구매하기 대화상자. "기타 금액"을 골라 ₩16,000을 넣었고 자동 충전은 꺼져 있다](./google-7.png)
 
-#### Google AI Studio: API 키 발급
+### 1.4. Google AI Studio: API 키 발급
 
 **1. API 키 메뉴에서 키를 만듭니다.**
 
@@ -101,7 +101,7 @@ tags: ["사전 준비", "API 키", "git", "Docker"]
 
 ![API 키 세부정보 대화상자. 키 값이 가려져 있고 오른쪽 아래 "키 복사" 버튼이 있다](./google-key-3.png)
 
-#### OpenAI: 프로젝트와 크레딧
+### 1.5. OpenAI: 프로젝트와 크레딧
 
 **1. 왼쪽 위 프로젝트 전환기를 엽니다.**
 
@@ -128,7 +128,7 @@ Get started에 **Add credits**가 첫 항목으로 있습니다.
 
 ![Add to credit balance 대화상자. 금액 $5, 결제 수단, Continue 순서로 1·2·3번 표시](./openai-6.png)
 
-#### OpenAI: API 키 발급
+### 1.6. OpenAI: API 키 발급
 
 **1. 프로젝트를 확인하고 API Keys로 갑니다.** 왼쪽 위가 방금 만든
 프로젝트인지 먼저 봅니다. 키는 **프로젝트에 매입니다.**
@@ -143,7 +143,7 @@ Get started에 **Add credits**가 첫 항목으로 있습니다.
 
 ![Save your key 대화상자. 키 값이 가려져 있고 Copy 버튼과 Done 버튼이 있다](./openai-key-3.png)
 
-#### Anthropic Claude: 워크스페이스와 크레딧
+### 1.7. Anthropic Claude: 워크스페이스와 크레딧
 
 OpenAI의 프로젝트에 해당하는 것이 Claude에서는 **워크스페이스**입니다.
 
@@ -167,7 +167,7 @@ OpenAI의 프로젝트에 해당하는 것이 Claude에서는 **워크스페이�
 
 ![크레딧 추가 대화상자. US$5를 고르고 결제 수단을 확인한 뒤 "크레딧 US$5 구매"를 누른다](./claude-5.png)
 
-#### Anthropic Claude: API 키 발급
+### 1.8. Anthropic Claude: API 키 발급
 
 **1. 워크스페이스를 확인하고 API 키로 갑니다.** 키는 **워크스페이스가
 소유**하므로, 왼쪽 위가 방금 만든 워크스페이스인지 먼저 봅니다.
@@ -200,7 +200,7 @@ OpenAI의 프로젝트에 해당하는 것이 Claude에서는 **워크스페이�
 설치할 것은 둘입니다. **git**으로 저장소를 받고, **Docker**로 그 안의 것을
 띄웁니다. 로컬 Python은 필요 없습니다.
 
-### 2-1. git 설치
+### 2.1. git 설치
 
 강의 자료와 여덟 개의 저장소를 전부 `git clone`으로 받습니다. 태그를 오가며
 릴리즈 사다리를 되짚는 것도 git이 하는 일이라, 없으면 시작할 수 없습니다.
@@ -217,7 +217,7 @@ OpenAI의 프로젝트에 해당하는 것이 Claude에서는 **워크스페이�
 git --version
 ```
 
-### 2-2. Docker Desktop 설치
+### 2.2. Docker Desktop 설치
 
 - [docker.com/products/docker-desktop](https://www.docker.com/products/docker-desktop)에서
   OS에 맞는 설치 파일을 받아 설치하고 실행합니다
@@ -228,7 +228,7 @@ git --version
 docker compose version
 ```
 
-### 2-3. 저장소 클론과 .env 세팅
+### 2.3. 저장소 클론과 .env 세팅
 
 ```bash
 git clone https://github.com/2026-ai-agents/day-01.git
@@ -249,7 +249,7 @@ ANTHROPIC_API_KEY=
 `.env`는 gitignore 되어 있어 커밋되지 않습니다. `.env.sample`에는 절대 실제
 키를 넣지 마세요.
 
-### 2-4. 기동과 환경 점검
+### 2.4. 기동과 환경 점검
 
 ```bash
 docker compose up --build -d
