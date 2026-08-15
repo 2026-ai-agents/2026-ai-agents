@@ -26,8 +26,8 @@ Day 1 · 3. LiteLLM 통합 레이어
 ::sub[2세션이 이미 써 온 completion()의 정체를 밝힙니다]
 
 - 왜 공식 SDK 세 벌 대신 통합 레이어 한 벌인가, 그 **이득과 대가**
-- `examples/02_litellm/` **10종을 전부 실행**합니다
-- 폴백·재시도·캐시·라우터·비용 콜백 같은 **실전 장비**를 하나씩 돌려 봅니다
+- `examples/02_litellm/` **10종을 전부 실행**합니다.
+- 폴백·재시도·캐시·라우터·비용 콜백 같은 **실전 장비**를 하나씩 돌려 봅니다.
 
 </Slide>
 
@@ -35,7 +35,7 @@ Day 1 · 3. LiteLLM 통합 레이어
 
 ## 핵심 문장
 
-**LiteLLM에서 프로바이더 교체는 `model=` 문자열 한 줄이다**
+**LiteLLM에서 프로바이더 교체는 `model=` 문자열 한 줄이다**.
 
 </Slide>
 
@@ -62,7 +62,7 @@ litellm.completion(model="<프로바이더/모델>", messages=[…])
 ```
 
 공식 SDK로 3사를 지원하려면 **호출부 세 벌, 응답 파싱 세 벌, 에러 처리 세 벌**.
-LiteLLM은 그 셋을 OpenAI 호환 형태 하나로 통일합니다
+LiteLLM은 그 셋을 OpenAI 호환 형태 하나로 통일합니다.
 
 </Slide>
 
@@ -72,9 +72,9 @@ LiteLLM은 그 셋을 OpenAI 호환 형태 하나로 통일합니다
 
 - **교체 비용이 문자열 한 줄**: 프로바이더 교체가 코드 수정이 아니라 설정 변경
 - **셋 중 어떤 키를 채워도 같은 코드**: 이 과정의 요구사항입니다.
-  수강생마다 가진 키가 달라도 모든 예제가 그대로 돕니다
+  수강생마다 가진 키가 달라도 모든 예제가 그대로 돕니다.
 - **부대 장비 내장**: 단가표, 토큰 카운터, 폴백, 재시도, 캐시, 라우터, 비용 콜백.
-  이 세션에서 하나씩 씁니다
+  이 세션에서 하나씩 씁니다.
 - **넓은 커버리지**: 100개 이상의 프로바이더를 같은 인터페이스로
 
 </Slide>
@@ -84,11 +84,11 @@ LiteLLM은 그 셋을 OpenAI 호환 형태 하나로 통일합니다
 ## 단점: 무엇을 대가로 치르는가
 
 - **추상화 한 겹의 비용**: 에러가 litellm 예외로 감싸여 오고, 디버깅 시
-  스택이 한 층 깊어집니다
+  스택이 한 층 깊어집니다.
 - **프로바이더 고유 기능의 지연·누수**: 새 기능은 litellm이 지원할 때까지
-  기다리거나, `provider_specific_fields`처럼 표준 밖 필드로 새어 나옵니다
+  기다리거나, `provider_specific_fields`처럼 표준 밖 필드로 새어 나옵니다.
 - **라이브러리 자체에 의존**: 단가표의 최신성, 새 모델 등재 속도, 버그가
-  전부 litellm 버전에 묶입니다. 이 랩이 버전을 고정한 이유입니다
+  전부 litellm 버전에 묶입니다. 이 랩이 버전을 고정한 이유입니다.
 
 </Slide>
 
@@ -98,7 +98,7 @@ LiteLLM은 그 셋을 OpenAI 호환 형태 하나로 통일합니다
 
 - 프로바이더 하나를 확정했고 그 고유 기능을 깊이 쓴다면: **공식 SDK**
 - 멀티 프로바이더, 교체 가능성, 비용·품질 비교가 필요하다면: **통합 레이어**
-- 이 과정은 3사를 오가며 비교하는 것 자체가 커리큘럼이므로 LiteLLM입니다
+- 이 과정은 3사를 오가며 비교하는 것 자체가 커리큘럼이므로 LiteLLM입니다.
 
 </Slide>
 
@@ -106,10 +106,11 @@ LiteLLM은 그 셋을 OpenAI 호환 형태 하나로 통일합니다
 
 ## 추상화를 고르는 일반 규칙
 
-**갈아끼울 계획이 없으면 추상화는 비용입니다**
+**갈아끼울 계획이 없으면 추상화는 비용입니다**.
 
-갈아끼울 것이 확실하면 추상화가 그 비용을 갚습니다.
-모델은 갈아끼워집니다. 오늘 실제로 두 번 갈았습니다
+갈아끼울 것이 확실하면 추상화가 그 비용을 갚습니다.  
+모델은 갈아끼워집니다.  
+오늘 실제로 두 번 갈았습니다.
 
 </Slide>
 
@@ -117,7 +118,7 @@ LiteLLM은 그 셋을 OpenAI 호환 형태 하나로 통일합니다
 
 ## Part 2. 교체와 비교
 
-같은 코드로 3사를 오간다
+같은 코드로 3사를 오간다.
 
 </Slide>
 
@@ -126,12 +127,22 @@ LiteLLM은 그 셋을 OpenAI 호환 형태 하나로 통일합니다
 ## 2. 프로바이더 교체는 문자열 한 줄
 ::sub[01_provider_swap.py · 호출 코드는 한 글자도 바뀌지 않는다]
 
+- 코드
+
 ```python
 for model in available_models():          # 키가 채워진 프로바이더들
     answer = completion(
         model=model, messages=[{"role": "user", "content": question}]
     ).choices[0].message.content
 ```
+
+- 실행
+
+```bash
+docker compose exec lab python examples/02_litellm/01_provider_swap.py
+```
+
+- 결과
 
 ```text
 === gemini/gemini-3.5-flash-lite ===
@@ -148,10 +159,10 @@ for model in available_models():          # 키가 채워진 프로바이더들
 
 ## 결과 읽기: 모델 이름은 한 곳에만
 
-- 세 회사의 세 모델이 같은 `completion()` 하나로 답했습니다
+- 세 회사의 세 모델이 같은 `completion()` 하나로 답했습니다.
 - 이 랩의 모델 문자열은 전부 `agent/config.py` **한 곳**에 있습니다.
-  예제 어디에도 하드코딩이 없습니다
-- 이 통일이 이후 모든 것(폴백·라우팅·모델 배정)의 토대입니다
+  예제 어디에도 하드코딩이 없습니다.
+- 이 통일이 이후 모든 것(폴백·라우팅·모델 배정)의 토대입니다.
 
 </Slide>
 
@@ -159,6 +170,14 @@ for model in available_models():          # 키가 채워진 프로바이더들
 
 ## 3. 3사 비교: 응답·지연·비용을 나란히
 ::sub[02_three_way_compare.py · "어느 모델을 쓸까"는 감이 아니라 측정의 문제]
+
+- 실행
+
+```bash
+docker compose exec lab python examples/02_litellm/02_three_way_compare.py
+```
+
+- 결과
 
 ```text
 === 비교 표 ===
@@ -169,8 +188,8 @@ for model in available_models():          # 키가 채워진 프로바이더들
 ```
 
 같은 프롬프트인데 **입력 토큰부터 다릅니다**.
-프로바이더마다 토크나이저와 내부 포장이 다르기 때문입니다.
-품질은 눈으로, 지연과 비용은 숫자로 비교합니다
+프로바이더마다 토크나이저와 내부 포장이 다르기 때문입니다.  
+품질은 눈으로, 지연과 비용은 숫자로 비교합니다.
 
 </Slide>
 
@@ -179,11 +198,11 @@ for model in available_models():          # 키가 채워진 프로바이더들
 ## 모델 고를 때 보는 축
 
 - **품질**: 우리 과제에서 도구 선택과 지시 준수가 얼마나 안정적인가
-- **지연**: 사용자가 기다리는 시간. 에이전트는 스텝마다 곱해집니다
+- **지연**: 사용자가 기다리는 시간. 에이전트는 스텝마다 곱해집니다.
 - **비용**: 단가 × 토큰. 입력 토큰 수가 프로바이더마다 다른 것도 감안
 - **가용성**: 은퇴 위험, rate limit, 지역 제한
 
-**한 축만 보고 고르면 나중에 다시 고르게 됩니다**
+**한 축만 보고 고르면 나중에 다시 고르게 됩니다**.
 
 </Slide>
 
@@ -200,6 +219,8 @@ for model in available_models():          # 키가 채워진 프로바이더들
 ## 4. 폴백: 주 모델이 죽으면 이어받는다
 ::sub[03_fallback.py · 존재하지 않는 모델을 1순위로 둔다]
 
+- 코드
+
 ```python
 resp = completion(
     model="openai/gpt-없는-모델",          # 반드시 실패하는 1순위
@@ -207,6 +228,14 @@ resp = completion(
     fallbacks=["gemini/gemini-3.5-flash-lite"],
 )
 ```
+
+- 실행
+
+```bash
+docker compose exec lab python examples/02_litellm/03_fallback.py
+```
+
+- 결과
 
 ```text
 LiteLLM:ERROR: … Fallback attempt failed for model openai/gpt-없는-모델:
@@ -224,8 +253,8 @@ LiteLLM:ERROR: … Fallback attempt failed for model openai/gpt-없는-모델:
 ## 결과 읽기: 폴백은 옵션이 아니라 기본 장비
 
 - 1순위의 실패 로그가 찍히고, **같은 `completion()` 한 번 안에서**
-  폴백이 응답을 완성했습니다
-- 이 세션 끝의 사례처럼 **모델은 예고 없이 은퇴합니다**
+  폴백이 응답을 완성했습니다.
+- 이 세션 끝의 사례처럼 **모델은 예고 없이 은퇴합니다**.
 
 </Slide>
 
@@ -233,6 +262,14 @@ LiteLLM:ERROR: … Fallback attempt failed for model openai/gpt-없는-모델:
 
 ## 5. 재시도와 타임아웃: 순간 장애의 방어
 ::sub[04_retry_timeout.py · 불가능한 타임아웃 0.001초로 에러를 재현]
+
+- 실행
+
+```bash
+docker compose exec lab python examples/02_litellm/04_retry_timeout.py
+```
+
+- 결과
 
 ```text
 === 타임아웃 재현 (timeout=0.001초) ===
@@ -243,7 +280,7 @@ LiteLLM:ERROR: … Fallback attempt failed for model openai/gpt-없는-모델:
   실패하면 최대 2회까지 자동으로 다시 시도한 뒤에야 에러를 낸다
 ```
 
-- `timeout`: 이 시간 안에 답이 없으면 끊는다
+- `timeout`: 이 시간 안에 답이 없으면 끊는다.
 - `num_retries`: 끊기면 몇 번 다시
 
 </Slide>
@@ -252,6 +289,14 @@ LiteLLM:ERROR: … Fallback attempt failed for model openai/gpt-없는-모델:
 
 ## 8. rate limit: 백오프로 살아남기
 ::sub[07_rate_limit.py · 429를 만나면 1초 → 2초 → 4초 기다렸다 재시도]
+
+- 실행
+
+```bash
+docker compose exec lab python examples/02_litellm/07_rate_limit.py
+```
+
+- 결과
 
 ```text
 === 연속 15회 빠른 호출 (한도를 만나러 간다) ===
@@ -262,8 +307,9 @@ LiteLLM:ERROR: … Fallback attempt failed for model openai/gpt-없는-모델:
 ```
 
 이번 실측은 유료 티어라 한도에 닿지 않았고, 백오프 코드는 할 일 없이
-통과했습니다. 무료 티어에서는 `429! 1초 백오프 후 재시도` 줄이 등장합니다.
-**걸리든 안 걸리든 코드는 같아야 한다**는 것이 요점입니다
+통과했습니다.  
+무료 티어에서는 `429! 1초 백오프 후 재시도` 줄이 등장합니다.  
+**걸리든 안 걸리든 코드는 같아야 한다**는 것이 요점입니다.
 
 </Slide>
 
@@ -273,7 +319,7 @@ LiteLLM:ERROR: … Fallback attempt failed for model openai/gpt-없는-모델:
 
 **재시도**(순간 장애) · **폴백**(모델 장애) · **백오프**(한도)
 
-하나로 다 막으려 하지 않습니다
+하나로 다 막으려 하지 않습니다.
 
 </Slide>
 
@@ -288,7 +334,7 @@ LiteLLM:ERROR: … Fallback attempt failed for model openai/gpt-없는-모델:
 | 429 Too Many Requests | 한도 초과 | 지수 백오프 |
 | ContextWindowExceeded | 입력이 한도 초과 | 재시도해도 소용없음. 컨텍스트를 줄인다 |
 
-**마지막 줄이 중요합니다.** 재시도로 못 고치는 에러도 있습니다
+**마지막 줄이 중요합니다.** 재시도로 못 고치는 에러도 있습니다.
 
 </Slide>
 
@@ -305,11 +351,21 @@ LiteLLM:ERROR: … Fallback attempt failed for model openai/gpt-없는-모델:
 ## 6. 캐싱: 같은 질문 두 번째는 공짜·즉시
 ::sub[05_cache.py · 인메모리 캐시를 켜고 같은 요청을 두 번]
 
+- 코드
+
 ```python
 litellm.cache = Cache(type="local")       # 프로세스 안 인메모리 캐시
 r1 = completion(model=model, messages=messages, caching=True)
 r2 = completion(model=model, messages=messages, caching=True)   # 캐시에서
 ```
+
+- 실행
+
+```bash
+docker compose exec lab python examples/02_litellm/05_cache.py
+```
+
+- 결과
 
 ```text
 === 1회차 (API까지 다녀옴) ===   2.09초
@@ -323,9 +379,9 @@ r2 = completion(model=model, messages=messages, caching=True)   # 캐시에서
 
 ## 결과 읽기: 1,000배 빠르고 비용은 0
 
-- FAQ·반복 질의가 많은 서비스의 기본 손잡이입니다
+- FAQ·반복 질의가 많은 서비스의 기본 손잡이입니다.
 - 단, **같은 요청이어야 합니다**. messages가 1바이트라도 다르면 미스
-- 신선도가 중요한 질문에는 쓰지 않습니다
+- 신선도가 중요한 질문에는 쓰지 않습니다.
 
 </Slide>
 
@@ -334,6 +390,8 @@ r2 = completion(model=model, messages=messages, caching=True)   # 캐시에서
 ## 7. 비용 콜백: 호출마다 장부에 쌓인다
 ::sub[06_cost_callback.py · 호출부에는 한 줄도 손대지 않는다]
 
+- 코드
+
 ```python
 def track_cost(kwargs, completion_response, start_time, end_time):
     ledger["calls"] += 1
@@ -341,6 +399,14 @@ def track_cost(kwargs, completion_response, start_time, end_time):
 
 litellm.success_callback = [track_cost]
 ```
+
+- 실행
+
+```bash
+docker compose exec lab python examples/02_litellm/06_cost_callback.py
+```
+
+- 결과
 
 ```text
   호출: '1+1은?' / '오사카는 어느 나라?' / '라멘 한 그릇 평균 가격은?'
@@ -355,9 +421,9 @@ litellm.success_callback = [track_cost]
 
 ## 결과 읽기: 이 자리가 budget guard의 자리
 
-- 호출부에는 비용 코드가 **한 줄도 없습니다**
-- 콜백 하나 등록하면 모든 completion의 비용이 장부로 흘러듭니다
-- **7세션의 budget guard가 정확히 이 자리에서 누적 비용을 지켜봅니다**
+- 호출부에는 비용 코드가 **한 줄도 없습니다**.
+- 콜백 하나 등록하면 모든 completion의 비용이 장부로 흘러듭니다.
+- **7세션의 budget guard가 정확히 이 자리에서 누적 비용을 지켜봅니다**.
 
 </Slide>
 
@@ -374,6 +440,8 @@ litellm.success_callback = [track_cost]
 ## 9. 라우터: 별명 하나 뒤에 배포 여러 개
 ::sub[08_router.py · 실모델 여러 개를 travel-llm 하나로 묶는다]
 
+- 코드
+
 ```python
 deployments = [
     {"model_name": "travel-llm", "litellm_params": {"model": m}}
@@ -381,6 +449,12 @@ deployments = [
 ]
 router = Router(model_list=deployments, routing_strategy="simple-shuffle")
 resp = router.completion(model="travel-llm", messages=[…])
+```
+
+- 실행
+
+```bash
+docker compose exec lab python examples/02_litellm/08_router.py
 ```
 
 </Slide>
@@ -399,8 +473,8 @@ resp = router.completion(model="travel-llm", messages=[…])
   요청 6 → 처리한 모델: gemini-3.5-flash-lite
 ```
 
-호출부는 `travel-llm`이라는 별명 하나만 압니다.
-**Day 3 `coding-agent`의 난이도별 모델 배정이 이 구조 위에 섭니다**
+호출부는 `travel-llm`이라는 별명 하나만 압니다.  
+**Day 3 `coding-agent`의 난이도별 모델 배정이 이 구조 위에 섭니다**.
 
 </Slide>
 
@@ -408,6 +482,14 @@ resp = router.completion(model="travel-llm", messages=[…])
 
 ## 10. 모델 메타데이터: 한도와 단가를 코드로 읽는다
 ::sub[09_model_info.py · 키 없이 돈다]
+
+- 실행
+
+```bash
+docker compose exec lab python examples/02_litellm/09_model_info.py
+```
+
+- 결과
 
 ```text
 === 이 랩이 쓰는 모델들 ===
@@ -418,9 +500,9 @@ resp = router.completion(model="travel-llm", messages=[…])
   gemini/gemini-embedding-001           2,048         0      0.15      0.00
 ```
 
-"이 입력이 들어가는가"와 "이 호출은 얼마인가"를 **실행 전에** 코드가 판단합니다.
+"이 입력이 들어가는가"와 "이 호출은 얼마인가"를 **실행 전에** 코드가 판단합니다.  
 2세션의 한도 초과 예제가 입력한도 열을,
-7세션의 사전 비용 추정이 단가 열을 읽습니다
+7세션의 사전 비용 추정이 단가 열을 읽습니다.
 
 </Slide>
 
@@ -428,6 +510,14 @@ resp = router.completion(model="travel-llm", messages=[…])
 
 ## 11. 임베딩: 같은 인터페이스의 다른 출구
 ::sub[10_embedding.py · completion은 문장을, embedding은 숫자 벡터를]
+
+- 실행
+
+```bash
+docker compose exec lab python examples/02_litellm/10_embedding.py
+```
+
+- 결과
 
 ```text
 === 벡터의 모양 ===
@@ -440,8 +530,8 @@ resp = router.completion(model="travel-llm", messages=[…])
 ```
 
 단어가 하나도 겹치지 않는 "든든한 국물 요리"와 "뜨끈한 탕이나 찌개"가
-0.843으로 가깝게 잡혔습니다.
-**이 벡터 위에 Day 2 `food-rag-agent`의 의미 검색이 섭니다**
+0.843으로 가깝게 잡혔습니다.  
+**이 벡터 위에 Day 2 `food-rag-agent`의 의미 검색이 섭니다**.
 
 </Slide>
 
@@ -456,8 +546,8 @@ resp = router.completion(model="travel-llm", messages=[…])
 | 쓰는 곳 | 판단·생성 | 의미 비교·검색 |
 | 비용 | 입력 + 출력 토큰 | 입력 토큰만 |
 
-같은 `litellm` 인터페이스의 **다른 출구**입니다.
-키 관리도, 폴백도, 비용 콜백도 그대로 적용됩니다
+같은 `litellm` 인터페이스의 **다른 출구**입니다.  
+키 관리도, 폴백도, 비용 콜백도 그대로 적용됩니다.
 
 </Slide>
 
@@ -465,7 +555,7 @@ resp = router.completion(model="travel-llm", messages=[…])
 
 ## Part 6. 사례
 
-모델 교체가 실제로 일어났다
+모델 교체가 실제로 일어났다.
 
 </Slide>
 
@@ -475,7 +565,7 @@ resp = router.completion(model="travel-llm", messages=[…])
 
 - 이 랩의 Gemini 기본 모델은 원래 `gemini-2.5-flash`였는데,
   신규 발급 키에서 404가 나는 것이 확인되어 `gemini-3.5-flash-lite`로 교체.
-  단가는 동일하고, hotfix `v1.0.1`로 나갔습니다
+  단가는 동일하고, hotfix `v1.0.1`로 나갔습니다.
 - 같은 날 OpenAI 쪽도 정렬했습니다. `gpt-5-mini`는 아직 돌지만 세 세대 뒤라
   같은 은퇴 리스크가 있어 `gpt-5.4-nano`로 바꿨습니다. hotfix `v1.0.2`
 - Anthropic은 Claude 5 패밀리에 아직 haiku가 없어 `claude-haiku-4-5`가 현행
@@ -487,11 +577,11 @@ resp = router.completion(model="travel-llm", messages=[…])
 ## 고친 파일은 한 곳
 
 - 두 번 모두 고친 파일은 `agent/config.py` **한 곳**입니다.
-  예제 51종과 에이전트 본체는 한 줄도 바뀌지 않았습니다
+  예제 51종과 에이전트 본체는 한 줄도 바뀌지 않았습니다.
 - 교체 전 검증도 이 세션의 도구로 했습니다.
   후보 모델을 실제 1회 호출로 확인하고, 단가표 등재 여부를 `get_model_info`로
   조회한 뒤, 에이전트를 끝까지 돌려 도구 호출 품질을 비교
-- **프로바이더 장애와 모델 은퇴는 예외 상황이 아니라 일상입니다**
+- **프로바이더 장애와 모델 은퇴는 예외 상황이 아니라 일상입니다**.
 
 </Slide>
 
@@ -499,10 +589,10 @@ resp = router.completion(model="travel-llm", messages=[…])
 
 ## 이 세션이 남기는 것
 
-- 공식 SDK 세 벌 대신 통합 레이어 한 벌. **그 이득과 대가를 알고 쓴다**
+- 공식 SDK 세 벌 대신 통합 레이어 한 벌. **그 이득과 대가를 알고 쓴다**.
 - 프로바이더 교체는 문자열 한 줄, 모델 이름은 `agent/config.py` 한 곳
 - 장애의 종류마다 다른 방어: 재시도(순간), 폴백(모델), 백오프(한도)
-- 비용은 콜백으로 집계하고, 한도·단가는 실행 전에 코드로 읽는다
+- 비용은 콜백으로 집계하고, 한도·단가는 실행 전에 코드로 읽는다.
 
 </Slide>
 
@@ -512,6 +602,6 @@ resp = router.completion(model="travel-llm", messages=[…])
 
 **Tool calling 심화** · `examples/03_tools/` 10종 → **v0.2**
 
-2세션에서 비어 있던 `tool_calls` 자리가 채워집니다
+2세션에서 비어 있던 `tool_calls` 자리가 채워집니다.
 
 </Slide>
