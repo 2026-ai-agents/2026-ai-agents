@@ -31,6 +31,10 @@ git 태그(`vX.Y.Z`)로, 사이트 버전은 `site/package.json`으로 관리한
 - **booking-agent 현장 피드백 반영(v1.1.0)**: 재로그인 시 checkpointer에서
   대화 복원(대기 중 확인 카드 포함), 내 예약 클릭으로 상담 재개, 전화번호
   정규화. 교안에 실측 화면과 함께 추가
+- **booking-agent 더 단단하게(v1.2.0)**: db에 named volume이 붙어
+  down/up에도 예약·대화가 생존(초기화는 down -v로만), 손님·사장 화면 모두
+  새로고침을 넘어 로그인 유지. 손님은 id, 사장은 발급 토큰을 쓰고
+  비밀번호는 URL에 싣지 않는다
 - **Day 2 3세션 교안**: booking-agent 교안 `day-02-session-03`. 재시작
   기억상실과 생존의 대조 실측, 확인 카드·사장 대시보드·SQL 방어·time-travel
   실측과 스크린샷 5장 동봉. 세션 인덱스의 "준비 중" 해제
