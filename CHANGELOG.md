@@ -24,6 +24,13 @@ git 태그(`vX.Y.Z`)로, 사이트 버전은 `site/package.json`으로 관리한
   `demos/handloop.py`를 교안의 "LangGraph란 무엇인가" 절에 나란히 배치.
   실행 결과와 각본 LLM 테스트 포함. v1.0.1은 trace 데모의 thread_id 누락
   hotfix
+- **booking-agent 저장소 개설**: 손님/사장 두 입장의 식당 예약 웹 제품.
+  v0.1(메모리 휘발) → v0.2(pg checkpointer) → v0.3(쓰기 직전 interrupt) →
+  v1.0(사장 대시보드·어시스턴트·읽기 전용 SQL 도구·time-travel), 태그
+  전부 테스트 통과, v1.0.1 포함 GitHub Releases 5건
+- **Day 2 3세션 교안**: booking-agent 교안 `day-02-session-03`. 재시작
+  기억상실과 생존의 대조 실측, 확인 카드·사장 대시보드·SQL 방어·time-travel
+  실측과 스크린샷 5장 동봉. 세션 인덱스의 "준비 중" 해제
 
 ### 변경
 

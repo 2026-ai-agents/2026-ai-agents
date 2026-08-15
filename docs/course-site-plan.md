@@ -210,6 +210,24 @@ site/src/content/slides/ko/day-01-session-04/index.mdx
 ★ 개수 불일치(§8 "약 25종" vs 실제 별표 20개) 문제도 사이트 쪽에서는
 소멸한다. 원안을 갱신할 때 §8의 별표 서술을 함께 정리하면 된다.
 
+### booking-agent는 두 입장으로 확장한다 (2026-08-15)
+
+원안 §6.2(레스토랑 예약, app·ui·db 3컨테이너)를 **손님/사장 두 입장**으로
+확장했다. 컨테이너는 4개(app·ui·admin·db)가 된다.
+
+- 손님(ui, :8501): 이름+전화의 가벼운 로그인, 대화 예약, 확인 카드(interrupt),
+  조회·취소
+- 사장(admin, :8502): 비밀번호 로그인, 승인/거절 대시보드, 운영 상담
+  에이전트(고정 도구 + 읽기 전용 run_sql 도구)
+- 원안의 "확정 직전 interrupt"는 손님의 최종 확인(human-in-the-loop)으로
+  유지하고, **사장의 승인은 도메인 상태 머신**(requested → confirmed/declined)
+  으로 분리했다. 두 "승인"의 구분 자체가 수업거리다
+- run_sql(LLM이 SELECT 작성)은 원안에 없는 추가다. 고정 도구 vs 자유 쿼리라는
+  도구 설계 스펙트럼과 세 겹 방어(SELECT 한 문장·자동 LIMIT·READ ONLY)를
+  가르친다
+- 한때 meeting-room-agent(Track A)에서 겹침 판정 등을 차용하는 안을 검토했으나
+  철회했다. booking-agent의 코드는 전부 새로 썼다
+
 ### 음식 DB 건수는 뒤로 미룬다
 
 원안의 "약 2만 건"과 `week03-meal-planner`의 30만 건대 데이터 사이의 차이는
