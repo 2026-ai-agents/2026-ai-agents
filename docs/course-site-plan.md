@@ -228,6 +228,25 @@ site/src/content/slides/ko/day-01-session-04/index.mdx
 - 한때 meeting-room-agent(Track A)에서 겹침 판정 등을 차용하는 안을 검토했으나
   철회했다. booking-agent의 코드는 전부 새로 썼다
 
+### secretary-agent 세부 결정 (2026-08-15)
+
+원안 §6.3의 뼈대는 그대로 두고 다음을 정했다.
+
+- db 이미지는 `pgvector/pgvector:pg17`. v1.0 의미 검색이 LangGraph
+  PostgresStore의 벡터 인덱스를 쓴다. 임베딩은 `gemini/gemini-embedding-001`
+  768차원, 문자열은 `agent/config.py`에만
+- 일정 도구(add_event·my_events)를 최소로 곁들인다. 비서가 할 일이 있어야
+  기억이 살아나고, 도메인 행(thread 무관)과 대화 기억(thread 안)의 수명
+  대조가 v0.1의 사고 재현이 된다
+- interrupt는 재사용하지 않는다. 앞 세션에서 배운 개념이라 이 세션의
+  예산은 기억에 쓴다 (교안에 생략 이유 명시)
+- thread는 사용자마다 하나가 아니라 대화마다 하나. "새 대화" 버튼이
+  세션의 주인공이다
+- booking의 편의 규약(전화 정규화, named volume, 새로고침 복원, HTTP 경유
+  데모)을 처음부터 반영
+- 테스트의 임베딩은 결정적 해시 대역(키 없이 통과), 의미 순위 품질은
+  데모에서 실측
+
 ### 음식 DB 건수는 뒤로 미룬다
 
 원안의 "약 2만 건"과 `week03-meal-planner`의 30만 건대 데이터 사이의 차이는
