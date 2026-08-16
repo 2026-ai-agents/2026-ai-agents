@@ -44,6 +44,19 @@
 2. `CHANGELOG.md`와 `site/package.json`의 버전을 올린다
 3. `main`으로 머지 → GitHub Pages 배포가 자동으로 돈다
 4. `main`에 `vX.Y.Z` 태그를 달고 `develop`으로 역머지
+5. `main`·`develop`·태그를 push하고 **GitHub Release를 만든다**
+
+```sh
+git push origin main develop
+git push origin vX.Y.Z
+gh release create vX.Y.Z --title "vX.Y.Z — 한 줄 요약" \
+  --notes-file <노트 파일> --latest
+```
+
+**git 태그와 GitHub Release는 다른 객체다.** 태그만 올리면 저장소 첫 화면의
+Releases 칸은 이전 버전에 머문다. 5단계를 빠뜨려도 배포는 정상으로 돌기 때문에
+알아채기 어렵다. 릴리스 노트는 CHANGELOG의 해당 절을 바탕으로 쓰되, 기록체인
+CHANGELOG와 달리 읽는 사람에게 말하는 형태로 옮긴다.
 
 에이전트 저장소들의 `v0.1\~v1.0` 릴리즈 사다리는 이 저장소의 버전과 무관하다.
 이 저장소의 버전은 강의 자료의 버전이다.
